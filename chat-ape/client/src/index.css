@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form-group {
+    position: relative;
+    margin: 20px 0;
+}
+
+.form-group label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+    color: #999;
+    transition: 0.2s;
+    pointer-events: none;
+}
+
+.form-group input {
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: black;
+
+}
+
+.form-group input:focus~label,
+.form-group input:valid~label {
+    top: 0;
+    background-color: black;
+    border-radius: 5px;
+    width: auto;
+    padding: 0 2px;
+    font-size: 12px;
+}
+
+.eye {
+    transform: translateY(-50%);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade {
+    animation: fadeIn 300ms ease-in;
+}
+
+button {
+    cursor: pointer;
+}
+
+.noScroll::-webkit-scrollbar {
+    display: none;
+}
+
+.right-box {
+    border-radius: 1rem 1rem 0rem 1rem;
+}
+
+.left-box {
+    border-radius: 1rem 1rem 1rem 0rem;
+}
+
+.chatbox {
+    scroll-behavior: smooth;
+}
+
+@keyframes heightAnimation {
+    0% {
+        height: 0;
+        width: 0;
+    }
+
+    100% {
+        height: 56px;
+        width: 176px;
+    }
+}
+
+@keyframes heightDeanimation {
+    0% {
+        height: 56px;
+        width: 176px;
+    }
+
+    100% {
+        height: 0px;
+        width: 0px;
+    }
+}
+
+.heightAnimate {
+    animation: heightAnimation 300ms ease-in;
+}
+
+.heightDeanimate {
+    animation: heightDeanimation 300ms ease-in;
+}
+
+center {
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+}
