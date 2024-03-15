@@ -1,3 +1,5 @@
+import { IoPersonCircleSharp } from "react-icons/io5";
+
 import {  useContext, useEffect, useState } from "react";
 import * as Yup from 'yup' 
 import { Link, useNavigate } from "react-router-dom";
@@ -13,6 +15,8 @@ import TextInput from "../ReuseableFormComponents/TextInput";
 import SubmitButton from "../ReuseableFormComponents/SubmitButton";
 import ErrorDiv from "../ReuseableFormComponents/ErrorDiv";
 import PasswordCheckBox from "../ReuseableFormComponents/PasswordCheckBox";
+import { useGoogleLogin } from "@react-oauth/google";
+import { UserSaved } from "../../Types/dataTypes";
 
 export default function LoginForm() {
     // is input checked
@@ -20,6 +24,21 @@ export default function LoginForm() {
     // if login failed its set to true
     const [isFailed, setIsFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("Failed to Log the User in! Try Again");
+    const login = useGoogleLogin({
+        onSuccess : async (tokenResponse)=> {
+            const response = await server.post("/auth-user/google", { code : tokenResponse.code})
+            const data = response.data
+            console.log("the data obtained from the server is", data)
+            const userData = {
+                accessToken: data.access_token,
+                refreshToken: data.refresh_token,
+                isGoogleUser : true
+            }
+            handleSuccessfullLogin(userData)
+        },
+        onError : ()=> console.log("some error occured"),
+        flow : "auth-code"
+    })
     const navigate = useNavigate();
     const { setItem } = useLocalStorage();
     const { mutate : loginUserMutation } = useMutation({
@@ -28,10 +47,9 @@ export default function LoginForm() {
             const userData = {
                 accessToken: data.accessToken,
                 refreshToken: data.refreshToken,
+                isGoogleUser : false
             }
-            setItem("user", userData );
-            setIsAuthenticated(userData);
-            navigate("/", { state: { userData: userData }, replace: true });
+            handleSuccessfullLogin(userData)
         },
         onError : ()=> setIsFailed(true)
     })
@@ -47,7 +65,7 @@ export default function LoginForm() {
 
     useEffect(() => {
       
-        if(isAuthenticated.accessToken.length > 1) {
+        if(isAuthenticated.accessToken !== "") {
             
             navigate("/", { replace : true})
         }
@@ -67,7 +85,13 @@ export default function LoginForm() {
     function handleSubmission(values : FormDataLogin){
         loginUserMutation({ server , formData : values })
     }
+    function handleSuccessfullLogin(userData : UserSaved){
+        setItem("user", userData );
+        setIsAuthenticated(userData);
+        navigate("/", { state: { userData: userData }, replace: true });
+    }
     return (
+
         <Formik clasName="form-wrap"
             initialValues={initialValues}
             validationSchema={Yup.object({
@@ -113,23 +137,25 @@ export default function LoginForm() {
                 </div>
                 <div className=" flex flex-col justify-between items-center h-[10rem]">
                     <button 
-                        className="p-2 h-10 w-[23rem] rounded-lg bg-red-600 hover:bg-red-700 "
+                        className="p-2 h-10 w-[23rem] rounded-lg flex justify-center items-center
+                         bg-red-600 hover:bg-red-700 "
                         type="submit"
                         onClick={()=>handleSubmission({email : "saad@gmail.com" , password : "Saad.Masood1122"})}    
                     >
-                        Guest Login
+                        <IoPersonCircleSharp size={25} />  Guest Login
                     </button>
                     <button 
-                        className="p-2 h-10 w-[23rem] rounded-lg bg-red-600 hover:bg-red-700 "
-                        type="submit"
+                        className="p-2 h-10 w-[23rem] rounded-lg bg-white text-black" 
+                        type="button"
+                        onClick={()=>login()}
                     >
                         Sign in Using Gmail
                     </button>
                     <button 
                         className="p-2 h-10 w-[23rem] rounded-lg bg-red-600 hover:bg-red-700 "
-                        type="submit"
+                        type="button"
                     >
-                        Using GitHub
+                        Sing In Using GitHub
                     </button>
                 </div>
                 

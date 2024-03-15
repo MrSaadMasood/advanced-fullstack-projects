@@ -6,7 +6,8 @@ import { fetchPictureFromServer} from "../../api/dataService";
 function useImageHook(url? : string) {
 
     const [image, setImage] = useState("/placeholder.png")
-    // if(!url) return image
+    if(!url) return image
+    if(url.startsWith("https")) return url
     const axiosPrivate = useInterceptor()
     const { data } = useQuery({
         queryKey : [url],

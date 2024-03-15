@@ -11,6 +11,7 @@ function useOptionsSelected(optionsSelected  : number ) {
     const [ groupChatList, setGroupChatList ] = useState<GeneralGroupList[]>([])
     // for storing the friends, request, users, group chat list etc.
     const [ friendsFollowRequestsSentRequestsData, setFriendsFollowRequestsSentRequestsData] = useState<AssessoryData[]>([]);
+    console.log(friendsFollowRequestsSentRequestsData, "the data of users from the server is")
     const axiosPrivate = useInterceptor()
 
     const { data, error } = useQuery({
@@ -19,7 +20,8 @@ function useOptionsSelected(optionsSelected  : number ) {
     })
     const optionsArray = [2,3,5]
 
-    
+    console.log("the data obtained from the server is", data);
+     
     useEffect(()=>{
         if(!data) return
 
@@ -34,13 +36,12 @@ function useOptionsSelected(optionsSelected  : number ) {
         }
     }, [data])
 
-    useEffect(()=>{
-        if(!error) return
-
-        if(optionsArray.includes(optionsSelected)){
-            setFriendsFollowRequestsSentRequestsData([])
-        }
-    },[ error ])
+    // useEffect(()=>{
+    //     if(!error) return
+    //     if(optionsArray.includes(optionsSelected)){
+    //         setFriendsFollowRequestsSentRequestsData([])
+    //     }
+    // },[ error])
     
     // depending on the type of chat the last message is updated in the list of chats / group chats.
     function chatListArraySetter(id : string , data : Message, chatType : ChatType) {

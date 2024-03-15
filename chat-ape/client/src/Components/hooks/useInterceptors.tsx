@@ -24,6 +24,7 @@ export default function useInterceptor() {
                 // checking if the authorization headers is already added this means the request was sent second time.
                 if (!config.headers.Authorization) {
                     config.headers.Authorization = `Bearer ${isAuthenticated?.accessToken}`;
+                    config.headers.isGoogleUser = isAuthenticated.isGoogleUser
                 }
 
                 return config;
@@ -38,10 +39,17 @@ export default function useInterceptor() {
                 if (error.response?.status === 401 && !previousRequest.firstTry) {
                     previousRequest.firstTry = true;
                     try {
-                        const response = await server.post("/auth-user/refresh", { refreshToken: isAuthenticated.refreshToken });
+                        const response = await server.post("/auth-user/refresh", { 
+                            refreshToken: isAuthenticated.refreshToken,
+                            isGoogleUser : isAuthenticated.isGoogleUser
+                         });
                         const accessToken = response.data.newAccessToken;
                         previousRequest.headers.Authorization = `Bearer ${accessToken}`;
-                        setItem("user", { accessToken, refreshToken: isAuthenticated.refreshToken });
+                        setItem("user", { 
+                            accessToken, 
+                            refreshToken: isAuthenticated.refreshToken, 
+                            isGoogleUser : isAuthenticated.isGoogleUser 
+                        });
                         return axiosCustom(previousRequest);
                     } catch (error) {
                         console.log("The error occurred while refreshing the token", error);

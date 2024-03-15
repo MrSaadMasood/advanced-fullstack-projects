@@ -83,6 +83,7 @@ export interface MessageToDelete {
 export interface UserSaved {
     accessToken : string
     refreshToken : string
+    isGoogleUser : boolean
 }
 
 export type ChatType = "normal" | "group"

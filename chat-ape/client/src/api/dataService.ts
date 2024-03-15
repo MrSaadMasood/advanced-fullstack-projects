@@ -75,9 +75,15 @@ export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} 
 
 export async function logoutUser({ server , token } : { server : AxiosInstance , token : string}){
     try {
-        await server.delete(`/auth-user/logout/${token}`)
+        console.log("the refrsh token is", token)
+        await server.delete(`/auth-user/logout`, {
+            data : {
+                token
+            }
+        })
     } catch (error) {
         console.log("failed to logout the user")
+        throw new Error("failed to log the user out")
     }
 }
 

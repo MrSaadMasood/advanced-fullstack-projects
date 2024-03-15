@@ -96,7 +96,7 @@ export default function Home() {
 
         setUserData( userDataFromServer)
         if(userDataFromServer.profilePicture){
-            
+            if(userDataFromServer.isGoogleUser && userDataFromServer.profilePicture.startsWith("https")) return setProfilePictureUrl(userDataFromServer.profilePicture) 
             ;(async ()=>{
                 const pictureUrl = await fetchPictureFromServer(
                     axiosPrivate, `/user/get-profile-picture/${userDataFromServer.profilePicture}`
@@ -108,6 +108,10 @@ export default function Home() {
         }
 
     },[ userDataFromServer])
+
+    useEffect(()=>{
+        if(isUserChanged) setIsUserChanged(false)
+    },[isUserChanged])
 
     // this adds the user that is sent the request to the sent reques array and that user is shown as "request sent". so no
     // further request are made
@@ -192,7 +196,7 @@ export default function Home() {
        setMessageToDeleteInfo(undefined) 
        setShowDeletMessageOption(false)
     }
-    
+    console.log("the user data is", userData)
     return (
         <div>
             {showDeleteMessageOptions &&

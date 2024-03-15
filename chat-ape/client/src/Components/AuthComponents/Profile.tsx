@@ -56,7 +56,7 @@ export default function Profile({
         if(!image) return console.log("the iamge is not submitted");
         
         try {
-            if (userData.profilePicture) {
+            if (userData.profilePicture && userData.profilePicture.startsWith("image")) {
                 try {
                     await axiosPrivate.delete(
                         `/user/delete-previous-profile-picture/${userData.profilePicture}`

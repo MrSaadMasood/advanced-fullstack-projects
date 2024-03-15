@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { isAuth } from "../Context/authContext";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "../../api/dataService";
-
+import { googleLogout } from '@react-oauth/google' 
 interface SideBarProps {
   setOptions : (option : number, text : string) => void,
   profilePictureUrl : string 
@@ -27,9 +27,13 @@ export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps
   const { mutate : logOutUserMutation } = useMutation({
     mutationFn : logoutUser,
     onSuccess : ()=>{
+      googleLogout()
       removeItem("user");
-      setIsAuthenticated({ accessToken : "" , refreshToken : ""})
+      setIsAuthenticated({ accessToken : "" , refreshToken : "", isGoogleUser : false})
       navigate("/login", { replace : true });
+    },
+    onError : ()=>{
+      console.log("cant logout the user some error occured")
     }
   })
   const { removeItem} = useLocalStorage();

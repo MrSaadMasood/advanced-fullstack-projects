@@ -20,11 +20,12 @@ export default function PrivateRoute(){
     }
     const { isAuthenticated } = context
     
+    console.log("the users stored in app is", isAuthenticated)
 
     return (
         <div>
             {
-                isAuthenticated.accessToken.length > 5 ? (<Outlet />) : (<Login />)
+                isAuthenticated.accessToken !== "" ? (<Outlet />) : (<Login />)
             }
         </div>
     )
