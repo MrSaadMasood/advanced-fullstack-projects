@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import useInterceptor from "../hooks/useInterceptors";
 import { ChatType, Message } from "../../Types/dataTypes";
+import useImageHook from "../hooks/useImageHook";
 
 interface RightSideBoxProps {
     data : Message,
@@ -14,44 +13,16 @@ export default function RightSideBox({
     deleteMessage, 
     chatType 
 } : RightSideBoxProps) {
-    const [url, setUrl] = useState("");
-    const axiosPrivate = useInterceptor();
+    
+    const url = data.path ? chatType === "normal" ? `/user/get-chat-image/${data.path}` : `/user/group-picture/${data.path}` : undefined
+    const picture = useImageHook(url)
     const dateObject = new Date(data.time);
-
-    // if the chat contains a path to the image the data is fetched converted to url and shown 
-    useEffect(() => {
-        async function getChatImage(image : string) {
-            try {
-                if (chatType === "normal") {
-                    const response = await axiosPrivate.get(`/user/get-chat-image/${image}`, { responseType: "blob" });
-                    const imageUrl = URL.createObjectURL(response.data);
-                    setUrl(imageUrl);
-                }
-                if (chatType === "group") {
-                    const response = await axiosPrivate.get(`/user/group-picture/${image}`, { responseType: "blob" });
-                    const imageUrl = URL.createObjectURL(response.data);
-                    setUrl(imageUrl);
-                }
-            } catch (error) {
-                return "/pattern.jpg";
-            }
-        }
-
-        if (data.path) {
-            getChatImage(data.path);
-            
-            return () => {
-                URL.revokeObjectURL(url);
-            };
-        }
-
-    }, [data, axiosPrivate, chatType]);
 
     return (
         <div 
             onDoubleClick={() => deleteMessage(data.id)} 
             data-testid="main"
-            className="text-white text-base w-[100%] h-auto mb-2 flex justify-end items-center"
+            className="text-white text-base w-[100%] h-auto mb-2 flex justify-end items-center cursor-pointer"
         >
             <div className="w-[60%] mr-3 h-auto flex flex-col justify-between items-end">
                 <div className="text-[.5rem] h-4 w-auto flex justify-around items-center">
@@ -65,14 +36,14 @@ export default function RightSideBox({
                     </p>
                 </div>
                 {data.content &&
-                    <p className="pt-1 pb-1 pl-2 pr-2 bg-orange-600 h-auto w-auto break-all right-box flex 
+                    <div className="pt-1 pb-1 pl-2 pr-2 bg-orange-600 h-auto w-auto break-all right-box flex 
                     justify-center items-center">
                         {data.content}
-                    </p>
+                    </div>
                 }
                 {data.path &&
                     <div>
-                        <img src={url} alt="img" width={"300px"} />
+                        <img src={picture} alt="img" width={"300px"} />
                     </div>
                 }
             </div>

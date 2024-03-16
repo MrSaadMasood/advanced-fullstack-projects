@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useInterceptor from "../hooks/useInterceptors";
-import { AssessoryData, ChatType, CommonProp, CommonUserData } from "../../Types/dataTypes";
+import { AssessoryData, CommonProp, CommonUserData } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
 import ImageDiv from "../MiscComponents/ImageDiv";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
@@ -9,8 +9,8 @@ interface FriendsProps extends CommonProp {
     data : AssessoryData,
     selectedOptionSetter: (option : number, text : string) => void,
     isUserChangedSetter : (value : boolean)=> void, 
-    removeFriendFromDataArray : (id : string)=> void,
-    getChatData : (data : CommonUserData , chatType : ChatType) => void, 
+    removeFriendFromDataArray : (id : string, type : string)=> void,
+    getChatData : (data : CommonUserData) => void, 
 }
 
 export default function Friends({ 
@@ -30,7 +30,8 @@ export default function Friends({
     function sendMessage(data : AssessoryData){
         selectedOptionSetter(1, "Chats")
         selectedChatSetter("normal")
-        getChatData(data, "normal")
+        const commonUserData : CommonUserData = {...data, type : "normal"}
+        getChatData(commonUserData)
     }
 
     async function removeFriend(id : string){
@@ -38,7 +39,7 @@ export default function Friends({
             setLoading(true)
             await axiosPrivate.delete(`/user/remove-friend/${id}`)
             isUserChangedSetter(true) 
-            removeFriendFromDataArray(id)
+            removeFriendFromDataArray(id, "friends")
             setLoading(false)
         } catch (error) {
             console.log("error while removing the friends", error)

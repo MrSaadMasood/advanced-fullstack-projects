@@ -42,7 +42,7 @@ export default function Chat({
     }
 
       scrollToBottom();
-  }, [completeChatData.chat]);
+  }, []);
 
 
   function deleteMessage(id : string) {

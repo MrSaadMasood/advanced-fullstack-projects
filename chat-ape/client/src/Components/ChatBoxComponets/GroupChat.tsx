@@ -43,7 +43,7 @@ export default function GroupChat({
         }
 
         scrollToBottom();
-    }, [data]);
+    }, []);
 
     function deleteMessage(id : string) {
         handleMessageDelete(id, "group");

@@ -8,7 +8,7 @@ import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker"
 interface FriendRequestsProps {
     data : AssessoryData,
     isUserChangedSetter: (value : boolean) => void, 
-    removeFollowRequest: (id : string)=> void,
+    removeFollowRequest: (id : string, type : string)=> void,
 }
 
 export default function FriendRequests({ 
@@ -28,7 +28,7 @@ export default function FriendRequests({
             setAcceptLoading(true)
             await axiosPrivate.post("/user/add-friend", { friendId : id})
             isUserChangedSetter(true)
-            removeFollowRequest(id)
+            removeFollowRequest(id, "followRequests")
             setAcceptLoading(false)
         } catch (error) {
            console.log("failed to add friend", error) 
@@ -41,7 +41,7 @@ export default function FriendRequests({
             setDeclineLoading(true)
             await axiosPrivate.delete(`/user/remove-follow-request/${id}`)
             isUserChangedSetter(true)
-            removeFollowRequest(id)
+            removeFollowRequest(id, "followRequests")
             setDeclineLoading(false)
         } catch (error) {
             console.log("failed to add friend", error) 

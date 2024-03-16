@@ -10,17 +10,16 @@ function useOptionsSelected(optionsSelected  : number ) {
     const [chatList, setChatList] = useState<ChatList[]>([]);
     const [ groupChatList, setGroupChatList ] = useState<GeneralGroupList[]>([])
     // for storing the friends, request, users, group chat list etc.
-    const [ friendsFollowRequestsSentRequestsData, setFriendsFollowRequestsSentRequestsData] = useState<AssessoryData[]>([]);
-    console.log(friendsFollowRequestsSentRequestsData, "the data of users from the server is")
+    const [ friendsArray , setFriendsArray] = useState<AssessoryData[]>([])
+    const [ followRequestsArray , setFollowRequestsArray] = useState<AssessoryData[]>([])
+    const [ allUsersArray , setAllUsersArray] = useState<AssessoryData[]>([])
     const axiosPrivate = useInterceptor()
 
-    const { data, error } = useQuery({
+    const { data } = useQuery({
         queryKey : [optionsSelected],
         queryFn : ()=> fetchingBasedOnOptionSelected(axiosPrivate, optionsSelected)
     })
-    const optionsArray = [2,3,5]
 
-    console.log("the data obtained from the server is", data);
      
     useEffect(()=>{
         if(!data) return
@@ -28,21 +27,20 @@ function useOptionsSelected(optionsSelected  : number ) {
         if(optionsSelected === 1){
             setChatList(data)
         }
-        if(optionsArray.includes(optionsSelected)){
-            setFriendsFollowRequestsSentRequestsData(data)
+        if(optionsSelected === 2){
+            setFriendsArray(data)
+        }
+        if(optionsSelected === 3){
+            setFollowRequestsArray(data)
         }
         if(optionsSelected === 4){
             setGroupChatList(data)
         }
+        if(optionsSelected === 5){
+            setAllUsersArray(data)
+        }
     }, [data])
 
-    // useEffect(()=>{
-    //     if(!error) return
-    //     if(optionsArray.includes(optionsSelected)){
-    //         setFriendsFollowRequestsSentRequestsData([])
-    //     }
-    // },[ error])
-    
     // depending on the type of chat the last message is updated in the list of chats / group chats.
     function chatListArraySetter(id : string , data : Message, chatType : ChatType) {
         if (chatType === "normal") {
@@ -72,19 +70,31 @@ function useOptionsSelected(optionsSelected  : number ) {
     }
     
     // when the friend is added the follow request of that friend is removed from the data
-    function removeFollowRequestAndFriend(id : string) {
-        setFriendsFollowRequestsSentRequestsData((prevData) => {
-            const updatedArray = prevData.filter(item => {
-                return item._id !== id;
+    function removeFollowRequestAndFriend(id : string, type : string) {
+        if(type === "friends") {
+            setFriendsArray((prevData) => {
+                const updatedArray = prevData.filter(item => {
+                    return item._id !== id;
+                });
+                return updatedArray;
             });
-            return updatedArray;
-        });
+        }
+        if(type === "followRequests") {
+            setFollowRequestsArray((prevData) => {
+                const updatedArray = prevData.filter(item => {
+                    return item._id !== id;
+                });
+                return updatedArray;
+            });
+        }
     }
 
     return { 
         chatList, 
         groupChatList, 
-        friendsFollowRequestsSentRequestsData,
+        friendsArray,
+        followRequestsArray,
+        allUsersArray,
         chatListArraySetter,
         removeFollowRequestAndFriend
     } 

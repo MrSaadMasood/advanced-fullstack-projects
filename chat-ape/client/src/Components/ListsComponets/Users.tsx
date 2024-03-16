@@ -39,7 +39,6 @@ export default function Users({
         }
     }
 
-    console.log('the data send to the users component is', data)
     return (
         <div className="p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">
             <div className="flex justify-center items-center">

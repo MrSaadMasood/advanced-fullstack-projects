@@ -39,7 +39,9 @@ export default function Home() {
     const { 
         chatList, 
         groupChatList, 
-        friendsFollowRequestsSentRequestsData, 
+        friendsArray,
+        followRequestsArray,
+        allUsersArray,
         removeFollowRequestAndFriend,
         chatListArraySetter 
     } = useOptionsSelected(optionsSelected)
@@ -55,6 +57,7 @@ export default function Home() {
         removeDeletedMessageFromChat, 
         getChatData,
     } = useWebSockets(chatListArraySetter, userData)
+    console.log("the friend data is", friendData)
     
     // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with 
     // some data and userData needs to be updated with that data
@@ -267,8 +270,7 @@ export default function Home() {
                                     />
                                 )
                             })}
-                            {optionsSelected !== 1 && friendsFollowRequestsSentRequestsData.map((data, index) => {
-                                if (optionsSelected === 2) {
+                            {optionsSelected === 2 && friendsArray.map((data, index)=>{
                                     return (
                                         <Friends
                                             key={index}
@@ -279,9 +281,8 @@ export default function Home() {
                                             removeFriendFromDataArray={removeFollowRequestAndFriend}
                                             getChatData={getChatData}
                                         />
-                                    )
-                                }
-                                if (optionsSelected === 3) {
+                            )})}
+                            {optionsSelected === 3 && followRequestsArray.map((data, index)=>{
                                     return (
                                         <FriendRequests
                                             key={index}
@@ -289,20 +290,18 @@ export default function Home() {
                                             isUserChangedSetter={isUserChangedSetter}
                                             removeFollowRequest={removeFollowRequestAndFriend}
                                         />
-                                    )
-                                }
-                                if (optionsSelected === 5 && userData) {
-                                    if (userData._id !== data._id && userData.friends.includes(data._id) === false) {
-                                        return (
-                                            <Users
-                                                key={index}
-                                                data={data}
-                                                userData={userData}
-                                                addToSentRequests={addToSentRequests}
-                                                isUserChangedSetter={isUserChangedSetter}
-                                            />
-                                        )
-                                    }
+                            )})}
+                            {optionsSelected === 5 && userData && allUsersArray.map((data, index) => {
+                                if (userData._id !== data._id && userData.friends.includes(data._id) === false) {
+                                    return (
+                                        <Users
+                                            key={index}
+                                            data={data}
+                                            userData={userData}
+                                            addToSentRequests={addToSentRequests}
+                                            isUserChangedSetter={isUserChangedSetter}
+                                        />
+                                    );
                                 }
                             })}
                         </div>
