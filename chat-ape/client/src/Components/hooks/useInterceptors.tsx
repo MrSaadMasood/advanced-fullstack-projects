@@ -43,12 +43,12 @@ export default function useInterceptor() {
                             refreshToken: isAuthenticated.refreshToken,
                             isGoogleUser : isAuthenticated.isGoogleUser
                          });
-                        const accessToken = response.data.newAccessToken;
+                        const accessToken = response.data.newAccessToken as string;
                         previousRequest.headers.Authorization = `Bearer ${accessToken}`;
                         setItem("user", { 
                             accessToken, 
                             refreshToken: isAuthenticated.refreshToken, 
-                            isGoogleUser : isAuthenticated.isGoogleUser 
+                            isGoogleUser : isAuthenticated.isGoogleUser
                         });
                         return axiosCustom(previousRequest);
                     } catch (error) {

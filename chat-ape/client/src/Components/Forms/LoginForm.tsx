@@ -7,7 +7,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import server from "../../api/axios";
 import { isAuth } from "../Context/authContext";
 import { Form, Formik } from "formik";
-import { FormDataLogin } from "../api/Types/typings";
+import { FormDataLogin } from "../../Types/dataTypes";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../api/dataService";
 
@@ -24,32 +24,28 @@ export default function LoginForm() {
     // if login failed its set to true
     const [isFailed, setIsFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("Failed to Log the User in! Try Again");
+    const navigate = useNavigate();
+    const { setItem } = useLocalStorage();
+
     const login = useGoogleLogin({
         onSuccess : async (tokenResponse)=> {
-            const response = await server.post("/auth-user/google", { code : tokenResponse.code})
-            const data = response.data
-            console.log("the data obtained from the server is", data)
-            const userData = {
-                accessToken: data.access_token,
-                refreshToken: data.refresh_token,
-                isGoogleUser : true
+            try {
+                const response = await server.post("/auth-user/google", { code : tokenResponse.code})
+                const data : UserSaved = response.data
+                console.log('the data obtained from the server is', data)
+                handleLoginDataFromServer(data)
+            } catch (error) {
+                console.log("the rquest sent for google login has failed") 
             }
-            handleSuccessfullLogin(userData)
         },
         onError : ()=> console.log("some error occured"),
         flow : "auth-code"
     })
-    const navigate = useNavigate();
-    const { setItem } = useLocalStorage();
     const { mutate : loginUserMutation } = useMutation({
         mutationFn : loginUser,
         onSuccess : (data)=>{
-            const userData = {
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
-                isGoogleUser : false
-            }
-            handleSuccessfullLogin(userData)
+            console.log("the data from the server is", data)
+            handleLoginDataFromServer(data)
         },
         onError : ()=> setIsFailed(true)
     })
@@ -82,13 +78,37 @@ export default function LoginForm() {
         }
     }, [isFailed]);
 
-    function handleSubmission(values : FormDataLogin){
-        loginUserMutation({ server , formData : values })
+    function handleLoginDataFromServer(data : UserSaved){
+            if(data.is2FactorAuthEnabled){
+                const userAuthData = {
+                    is2FactorAuthEnabled : data.is2FactorAuthEnabled,
+                    refreshToken : data.refreshToken,
+                    isGoogleUser : data.isGoogleUser,
+                    factor2AuthToken : data.factor2AuthToken
+                }
+                return handleSuccessfullLogin(userAuthData)
+            }
+            const userAuthData = {
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                isGoogleUser : data.isGoogleUser,
+                is2FactorAuthEnabled : data.is2FactorAuthEnabled 
+            }
+            handleSuccessfullLogin(userAuthData )
+
     }
-    function handleSuccessfullLogin(userData : UserSaved){
-        setItem("user", userData );
-        setIsAuthenticated(userData);
-        navigate("/", { state: { userData: userData }, replace: true });
+    function handleSubmission(values : FormDataLogin){
+        loginUserMutation({ formData : values })
+    }
+    function handleSuccessfullLogin(userAuthData : UserSaved){
+        if(userAuthData.is2FactorAuthEnabled){
+            setItem("f2a", userAuthData)
+            return navigate("/factor-2-auth")
+        }
+        console.log("the userdata from the server is", userAuthData)    
+        setItem("user", userAuthData );
+        setIsAuthenticated(userAuthData );
+        navigate("/", { replace: true });
     }
     return (
 
@@ -149,13 +169,13 @@ export default function LoginForm() {
                         type="button"
                         onClick={()=>login()}
                     >
-                        Sign in Using Gmail
+                        Sign in with Google 
                     </button>
                     <button 
                         className="p-2 h-10 w-[23rem] rounded-lg bg-red-600 hover:bg-red-700 "
                         type="button"
                     >
-                        Sing In Using GitHub
+                        Sign In with GitHub
                     </button>
                 </div>
                 

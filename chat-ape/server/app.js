@@ -3,14 +3,18 @@ const { Server } = require("socket.io")
 const http = require("http")
 const cors = require("cors")
 const helmet = require("helmet")
-const app = express()
+
 const authIndex = require("./routes/index.js")
 const userRouter = require("./routes/userRouter.js")
-const { connectData} = require("./connection.js")
-require("dotenv").config()
-const { authenticateUser } = require("./middlewares/middlewares.js")
-const PORT = process.env.PORT
+const factor2Router = require("./routes/factor2Auth.js")
 
+const { connectData} = require("./connection.js")
+const { authenticateUser, factor2RouteTokenAuthenticator } = require("./middlewares/middlewares.js")
+
+require("dotenv").config()
+
+const PORT = process.env.PORT
+const app = express()
 const server = http.createServer(app)
 
 // creating a new server instance form the above server made with http. this server instance will be used for websockets
@@ -28,6 +32,7 @@ app.use(cors({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended : false}))
+app.use(express.static("uploads"))
 
 // if database connection is successfull then configuring the server to listen to the port
 // server.listen(PORT , ()=> console.log("the server is connected at port", PORT))
@@ -40,7 +45,7 @@ connectData((err)=>{
 
 app.use("/auth-user", authIndex )
 
-app.use(express.static("uploads"))
+app.use("/factor2", factor2RouteTokenAuthenticator , factor2Router)
 
 app.use("/user", authenticateUser , userRouter)
 

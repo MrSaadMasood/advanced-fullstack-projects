@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
@@ -11,6 +10,7 @@ import ErrorPage from './Components/ErrorComponents/ErrorPage.js'
 import { AuthProvider } from './Components/Context/authProvider.jsx'
 import { QueryClient, QueryClientProvider  } from '@tanstack/react-query' 
 import { GoogleOAuthProvider } from '@react-oauth/google' 
+import Factor2Auth from './Components/Forms/Factor2Auth.js'
 
 const queryClient = new QueryClient()
 
@@ -27,6 +27,7 @@ const router = createBrowserRouter(
       </Route>
       <Route path='/login' element={<Login />} />
       <Route path='/sign-up' element={<Signup />} />
+      <Route path='/factor-2-auth' element={<Factor2Auth />} />
       <Route path='*' element={<ErrorPage/>} />
     </>
   )
@@ -35,13 +36,13 @@ const router = createBrowserRouter(
 
   ReactDOM.createRoot(document.getElementById('root')!).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_REACT_GOOGLE_CLIENT_ID}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <RouterProvider router={router} />
           </AuthProvider>
         </QueryClientProvider>
-      </React.StrictMode>
+      {/* </React.StrictMode> */}
   </GoogleOAuthProvider>
   ,
   )

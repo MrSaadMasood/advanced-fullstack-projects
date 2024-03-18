@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { UserSaved } from "../../Types/dataTypes";
+import { NormalUserAuthSaved, UserSaved } from "../../Types/dataTypes";
 
 
 interface AuthContext {
-    isAuthenticated : UserSaved
+    isAuthenticated : NormalUserAuthSaved
     setIsAuthenticated : React.Dispatch<React.SetStateAction<UserSaved>>
 }
 

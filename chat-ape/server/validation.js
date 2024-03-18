@@ -85,6 +85,12 @@ const usersCollectionSchema = {
                     isGoogleUser : {
                         bsonType : "bool"
                     },
+                    is2FactorAuthEnabled  : {
+                        bsonType : "bool"
+                    },
+                    factor2AuthSecret : {
+                        bsonType : "string"
+                    }
                 }
             }
         },

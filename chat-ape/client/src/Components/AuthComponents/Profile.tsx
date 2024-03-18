@@ -4,6 +4,7 @@ import useInterceptor from "../hooks/useInterceptors";
 import { FormEvent, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { UserData } from "../../Types/dataTypes";
+import ReactSwitch from "react-switch";
 
 interface profileProps {
     userData : UserData,
@@ -27,6 +28,7 @@ export default function Profile({
     const [text, setText] = useState(bio);
     const axiosPrivate = useInterceptor();
     const pictureRef = useRef<HTMLInputElement>(null);
+    const [ isToggleButtonChecked , setIsToggleButtonChecked] = useState(false)
 
     function handleChange(e : React.ChangeEvent<HTMLInputElement>) {
         setText(e.target.value);
@@ -184,6 +186,15 @@ export default function Profile({
                             />
                         </form>
                     )}
+                </div>
+                <div className=" bg-[#777777] w-[80%] h-[6%] rounded-md mt-5 flex justify-between items-center p-4">
+                        <p className=" text-base font-bold ">
+                            Enable 2FA
+                        </p>
+                        <ReactSwitch
+                            checked={isToggleButtonChecked}
+                            onChange={()=> setIsToggleButtonChecked(!isToggleButtonChecked)}
+                        />
                 </div>
             </div>
         </div>

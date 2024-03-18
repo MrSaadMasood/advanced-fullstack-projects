@@ -5,9 +5,8 @@ import { isAuth } from "../Context/authContext";
 import { Form, Formik } from "formik";
 import TextInput from "../ReuseableFormComponents/TextInput";
 import { useMutation } from "@tanstack/react-query";
-import server from "../../api/axios";
 import { userSignUp } from "../../api/dataService";
-import { SignUpFormdata } from "../api/Types/typings";
+import { SignUpFormdata } from "../../Types/dataTypes";
 import SubmitButton from "../ReuseableFormComponents/SubmitButton";
 import ErrorDiv from "../ReuseableFormComponents/ErrorDiv";
 import PasswordCheckBox from "../ReuseableFormComponents/PasswordCheckBox";
@@ -50,7 +49,7 @@ export default function SignUpForm() {
     }, [isFailed]);
 
     function handleSubmission(values : SignUpFormdata){
-        userSignUpMutation({ server , formData : values})
+        userSignUpMutation({ formData : values})
     } 
     
     return (

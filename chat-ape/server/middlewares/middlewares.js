@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
-const { OAuth2Client } = require("google-auth-library")
+const { OAuth2Client,  UserRefreshClient } = require("google-auth-library")
+require("dotenv").config()
 
 const oAuth2Client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
@@ -28,7 +29,45 @@ async function authenticateUser(req, res, next){
     }) 
 }
 
+async function factor2RouteTokenAuthenticator(req, res, next){
+    try {
+        const authHeader = req.headers.authorization
+        if(!authHeader) throw new Error 
+        const intermediaryToken = authHeader.split(" ")[1]
+        const user = jwt.verify(intermediaryToken, process.env.F2A_SECRET) 
+        req.user = user
+        next()
+    } catch (error) {
+        res.status(401).json({error : "failed to authenticate the intermediary path"}) 
+    }
+}
 
+async function googleTokensExtractor(code){
+    try {
+        const { tokens} = await oAuth2Client.getToken(code)
+        return tokens
+    } catch (error) {
+        console.log("the error occured while extracting the tokens", error) 
+    }
+}
+
+async function refreshGoogleAccessToken(refreshToken){
+    try {
+        const userRefresh = new UserRefreshClient(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            refreshToken
+        )
+        const { credentials } = await userRefresh.refreshAccessToken()
+        return credentials
+    } catch (error) {
+        console.log("failed to refresh the google access token");
+        throw new Error 
+    }
+}
 module.exports = {
-    authenticateUser
+    authenticateUser,
+    factor2RouteTokenAuthenticator,
+    googleTokensExtractor,
+    refreshGoogleAccessToken
 }

@@ -7,7 +7,7 @@ import useInterceptor from "./useInterceptors";
 
 function useWebSockets(
     chatListArraySetter : (id : string , data : Message, chatType : ChatType) => void,
-    userData : UserData | null
+    userData : UserData | undefined
 )  {
 
     // for socket instance

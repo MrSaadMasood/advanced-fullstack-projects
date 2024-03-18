@@ -1,9 +1,10 @@
 import { CiCirclePlus } from "react-icons/ci";
 import { FaList } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 import useInterceptor from "./hooks/useInterceptors";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import SideBar from "./MiscComponents/SideBar";
 import Chat from "./ChatBoxComponets/Chat";
@@ -25,6 +26,8 @@ import useOptionsSelected from "./hooks/useOptionsSelected";
 import useWebSockets from "./hooks/useWebSockets";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteMessageFromChat, fetchPictureFromServer, fetchUserData } from "../api/dataService";
+import { MdCancel } from "react-icons/md";
+import SideListsHeader from "./ListsComponets/SideListsHeader";
 
 
 export default function Home() {
@@ -33,8 +36,8 @@ export default function Home() {
     const [headerText, setHeaderText] = useState("Chats");
     // the selected chat type is used to dispalay various components 
     const [selectedChat, setSelectedChat] = useState("");
-
-    const [userData, setUserData] = useState<UserData | null>(null);
+    const [userData, setUserData] = useState<UserData>();
+    const [ isSearchTriggered , setIsSearchTriggered ] = useState(false)
 
     const { 
         chatList, 
@@ -72,7 +75,7 @@ export default function Home() {
     const axiosPrivate = useInterceptor();
 
     const { data : userDataFromServer } = useQuery({
-        queryKey : [isUserChanged],
+        queryKey : [userData, isUserChanged],
         queryFn : ()=> fetchUserData(axiosPrivate),
         enabled : !userData || isUserChanged
     })
@@ -97,9 +100,10 @@ export default function Home() {
     useEffect(()=>{
         if(!userDataFromServer) return
 
+        const { isGoogleUser, profilePicture} = userDataFromServer
         setUserData( userDataFromServer)
         if(userDataFromServer.profilePicture){
-            if(userDataFromServer.isGoogleUser && userDataFromServer.profilePicture.startsWith("https")) return setProfilePictureUrl(userDataFromServer.profilePicture) 
+            if(isGoogleUser && profilePicture.startsWith("https")) return setProfilePictureUrl(profilePicture) 
             ;(async ()=>{
                 const pictureUrl = await fetchPictureFromServer(
                     axiosPrivate, `/user/get-profile-picture/${userDataFromServer.profilePicture}`
@@ -121,7 +125,7 @@ export default function Home() {
     function addToSentRequests(id : string) {
         
         setUserData((prevData) => {
-            if(!prevData) return null
+            if(!prevData) return undefined
             prevData.sentRequests.push(id);
             return { ...prevData };
         });
@@ -222,31 +226,24 @@ export default function Home() {
                 {optionsSelected !== 6 &&
                     <div className={`${display} lg:inline h-screen w-full lg:ml-16 lg:w-[23rem]  bg-black lg:border-r-2
                         lg:border-[#555555] text-white`}>
-                        <div className="border-b-2 border-[#555555] h-24 lg:h-20 flex justify-start items-center">
-                            <div className="flex justify-between items-center h-auto w-[90%] ml-5">
-                                <div className="flex justify-center items-center">
-                                    <FaList size={18} />
-                                    <p className="font-bold text-xl ml-3">
-                                        {headerText}
-                                    </p>
-                                </div>
+                        <SideListsHeader
+                            headerText={headerText}
+                            isSearchTriggered={isSearchTriggered} 
+                            setIsSearchTriggered={setIsSearchTriggered}
+                        />
+                        <div className="bg-[#1b1b1b] w-full lg:w-[22rem] h-[87vh] overflow-y-scroll noScroll">
                                 {optionsSelected === 4 && userData &&
                                     <Link 
                                         to={"/create-new-group"} 
                                         state={{ friends: userData.friends }} 
-                                        className="hover:scale-105"
+                                        className="hover:scale-105 h-[3rem] bg-[#494949] hover:bg-[#404040]
+                                         border-black border-2 w-full flex justify-center items-center"
                                     >
                                         <button data-testid="newGroup">
                                             <CiCirclePlus size={30} />
                                         </button>
                                     </Link>
                                 }
-    
-                            </div>
-    
-                        </div>
-    
-                        <div className="bg-[#1b1b1b] w-full lg:w-[22rem] h-[87vh] overflow-y-scroll noScroll">
                             {optionsSelected === 1 && chatList.map((chat, index) => {
                                     return (
                                         <NormalMessagesList

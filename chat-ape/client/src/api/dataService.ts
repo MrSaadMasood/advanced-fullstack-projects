@@ -1,7 +1,8 @@
 import { AxiosInstance } from "axios";
+import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
 import { AssessoryData, MessageToDelete, UserSaved } from "../Types/dataTypes";
-import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Components/api/Types/typings";
+import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
         // to get the normal chat list of the user with friends containing the friend name and last message
@@ -73,9 +74,8 @@ export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} 
     }
 }
 
-export async function logoutUser({ server , token } : { server : AxiosInstance , token : string}){
+export async function logoutUser({ token } : { token : string}){
     try {
-        console.log("the refrsh token is", token)
         await server.delete(`/auth-user/logout`, {
             data : {
                 token
@@ -87,7 +87,7 @@ export async function logoutUser({ server , token } : { server : AxiosInstance ,
     }
 }
 
-export async function userSignUp({ server, formData} : { server : AxiosInstance, formData : SignUpFormdata}){
+export async function userSignUp({ formData} : { formData : SignUpFormdata}){
     try {
         await server.post("/auth-user/sign-up", formData )
     } catch (error) {
@@ -95,7 +95,7 @@ export async function userSignUp({ server, formData} : { server : AxiosInstance,
         throw new Error("error occured while signing up the user")
     }
 }
-export async function loginUser({ server, formData} : { server : AxiosInstance, formData : FormDataLogin}){
+export async function loginUser({ formData} : { formData : FormDataLogin}){
    try {
         const response = await server.post("/auth-user/login", formData )
         return response.data as UserSaved 
@@ -154,5 +154,35 @@ export async function sendTextMessage({ axiosPrivate , endpoint, textMessageData
     } catch (error) {
         console.log("failed to send the message")
         throw new Error("failed to send the message")
+    }
+}
+
+export async function factor2AuthLogin(formData : { otp : string , refreshToken : string, factor2AuthToken: string }){
+    try {
+        console.log("the intermediary token is", formData.factor2AuthToken)
+        const response = await server.post("/factor2/verify-otp", formData, {
+            headers : {
+                Authorization : `Bearer ${formData.factor2AuthToken}`
+            }
+        } )
+        return response.data
+    } catch (error) {
+        console.log("failed to factor 2 authentication")
+        throw new Error
+    }
+}
+
+export async function fetchQRCode(factor2AuthToken: string ){
+    try {
+        console.log('fetching the qr code now')
+        const response = await server.get("/factor2/generate-otp", {
+            headers : {
+                Authorization : `Bearer ${factor2AuthToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log("failed to get the get QR code")
+        throw new Error
     }
 }
