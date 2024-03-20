@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const userController = require("../controllers/userController.js")
-const { body } = require("express-validator")
 const multer = require("multer")
 const path = require("path")
+const { stringValidation } = require("../middlewares/middlewares.js")
 
 // creating a storage instance which will store the images based on the type of the image added to the reques body and also
 // generates the random names that dont clash.
@@ -32,7 +32,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage : storage })
 
-const stringValidation  = (string)=> body(string).isString().trim().escape()
 // to get the user data
 router.get("/updated-data", userController.getUpdatedData)
 

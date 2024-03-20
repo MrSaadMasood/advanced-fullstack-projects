@@ -58,7 +58,7 @@ export default function GroupMessagesList({
                 </div>
             </div>
             <div className="h-16 w-20 lg:h-12 lg:w-14 flex flex-col justify-start items-center ml-1">
-                <p className="text-xs">{dateObject?.toLocaleDateString()}</p>
+                <p className="text-xs">{dateObject.toLocaleDateString()}</p>
             </div>
         </button>
     );

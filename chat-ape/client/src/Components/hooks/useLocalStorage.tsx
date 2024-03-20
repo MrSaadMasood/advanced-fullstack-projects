@@ -1,9 +1,7 @@
-import { useState } from "react"
 import { UserSaved } from "../../Types/dataTypes"
 
 // handles the tokens stored in the local storage
 export default function useLocalStorage(){
-    const [ value, setValue] = useState<UserSaved>()
 
     const setItem = (key : string, value : UserSaved)=>{
         localStorage.setItem(key, JSON.stringify(value))
@@ -12,8 +10,7 @@ export default function useLocalStorage(){
     const getItem = (key : string)=>{
         const item = localStorage.getItem(key)
         if(!item) return
-        const value : UserSaved = JSON.parse(item)
-        setValue(value)
+        const value = JSON.parse(item)
         return value
 
     }
@@ -22,5 +19,5 @@ export default function useLocalStorage(){
         localStorage.removeItem(key)
     }
 
-    return { value ,setItem, getItem , removeItem}
+    return { setItem, getItem , removeItem}
 }

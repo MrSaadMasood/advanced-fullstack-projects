@@ -1,10 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const sessionController = require("../controllers/sessionController.js")
-
+const { stringValidation } = require("../middlewares/middlewares.js")
 const { body } = require("express-validator")
-// to validate the incoming string
-const stringValidation  = (string)=> body(string).isString().trim().escape()
 
 // sign-up route
 router.post(
@@ -24,4 +22,8 @@ router.post("/refresh", sessionController.refreshUser)
 router.delete("/logout", sessionController.logoutUser)
 
 router.post("/google", sessionController.googleAuthenticator)
+
+router.post("/enable-f2a",  stringValidation("email"), stringValidation("refreshToken"), body("isGoogleUser").escape().isBoolean(), sessionController.enableF2a )
+
+router.delete("/disable-factor2Auth/:id", sessionController.disableFactor2Auth)
 module.exports = router

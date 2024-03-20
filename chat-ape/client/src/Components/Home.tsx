@@ -1,10 +1,8 @@
 import { CiCirclePlus } from "react-icons/ci";
-import { FaList } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 import useInterceptor from "./hooks/useInterceptors";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import SideBar from "./MiscComponents/SideBar";
 import Chat from "./ChatBoxComponets/Chat";
@@ -18,16 +16,23 @@ import DeleteMessage from "./MiscComponents/DeleteMessage";
 import NormalMessagesList from "./ListsComponets/NormalMessageList";
 import { 
     AcceptedDataOptions, 
+    AssessoryData, 
+    ChatData, 
+    ChatList, 
     ChatType, 
     ContentOrImagePath,
+    GeneralGroupList,
+    GroupChatData,
     MessageToDelete, 
     UserData } from "../Types/dataTypes";
 import useOptionsSelected from "./hooks/useOptionsSelected";
 import useWebSockets from "./hooks/useWebSockets";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteMessageFromChat, fetchPictureFromServer, fetchUserData } from "../api/dataService";
-import { MdCancel } from "react-icons/md";
 import SideListsHeader from "./ListsComponets/SideListsHeader";
+import getFilteredData, { filterChatData } from "../utils/filterArrayFunction";
+import useSearch from "./hooks/useSearch";
+import FilterOptions from "./MiscComponents/FilterOptions";
 
 
 export default function Home() {
@@ -38,6 +43,14 @@ export default function Home() {
     const [selectedChat, setSelectedChat] = useState("");
     const [userData, setUserData] = useState<UserData>();
     const [ isSearchTriggered , setIsSearchTriggered ] = useState(false)
+    const { 
+        searchInput, 
+        chatSearchInput, 
+        filterOptions,
+        handleSearchInputChange, 
+        handleChatSearchInputChange,
+        handleIsFilterClicked
+    } = useSearch()
 
     const { 
         chatList, 
@@ -47,7 +60,7 @@ export default function Home() {
         allUsersArray,
         removeFollowRequestAndFriend,
         chatListArraySetter 
-    } = useOptionsSelected(optionsSelected)
+    } = useOptionsSelected(optionsSelected, handleSearchInputChange)
 
     const { 
         joinedRoom, 
@@ -60,8 +73,8 @@ export default function Home() {
         removeDeletedMessageFromChat, 
         getChatData,
     } = useWebSockets(chatListArraySetter, userData)
-    console.log("the friend data is", friendData)
-    
+
+    // console.log("the filterd chat list is", searchInput, filteredChatList)
     // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with 
     // some data and userData needs to be updated with that data
     const [isUserChanged, setIsUserChanged] = useState(false);
@@ -93,6 +106,34 @@ export default function Home() {
     })
     
     const display = selectedChat ? "hidden" : "";
+
+    const filteredChatList =  optionsSelected === 1 ? 
+        getFilteredData(chatList, optionsSelected, searchInput) as ChatList[] : 
+        chatList 
+
+    const filteredGroupChatList = optionsSelected === 4 ? 
+        getFilteredData(groupChatList, optionsSelected, searchInput) as GeneralGroupList[] : 
+        groupChatList
+
+    const filteredFriendsList = optionsSelected === 2 ? 
+        getFilteredData(friendsArray, optionsSelected, searchInput) as AssessoryData[] : 
+        friendsArray
+
+    const filteredFollowRequests = optionsSelected === 3 ? 
+        getFilteredData(followRequestsArray, optionsSelected, searchInput) as AssessoryData[] : 
+        followRequestsArray
+
+    const filteredUsers = optionsSelected === 5 ? 
+        getFilteredData(allUsersArray, optionsSelected, searchInput) as AssessoryData[] : 
+        allUsersArray
+
+    const filteredNormalChats = completeChatData.chat.length === 0 ? 
+        completeChatData :  
+        filterChatData(completeChatData, "normal", chatSearchInput) as ChatData
+    
+    const filteredGroupChat = groupChatData.length === 0 ?
+        groupChatData :
+        filterChatData(groupChatData, "group", chatSearchInput) as GroupChatData[]
 
     // on component mount the userData is fetched from the server
     // if the user data contains the profile picture the
@@ -203,13 +244,16 @@ export default function Home() {
        setMessageToDeleteInfo(undefined) 
        setShowDeletMessageOption(false)
     }
-    console.log("the user data is", userData)
+
+
     return (
         <div>
             {showDeleteMessageOptions &&
                 <DeleteMessage deleteMessage={deleteMessage} handleMessageDeleteCancellation={handleMessageDeleteCancellation} />
             }
-    
+            {filterOptions.filterClicked && 
+                <FilterOptions />
+            }
             <div className="lg:flex">
                 <SideBar
                     setOptions={selectedOptionSetter}
@@ -227,6 +271,8 @@ export default function Home() {
                     <div className={`${display} lg:inline h-screen w-full lg:ml-16 lg:w-[23rem]  bg-black lg:border-r-2
                         lg:border-[#555555] text-white`}>
                         <SideListsHeader
+                            searchInput={searchInput}
+                            handleSearchInputChange={handleSearchInputChange}
                             headerText={headerText}
                             isSearchTriggered={isSearchTriggered} 
                             setIsSearchTriggered={setIsSearchTriggered}
@@ -244,7 +290,7 @@ export default function Home() {
                                         </button>
                                     </Link>
                                 }
-                            {optionsSelected === 1 && chatList.map((chat, index) => {
+                            {optionsSelected === 1 && filteredChatList.map((chat, index) => {
                                     return (
                                         <NormalMessagesList
                                             key={index}
@@ -255,7 +301,7 @@ export default function Home() {
                                         />
                                     )
                             })}
-                            {optionsSelected === 4 && userData && groupChatList.map((groupChat, index)=>{
+                            {optionsSelected === 4 && userData && filteredGroupChatList.map((groupChat, index)=>{
                                 return (
                                     <GroupMessagesList
                                         chatFriendImageSetter={chatFriendImageSetter}
@@ -267,7 +313,7 @@ export default function Home() {
                                     />
                                 )
                             })}
-                            {optionsSelected === 2 && friendsArray.map((data, index)=>{
+                            {optionsSelected === 2 && filteredFriendsList.map((data, index)=>{
                                     return (
                                         <Friends
                                             key={index}
@@ -279,7 +325,7 @@ export default function Home() {
                                             getChatData={getChatData}
                                         />
                             )})}
-                            {optionsSelected === 3 && followRequestsArray.map((data, index)=>{
+                            {optionsSelected === 3 && filteredFollowRequests.map((data, index)=>{
                                     return (
                                         <FriendRequests
                                             key={index}
@@ -288,7 +334,7 @@ export default function Home() {
                                             removeFollowRequest={removeFollowRequestAndFriend}
                                         />
                             )})}
-                            {optionsSelected === 5 && userData && allUsersArray.map((data, index) => {
+                            {optionsSelected === 5 && userData && filteredUsers.map((data, index) => {
                                 if (userData._id !== data._id && userData.friends.includes(data._id) === false) {
                                     return (
                                         <Users
@@ -308,24 +354,32 @@ export default function Home() {
                 {optionsSelected !== 6 && selectedChat === "normal" && friendData && userData &&
                     <Chat
                         selectedChatSetter={selectedChatSetter}
-                        completeChatData={completeChatData}
+                        completeChatData={filteredNormalChats}
                         friendData={friendData}
                         userData={userData}
                         sendMessageToWS={sendMessageToWS}
                         chatDataSetter={chatDataSetter}
                         friendChatImage={friendChatImage}
                         handleMessageDelete={handleMessageDelete}
+                        handleChatSearchInputChange={handleChatSearchInputChange}
+                        chatSearchInput={chatSearchInput} 
+                        handleIsFilterClicked={handleIsFilterClicked}
+                        // filterOptions={isFilterClicked}
                     />}
                 {optionsSelected !== 6 && selectedChat === "group" && generalGroupData && userData &&
                     <GroupChat
                         userData={userData}
-                        data={groupChatData}
+                        data={filteredGroupChat}
                         groupImage={friendChatImage}
                         selectedChatSetter={selectedChatSetter}
                         generalGroupData={generalGroupData}
                         chatDataSetter={chatDataSetter}
                         sendMessageToWS={sendMessageToWS}
                         handleMessageDelete={handleMessageDelete}
+                        handleChatSearchInputChange={handleChatSearchInputChange}
+                        chatSearchInput={chatSearchInput} 
+                        handleIsFilterClicked={handleIsFilterClicked}
+                        // filterOptions={isFilterClicked}
                     />}
                 {optionsSelected !== 6 && selectedChat === "" &&
                     <div className="hidden bg-black h-screen w-full lg:flex justify-center items-center text-white text-2xl">

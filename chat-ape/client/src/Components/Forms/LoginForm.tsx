@@ -19,6 +19,10 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { UserSaved } from "../../Types/dataTypes";
 
 export default function LoginForm() {
+
+    const context = useContext(isAuth);
+    if(!context) return
+    const { isAuthenticated, setIsAuthenticated } = context
     // is input checked
     const [checked, setChecked] = useState(false);
     // if login failed its set to true
@@ -32,7 +36,7 @@ export default function LoginForm() {
             try {
                 const response = await server.post("/auth-user/google", { code : tokenResponse.code})
                 const data : UserSaved = response.data
-                console.log('the data obtained from the server is', data)
+                console.log('google server data is', data)
                 handleLoginDataFromServer(data)
             } catch (error) {
                 console.log("the rquest sent for google login has failed") 
@@ -49,9 +53,6 @@ export default function LoginForm() {
         },
         onError : ()=> setIsFailed(true)
     })
-    const context = useContext(isAuth);
-    if(!context) return
-    const { isAuthenticated, setIsAuthenticated } = context
 
     const initialValues = {
         email : "",
@@ -84,7 +85,7 @@ export default function LoginForm() {
                     is2FactorAuthEnabled : data.is2FactorAuthEnabled,
                     refreshToken : data.refreshToken,
                     isGoogleUser : data.isGoogleUser,
-                    factor2AuthToken : data.factor2AuthToken
+                    factor2AuthToken : data.factor2AuthToken!
                 }
                 return handleSuccessfullLogin(userAuthData)
             }

@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken")
 const { OAuth2Client,  UserRefreshClient } = require("google-auth-library")
+const { body } = require("express-validator")
 require("dotenv").config()
+
+// to validate the incoming string
+const stringValidation  = (string)=> body(string).isString().trim().escape()
 
 const oAuth2Client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
@@ -69,5 +73,6 @@ module.exports = {
     authenticateUser,
     factor2RouteTokenAuthenticator,
     googleTokensExtractor,
-    refreshGoogleAccessToken
+    refreshGoogleAccessToken,
+    stringValidation
 }

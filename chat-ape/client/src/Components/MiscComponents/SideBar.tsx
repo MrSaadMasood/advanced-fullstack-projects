@@ -6,12 +6,12 @@ import { IoMdLogOut } from "react-icons/io";
 import { RiUserFollowLine } from "react-icons/ri";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
-import server from "../../api/axios";
 import { useContext } from "react";
 import { isAuth } from "../Context/authContext";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "../../api/dataService";
 import { googleLogout } from '@react-oauth/google' 
+
 interface SideBarProps {
   setOptions : (option : number, text : string) => void,
   profilePictureUrl : string 
@@ -24,20 +24,21 @@ export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps
 
   const { isAuthenticated, setIsAuthenticated } = context
 
+  const { removeItem} = useLocalStorage();
+  const navigate = useNavigate();
+  
   const { mutate : logOutUserMutation } = useMutation({
     mutationFn : logoutUser,
     onSuccess : ()=>{
-      googleLogout()
+      if(isAuthenticated.isGoogleUser) googleLogout()
       removeItem("user");
-      setIsAuthenticated({ accessToken : "" , refreshToken : "", isGoogleUser : false})
+      setIsAuthenticated({ accessToken : "" , refreshToken : "", isGoogleUser : false, is2FactorAuthEnabled : false})
       navigate("/login", { replace : true });
     },
     onError : ()=>{
       console.log("cant logout the user some error occured")
     }
   })
-  const { removeItem} = useLocalStorage();
-  const navigate = useNavigate();
   
 
   return (

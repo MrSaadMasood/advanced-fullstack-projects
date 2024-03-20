@@ -1,7 +1,7 @@
-import { AxiosInstance } from "axios";
+import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
-import { AssessoryData, MessageToDelete, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, MessageToDelete, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
@@ -184,5 +184,62 @@ export async function fetchQRCode(factor2AuthToken: string ){
     } catch (error) {
         console.log("failed to get the get QR code")
         throw new Error
+    }
+}
+
+export async function changefactor2AthSettings({ email , isGoogleUser, refreshToken }: EnableFactor2Auth ){
+    try {
+        const response = await server.post("/auth-user/enable-f2a", { email, isGoogleUser, refreshToken })
+        return response.data
+    } catch (error) {
+        console.log((error as AxiosError).message);
+         
+    }
+}
+
+export async function disableFactor2AuthSettings(id : string){
+    try {
+        const response = await server.delete(`/auth-user/disable-factor2Auth/${id}`)
+        return response.data
+    } catch (error) {
+        console.log((error as AxiosError).message)
+    }
+}
+
+export async function deletePreviousProfilePicture({ axiosPrivate, profilePicture }: DeleteProfilePicture) {
+    
+    try {
+        await axiosPrivate.delete(
+            `/user/delete-previous-profile-picture/${profilePicture}`
+        );
+    } catch (error) {
+        console.log(
+            "Failed to delete the previous profile picture",
+            error
+        );
+    }
+}
+
+export async function addNewProfilePicture({ axiosPrivate, formData }: AddNewProfilePicture) {
+    try {
+        await axiosPrivate.post(
+            "/user/add-profile-image",
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+    } catch (error) {
+        console.log((error as AxiosError).message)    
+    }
+}
+
+export async function updateUserBio({axiosPrivate, text} : { axiosPrivate : AxiosInstance, text : string}) {
+    try {   
+        await axiosPrivate.post("/user/change-bio", { bio: text });
+    } catch (error) {
+        console.log((error as AxiosError).message)
     }
 }

@@ -1,10 +1,15 @@
 import { FaCamera} from "react-icons/fa6";
 import { MdDone } from "react-icons/md";
 import useInterceptor from "../hooks/useInterceptors";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useContext, useRef, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { UserData } from "../../Types/dataTypes";
 import ReactSwitch from "react-switch";
+import { isAuth } from "../Context/authContext";
+import { useMutation } from "@tanstack/react-query";
+import { addNewProfilePicture, changefactor2AthSettings, deletePreviousProfilePicture, disableFactor2AuthSettings, updateUserBio } from "../../api/dataService";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 interface profileProps {
     userData : UserData,
@@ -17,7 +22,10 @@ export default function Profile({
     profilePictureUrl,
     isUserChangedSetter,
 } : profileProps) {
+    const context = useContext(isAuth)
+    if(!context) return
 
+    const { isAuthenticated, setIsAuthenticated } = context
     const isBio = userData.bio || "Hi there, I am using ChatApe";
     const bioInput = useRef<HTMLInputElement>(null)
     const [bio, setBio] = useState(isBio);
@@ -28,24 +36,48 @@ export default function Profile({
     const [text, setText] = useState(bio);
     const axiosPrivate = useInterceptor();
     const pictureRef = useRef<HTMLInputElement>(null);
-    const [ isToggleButtonChecked , setIsToggleButtonChecked] = useState(false)
+    const navigate = useNavigate()
+    const { removeItem, setItem } = useLocalStorage()
+console.log(isAuthenticated, userData);
 
-    function handleChange(e : React.ChangeEvent<HTMLInputElement>) {
-        setText(e.target.value);
-    }
+    const { mutate : disableFactor2AuthMutation } = useMutation({
+        mutationFn : disableFactor2AuthSettings,
+        onError : ()=> {
+            is2FactorAuthEnabledSetter(false)
+        }
+    })
+
+    const { mutate : factor2AuthMutation } = useMutation({
+        mutationFn : changefactor2AthSettings,
+        onSuccess : (data)=>{
+            removeItem("user")
+            setItem("f2a", data)
+            navigate("/factor-2-auth")
+        }
+    })
+
+    const { mutateAsync : deleteProfilePictureMutation } = useMutation({
+        mutationFn : deletePreviousProfilePicture
+    })
+
+    const { mutateAsync : addNewPictureMutation } = useMutation({
+        mutationFn : addNewProfilePicture
+    })
+
+    const { mutate : changeBioMutation } = useMutation({
+        mutationFn : updateUserBio,
+        onSuccess : ()=>{
+            setBio(text);
+            setIsBioButtonClicked(false);
+        }
+    })
 
     // handles submission of bio to the server
     async function handleSubmit(e : FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if(text === "") return
-        try {
-            await axiosPrivate.post("/user/change-bio", { bio: text });
-            setBio(text);
-            setIsBioButtonClicked(false);
-            (e.target as HTMLFormElement).reset();
-        } catch (error) {
-            console.log("Error occurred while updating the bio", error);
-        }
+        changeBioMutation({ axiosPrivate, text });
+        (e.target as HTMLFormElement).reset();
     }
 
     function getProfilePicture() {
@@ -59,30 +91,11 @@ export default function Profile({
         
         try {
             if (userData.profilePicture && userData.profilePicture.startsWith("image")) {
-                try {
-                    await axiosPrivate.delete(
-                        `/user/delete-previous-profile-picture/${userData.profilePicture}`
-                    );
-                } catch (error) {
-                    console.log(
-                        "Failed to delete the previous profile picture",
-                        error
-                    );
-                    return;
-                }
+                await deleteProfilePictureMutation({ axiosPrivate, profilePicture : userData.profilePicture})
             }
-
             const formData = new FormData();
             formData.append("image", image);
-            await axiosPrivate.post(
-                "/user/add-profile-image",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+            await addNewPictureMutation({ axiosPrivate , formData })
             setSubmitProfilePictureButton(false);
             isUserChangedSetter(true);
         } catch (error) {
@@ -98,6 +111,29 @@ export default function Profile({
         setImage(image);
         setProfilePicture(url);
         setSubmitProfilePictureButton(true);
+    }
+
+    function toggleButton(){
+        if(!isAuthenticated.is2FactorAuthEnabled){
+            factor2AuthMutation({
+                email : userData.email, 
+                isGoogleUser : isAuthenticated.isGoogleUser,
+                refreshToken : isAuthenticated.refreshToken,
+            })
+            return is2FactorAuthEnabledSetter(true)   
+        }
+        disableFactor2AuthMutation(userData._id)
+        return is2FactorAuthEnabledSetter(false) 
+    }
+
+    function is2FactorAuthEnabledSetter(value : boolean){
+        setIsAuthenticated((prevData)=>{
+            const updatedData = {...prevData,
+            is2FactorAuthEnabled : value
+            }
+            setItem("user", updatedData)
+            return updatedData
+        })
     }
 
     return (
@@ -121,7 +157,7 @@ export default function Profile({
                         <button
                             data-testid="getPicture"
                             className="absolute bottom-0 right-7 sm:right-10 flex justify-center items-center
-                                h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-gray-400"
+                                h-8 w-8 sm:h-12 sm:w-12 rounded-full bg-[#646464]"
                             onClick={getProfilePicture}
                         >
                             <FaCamera size={30} color="black" className="h-6 sm:h-12" />
@@ -174,7 +210,7 @@ export default function Profile({
                                 value={text}
                                 ref={bioInput}
                                 required
-                                onChange={handleChange}
+                                onChange={(e)=> setText(e.target.value)}
                                 className="bg-[#868686] w-[100%] p-1"
                             />
                             <input
@@ -192,8 +228,8 @@ export default function Profile({
                             Enable 2FA
                         </p>
                         <ReactSwitch
-                            checked={isToggleButtonChecked}
-                            onChange={()=> setIsToggleButtonChecked(!isToggleButtonChecked)}
+                            checked={isAuthenticated.is2FactorAuthEnabled}
+                            onChange={toggleButton}
                         />
                 </div>
             </div>

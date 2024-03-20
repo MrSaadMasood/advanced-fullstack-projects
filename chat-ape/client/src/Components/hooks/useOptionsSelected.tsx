@@ -4,7 +4,10 @@ import useInterceptor from "./useInterceptors"
 import { useEffect, useState } from "react";
 import { AssessoryData, ChatList, ChatType, GeneralGroupList, Message } from "../../Types/dataTypes";
 
-function useOptionsSelected(optionsSelected  : number ) {
+function useOptionsSelected(
+    optionsSelected  : number,
+    handleSearchInputChange : (value : string) =>void
+    ) {
 
     // for storing that chat list data so that if the user selectes another option this data persists and not fetched every time
     const [chatList, setChatList] = useState<ChatList[]>([]);
@@ -17,7 +20,10 @@ function useOptionsSelected(optionsSelected  : number ) {
 
     const { data } = useQuery({
         queryKey : [optionsSelected],
-        queryFn : ()=> fetchingBasedOnOptionSelected(axiosPrivate, optionsSelected)
+        queryFn : ()=>{
+            handleSearchInputChange("")
+            return fetchingBasedOnOptionSelected(axiosPrivate, optionsSelected)
+        }
     })
 
      

@@ -86,13 +86,18 @@ exports.loginUser = async (req, res) => {
 
             if (!match) throw new Error;
             
-            if(user.is2FactorAuthEnabled){
-                const factor2AuthToken = jwt.sign({ email : email}, process.env.F2A_SECRET, { expiresIn : "5m" })
-                return res.json({ factor2AuthToken, code : "", is2FactorAuthEnabled : user.is2FactorAuthEnabled })
-            }
             try {
                 const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id }, database)
-                console.log("the request has reached at the end")
+
+                if(user.is2FactorAuthEnabled){
+                    const factor2AuthToken = jwt.sign({ email : email}, process.env.F2A_SECRET, { expiresIn : "5m" })
+                    return res.json({ 
+                        factor2AuthToken, 
+                        refreshToken, 
+                        is2FactorAuthEnabled : user.is2FactorAuthEnabled,
+                        isGoogleUser : user.isGoogleUser
+                    })
+                }
                 res.json({ accessToken, refreshToken, isGoogleUser : user.isGoogleUser, is2FactorAuthEnabled : user.is2FactorAuthEnabled });
             } catch (error) {
                 res.status(404).json({ error: "login failed" });
@@ -111,12 +116,11 @@ exports.refreshUser = async (req, res) => {
         const tokenCheck = await database.collection("tokens").findOne({ token: refreshToken });
 
         if (!tokenCheck) return res.status(399).json({ error: "cannot refresh the token" });
-        console.log("here is the is google user", isGoogleUser)
+        // console.log("the refresht token passed to refresh middlware is", refreshToken, isGoogleUser)
         if(isGoogleUser){
             const credentials = await refreshGoogleAccessToken(refreshToken)
             return res.json({ newAccessToken : credentials.access_token })
         }
-        console.log("the request has reached here", refreshToken)
         jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, data) => {
             if (err) return res.sendStatus(399);
 
@@ -178,6 +182,7 @@ exports.googleAuthenticator = async (req, res)=>{
             }
             await database.collection("tokens").insertOne({ token : tokens.refresh_token })
             if(ifUserExists.is2FactorAuthEnabled){
+                console.log("the refresh token given by the google is", tokens.refresh_token);
                 const factor2AuthToken = jwt.sign({ email : email}, process.env.F2A_SECRET, { expiresIn : "30m" })
                 return res.json({ 
                     factor2AuthToken, 
@@ -189,6 +194,8 @@ exports.googleAuthenticator = async (req, res)=>{
             const googleTokens = {
                 accessToken : tokens.access_token,
                 refreshToken : tokens.refresh_token,
+                is2FactorAuthEnabled : ifUserExists.is2FactorAuthEnabled,
+                isGoogleUser : ifUserExists.isGoogleUser
             }
             res.json(googleTokens)
         } catch (error) {
@@ -228,17 +235,58 @@ exports.verifyOTP = async (req, res)=>{
         if(!user.is2FactorAuthEnabled) throw new Error
         const isCodeVerified = authenticator.check(otp, user.factor2AuthSecret)
         if(!isCodeVerified) throw new Error
+        console.log("is google user", isGoogleUser);
         if(isGoogleUser){
-            console.log("the refresh token from the fronend is", refreshToken)
+            console.log("the refresh token from the frontend is", refreshToken)
             const credentials = await refreshGoogleAccessToken( refreshToken)           
-            return res.json({ accessToken : credentials.access_token , refreshToken, isGoogleUser})
+            return res.json({ accessToken : credentials.access_token , refreshToken, isGoogleUser: true, is2FactorAuthEnabled : true})
         }
     
         const tokenPayload = { id : user._id }
         const { accessToken, refreshToken } = await generateAccessRefreshTokens(tokenPayload, database)
-        console.log("the accesstoken and refresh token are", accessToken)
-        res.json({ accessToken, refreshToken, isGoogleUser : user.isGoogleUser })
+        res.json({ accessToken, refreshToken, isGoogleUser : false, is2FactorAuthEnabled : true })
     } catch (error) {
         res.status(400).json( { error : "failed to complete the 2 factor authentication step"})
+    }
+}
+
+exports.enableF2a = async (req, res)=>{
+    const { email , isGoogleUser, refreshToken } = req.body
+    const result = validationResult(req)
+    try {
+        if(result.isEmpty()){
+                const updatedUser = await database.collection("users").updateOne(
+                    { email },
+                    { $set : { 
+                        is2FactorAuthEnabled : true
+                    }}
+                )
+                const factor2AuthToken = jwt.sign({ email : email}, process.env.F2A_SECRET, { expiresIn : "5m" })
+                res.json({
+                        factor2AuthToken, 
+                        refreshToken, 
+                        is2FactorAuthEnabled : true,
+                        isGoogleUser
+                })
+        }
+        else throw new Error
+    } catch (error) {
+        res.status(400).json({ error : "failed to enable the factor2 authentication"})
+    }
+}
+
+exports.disableFactor2Auth = async (req, res) =>{
+    try {
+        const { id } = req.params
+        await database.collection("users").updateOne({ _id : id },
+            {
+                $set : {
+                    is2FactorAuthEnabled : false,
+                    factor2AuthSecret : ""
+                }
+            })
+            res.json({ message : "two factor authentication has been successfullly disabled"})
+    } catch (error) {
+            res.status(400).json({error : "failed to diable the two factor authentica"})
     }
 }

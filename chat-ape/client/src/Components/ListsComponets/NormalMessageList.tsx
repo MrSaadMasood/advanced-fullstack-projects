@@ -12,11 +12,10 @@ export default function NormalMessagesList({
     selectedChatSetter, 
     getChatData, 
     chatFriendImageSetter 
-} : MessageProps) {
+} : MessageProps) { 
     const url = profilePictureUrlMaker(data.friendData.profilePicture)
-    const image = useImageHook(url)
-    console.log("the url returned from the function is", url, data.friendData.fullName);
     const dateObject = new Date(data.lastMessage.time);
+    const image = useImageHook(url)
 
     // if the chat list contains a path to the image the data is fetched converted to url and shown 
     return (

@@ -20,7 +20,6 @@ export default function PrivateRoute(){
     }
     const { isAuthenticated } = context
     
-    console.log("the users stored in app is", isAuthenticated)
 
     return (
         <div>

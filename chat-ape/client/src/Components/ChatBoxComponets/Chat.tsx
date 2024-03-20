@@ -4,7 +4,7 @@ import ChatForm from "../Forms/ChatForm";
 import ChatHeader from "./ChatHeader";
 import LeftSideBox from "./LeftSideBox";
 import RightSideBox from "./RightSideBox";
-import { ChatData, ChatProps, CommonProp, CommonUserData, UserData } from "../../Types/dataTypes";
+import { ChatData, ChatProps, CommonProp, CommonUserData, UserData, handleFilterClicked } from "../../Types/dataTypes";
 import useSendMessages from "../hooks/useSendMessages";
 
 interface Props extends CommonProp, ChatProps {
@@ -12,6 +12,10 @@ interface Props extends CommonProp, ChatProps {
   friendData : CommonUserData,
   userData : UserData,
   friendChatImage : string, 
+  handleChatSearchInputChange : (value : string)=>void
+  chatSearchInput : string 
+  handleIsFilterClicked : handleFilterClicked
+  // isFilterClicked : boolean
 }
 export default function Chat({
   selectedChatSetter,
@@ -22,6 +26,10 @@ export default function Chat({
   chatDataSetter,
   handleMessageDelete,
   friendChatImage,
+  handleChatSearchInputChange,
+  chatSearchInput,
+  handleIsFilterClicked,
+  // isFilterClicked,
 } : Props) {
 
   // reference to scroll to the bottom of the overflowing div authomatically
@@ -31,6 +39,7 @@ export default function Chat({
     handleSubmit,
     onChange
   } = useSendMessages({chatDataSetter, chatType : "normal", sendMessageToWS, userData, friendData})
+
   const realChat = completeChatData.chat;
 
   useEffect(() => {
@@ -42,7 +51,7 @@ export default function Chat({
     }
 
       scrollToBottom();
-  }, []);
+  }, [completeChatData]);
 
 
   function deleteMessage(id : string) {
@@ -55,6 +64,10 @@ export default function Chat({
         selectedChatSetter={selectedChatSetter}
         dataSent={friendData}
         friendChatImage={friendChatImage}
+        handleChatSearchInputChange={handleChatSearchInputChange} 
+        chatSearchInput={chatSearchInput}
+        handleIsFilterClicked={handleIsFilterClicked}
+        // isFilterClicked={isFilterClicked}
         />
 
         <div

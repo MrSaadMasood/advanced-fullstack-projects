@@ -31,7 +31,7 @@ exports.getUpdatedData = async(req, res)=>{
     const { id } = req.user
     try {
         const updatedData = await database.collection("users").findOne(
-            { _id : id}, { projection : { password : 0, email : 0}}
+            { _id : id}, { projection : { password : 0}}
         )
         if(!updatedData) throw new Error
         res.json( updatedData )

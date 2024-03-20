@@ -12,6 +12,11 @@ import ErrorDiv from "../ReuseableFormComponents/ErrorDiv";
 import PasswordCheckBox from "../ReuseableFormComponents/PasswordCheckBox";
 
 export default function SignUpForm() {
+
+    const context = useContext(isAuth)
+    if(!context) return
+
+    const { isAuthenticated } = context
     const [checked, setChecked] = useState(false);
     const [isFailed, setIsFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("Could not sign you up, try again!");
@@ -21,10 +26,6 @@ export default function SignUpForm() {
         onSuccess : ()=> navigate("/login", { replace : true}),
         onError : ()=> setIsFailed(true)
     })
-    const context = useContext(isAuth)
-
-    if(!context) return
-    const { isAuthenticated } = context
 
     const width = isFailed ? "w-[23rem] h-auto" : "w-0 h-0";
 

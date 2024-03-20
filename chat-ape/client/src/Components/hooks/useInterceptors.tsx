@@ -48,7 +48,8 @@ export default function useInterceptor() {
                         setItem("user", { 
                             accessToken, 
                             refreshToken: isAuthenticated.refreshToken, 
-                            isGoogleUser : isAuthenticated.isGoogleUser
+                            isGoogleUser : isAuthenticated.isGoogleUser,
+                            is2FactorAuthEnabled : isAuthenticated.is2FactorAuthEnabled
                         });
                         return axiosCustom(previousRequest);
                     } catch (error) {

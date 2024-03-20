@@ -12,6 +12,7 @@ function Factor2Auth() {
     if(!context) return
 
     const [ factor2AuthData, setFactor2AuthData ] = useState<Factor2AuthEnabledUser>()
+    console.log("the factor 2 auth data is", factor2AuthData)
     const [ code , setCode ] = useState<string[]>(Array(6).fill(""))
     const [ isPasskeyButtonClicked, setIsPasskeyButtonClicked ] = useState(false)
     const [ errorMessage , setErrorMessage] = useState("")
@@ -33,10 +34,11 @@ function Factor2Auth() {
     const { mutate : factor2AuthMutation, status } = useMutation({
         mutationFn : factor2AuthLogin,
         onSuccess : (data)=>{
-            // setIsAuthenticated(data)
-            // removeItem("f2a")
-            // setItem("user", data)
-            // navigate("/")
+            console.log("the data on successfull otp submission is", data)
+            setIsAuthenticated(data)
+            removeItem("f2a")
+            setItem("user", data)
+            navigate("/")
         },
         onError : ()=> setErrorMessage("Failed to verify the Otp. Try Again!")
     })

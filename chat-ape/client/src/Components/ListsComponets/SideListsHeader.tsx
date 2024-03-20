@@ -1,17 +1,30 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { FaList, FaSearch } from 'react-icons/fa'
 import { MdCancel } from 'react-icons/md'
 
 interface SideListsHeaderProps {
+    searchInput : string,
     isSearchTriggered : boolean,
     headerText : string,
     setIsSearchTriggered : React.Dispatch<React.SetStateAction<boolean>>,   
+    handleSearchInputChange : (value : string) => void,
 }
 function SideListsHeader({
-    isSearchTriggered,
-    headerText,
+    handleSearchInputChange,
     setIsSearchTriggered,
-} : SideListsHeaderProps ) {
+    headerText,
+    isSearchTriggered,
+    searchInput
+} : SideListsHeaderProps) {
+
+    const searchInputRef = useRef<HTMLInputElement>(null)
+  
+    useEffect(()=>{ 
+            if (isSearchTriggered && searchInputRef){
+                searchInputRef.current?.focus();
+            }
+    }, [isSearchTriggered])
+
   return (
     <div className="border-b-2 border-[#555555] h-24 lg:h-20 flex justify-start items-center">
         <div className="flex justify-between items-center h-auto w-[90%] ml-5">
@@ -27,15 +40,19 @@ function SideListsHeader({
                 <input 
                     className="text=white bg-gray-700 p-1 rounded-lg pl-3 w-[85%]"
                     type="text" 
+                    ref={searchInputRef}
+                    onChange={(e)=> handleSearchInputChange(e.target.value)}
                     name="search" 
-                    id="search" />
+                    id="search" 
+                    value={searchInput}
+                    />
             }
             
             {!isSearchTriggered && 
                 <div>
                     <FaSearch
-                        className=" cursor-pointer"
-                        onClick={()=> setIsSearchTriggered(true)}
+                        className="cursor-pointer"
+                        onClick={() => setIsSearchTriggered(true)}
                     />
                 </div>
             }

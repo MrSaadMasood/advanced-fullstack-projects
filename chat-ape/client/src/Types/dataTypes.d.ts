@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios"
 
 interface UserDataIncomplete {
     bio: string
+    email : string
     friends: string[]
     receivedRequests: string[]
     sentRequests: string[]
@@ -81,19 +82,22 @@ export interface MessageToDelete {
 
 export type UserSaved = NormalUserAuthSaved | Factor2AuthEnabledUser
 
-export interface NormalUserAuthSaved {
+interface UserAuthSaved{
     accessToken: string
     refreshToken: string
     isGoogleUser: boolean
-    is2FactorAuthEnabled: false
+    factor2AuthToken? : string
+}
+
+export interface NormalUserAuthSaved extends UserAuthSaved {
+    is2FactorAuthEnabled: boolean
 
 }
-export interface Factor2AuthEnabledUser {
+export type Factor2AuthEnabledUser = Omit<UserAuthSaved, "accessToken"> & {
     is2FactorAuthEnabled: true
-    refreshToken : string
-    isGoogleUser : boolean
     factor2AuthToken : string
 }
+
 export type ChatType = "normal" | "group"
 
 export interface CommonProp {
@@ -145,4 +149,15 @@ export interface textMessageDataProps extends AxiosCustom {
 
 interface AxiosCustom {
     axiosPrivate: AxiosInstance
+}
+
+type handleFilterClicked = (value : boolean, type : ChatType ) => void
+
+export type EnableFactor2Auth = Omit<Factor2AuthEnabledUser, "is2FactorAuthEnabled" | "factor2AuthToken"> & Pick<SignUpFormdata , "email">
+
+export interface DeleteProfilePicture extends AxiosCustom {
+    profilePicture : string
+}
+export interface AddNewProfilePicture extends AxiosCustom {
+    formData : FormData
 }

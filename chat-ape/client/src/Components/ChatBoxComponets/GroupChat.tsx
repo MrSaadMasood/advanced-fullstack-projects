@@ -5,7 +5,7 @@ import ErrorBox from "../ErrorComponents/ErrorBox";
 import ChatForm from "../Forms/ChatForm";
 import LeftSideBox from "./LeftSideBox";
 import RightSideBox from "./RightSideBox";
-import { ChatProps, CommonProp, GeneralGroupList, GroupChatData, UserData } from "../../Types/dataTypes";
+import { ChatProps, CommonProp, GeneralGroupList, GroupChatData, UserData, handleFilterClicked } from "../../Types/dataTypes";
 import useSendMessages from "../hooks/useSendMessages";
 
 interface GroupChatProps extends ChatProps, CommonProp {
@@ -13,6 +13,10 @@ interface GroupChatProps extends ChatProps, CommonProp {
     generalGroupData : GeneralGroupList,
     groupImage : string,
     userData : UserData,
+    handleChatSearchInputChange : (value : string)=>void
+    chatSearchInput : string 
+    handleIsFilterClicked : handleFilterClicked 
+    // isFilterClicked : boolean
 }
 
 export default function GroupChat({
@@ -24,6 +28,10 @@ export default function GroupChat({
     handleMessageDelete,
     groupImage,
     userData,
+    handleChatSearchInputChange,
+    chatSearchInput,
+    handleIsFilterClicked,
+    // isFilterClicked 
 }: GroupChatProps ) {
 
     const chatDiv = useRef<HTMLInputElement>(null);
@@ -55,6 +63,10 @@ export default function GroupChat({
                 selectedChatSetter={selectedChatSetter}
                 dataSent={generalGroupData}
                 friendChatImage={groupImage}
+                handleChatSearchInputChange={handleChatSearchInputChange} 
+                chatSearchInput={chatSearchInput}
+                handleIsFilterClicked={handleIsFilterClicked}
+                // isFilterClicked={isFilterClicked}
             />
 
             <div
