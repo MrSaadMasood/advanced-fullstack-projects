@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client"
-import { AcceptedDataOptions, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData } from "../../Types/dataTypes";
+import { AcceptedDataOptions, AssessoryData, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData } from "../../Types/dataTypes";
 import { generateRoomId } from "../../utils/roomIdGenerator";
 import useInterceptor from "./useInterceptors";
+import { useMutation } from "@tanstack/react-query";
+import { filterChat } from "../../api/dataService";
 
 
 function useWebSockets(
     chatListArraySetter : (id : string , data : Message, chatType : ChatType) => void,
-    userData : UserData | undefined
+    handleIsFilterClicked : (value : boolean, type : ChatType)=> void,
+    userData : UserData | undefined,
 )  {
 
     // for socket instance
@@ -18,12 +21,24 @@ function useWebSockets(
     const [completeChatData, setCompleteChatData] = useState<ChatData>({ _id : "", chat: [] });
     // the selected group chat data containing all the messages
     const [groupChatData, setGroupChatData] = useState<GroupChatData[]>([]);
+    const [ groupMembers , setGroupMembers ] = useState<AssessoryData[]>([])
     // data of the selected friend whom the user is chatting
     const [friendData, setFriendData] = useState<CommonUserData>();
     // the data of the group the user is messaging in
     const [generalGroupData, setGeneralGroupData] = useState<GeneralGroupList>();
 
     const axiosPrivate = useInterceptor()
+
+    const { mutate : getFilteredChatMutation } = useMutation({
+        mutationFn : filterChat,
+        onSuccess : (data)=>{
+            console.log("the data obtained from the server is", data)
+            if(data.chatType === "normal"){
+                return setCompleteChatData({_id : data._id, chat : data.chat})
+            }
+            setGroupChatData([...data.groupChatData])
+        }
+    })
 
     // create a socket instance when the component renders/ mounts
     useEffect(() => {
@@ -144,12 +159,23 @@ function useWebSockets(
                 console.log("error occurred while getting the group chat data", error);
                 setGroupChatData([]);
             });
+
+            axiosPrivate.post("/user/group-members", { collectionId : data._id}).then(res=>{
+                res.data.push({ _id : "", fullName : "None" })
+                setGroupMembers(res.data)
+            }).catch(error=> console.log(error))
     
             const roomId = generateRoomId(data._id, data.groupName);
             socket.emit("join-room", joinedRoom, roomId);
     
             setGeneralGroupData(data);
         }
+    }
+    
+    function getFilteredChat(date : Date, groupMember : string, chatType : ChatType){
+        const collectionId = chatType === "normal" ? completeChatData._id : groupChatData[0]._id 
+        getFilteredChatMutation({axiosPrivate , chatType, collectionId, date, groupMemberId : groupMember})
+        handleIsFilterClicked(false, chatType)
     }
     return {
         joinedRoom,
@@ -158,7 +184,9 @@ function useWebSockets(
         groupChatData,
         friendData,
         generalGroupData,
+        groupMembers,
         chatDataSetter,
+        getFilteredChat,
         removeDeletedMessageFromChat,
         getChatData
     }

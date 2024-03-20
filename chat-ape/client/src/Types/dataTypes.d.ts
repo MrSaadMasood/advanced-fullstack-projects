@@ -161,3 +161,15 @@ export interface DeleteProfilePicture extends AxiosCustom {
 export interface AddNewProfilePicture extends AxiosCustom {
     formData : FormData
 }
+
+export interface FilterOptions {
+    filterClicked : boolean
+    type : ChatType
+}
+
+export interface FilterChat extends AxiosCustom {
+    chatType : ChatType
+    date : Date
+    groupMemberId : string
+    collectionId : string
+}

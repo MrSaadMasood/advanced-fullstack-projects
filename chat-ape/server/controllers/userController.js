@@ -496,7 +496,163 @@ exports.getGroupPicture = (req, res)=>{
     const filepath = path.join(__dirname, `../uploads/group-images/${name}`)
     res.sendFile(filepath)
 }
+exports.getGroupMembers = async (req, res)=>{
+    const { collectionId } = req.body
+    const { id } = req.user
+    try {
+        const members = await database.collection("users").aggregate(
+            [
+            {
+                $match: {
+                _id: id,
+                },
+            },
+            {
+                $unwind: "$groupChats",
+            },
+            {
+                $lookup: {
+                from: "users",
+                localField: "groupChats.members",
+                foreignField: "_id",
+                as: "members",
+                },
+            },
+            {
+                $unwind: "$members",
+            },
+            {
+                $match: {
+                "groupChats.collectionId": collectionId,
+                },
+            },
+            {
+                $project: {
+                _id: "$members._id",
+                fullName : "$members.fullName",
+                },
+            },
+            ]
+        ).toArray()
+        res.json(members)
+    } catch (error) {
+        res.status(400).json({ error : "failed to get the group members"})
+    }
+}
 
+exports.filterChat = async (req, res)=>{
+    const { date, chatType, groupMemberId, collectionId } = req.body
+    const result = validationResult(req)
+    const dateString = new Date(date).toLocaleString(undefined, {
+        year : "numeric",
+        day : "2-digit",
+        month : "2-digit"
+    })
+    try {
+        if(result.isEmpty()){
+            if(chatType === "group"){
+                const groupChatData = await database.collection("groupChats").aggregate(
+                [
+                    {
+                        $match: {
+                        _id: collectionId,
+                        },
+                    },
+                    {
+                        $unwind: "$chat",
+                    },
+                    {
+                        $lookup: {
+                        from: "users",
+                        localField: "chat.userId",
+                        foreignField: "_id",
+                        as: "friendData",
+                        },
+                    },
+                    {
+                        $unwind: "$friendData",
+                    },
+                    {
+                        $project: {
+                        _id: 1,
+                        chat: "$chat",
+                        senderName: "$friendData.fullName",
+                        messageDate: {
+                            $dateToString: {
+                            format: "%m/%d/%Y",
+                            date: "$chat.time",
+                            },
+                        },
+                        },
+                    },
+                    {
+                        $match: {
+                        messageDate: dateString,
+                        $or : [
+                            { "chat.userId" : groupMemberId },
+                            { "chat.userId" : { $exists : true}}
+                        ]
+                        },
+                    },
+                    {
+                        $project: {
+                        messageDate: 0,
+                        },
+                    },
+                ]
+                ).toArray()
+                if(!groupChatData) throw new Error
+
+                return res.json({ groupChatData, chatType })
+            }
+            const chatData = await database.collection("normalChats").aggregate(
+                [
+                {
+                    $match: {
+                    _id: collectionId, 
+                    },
+                },
+                {
+                    $unwind: "$chat",
+                },
+                {
+                    $project: {
+                    _id: 0,
+                    chat: "$chat",
+                    messageDate: {
+                        $dateToString: {
+                        format: "%m/%d/%Y",
+                        date: "$chat.time",
+                        },
+                    },
+                    },
+                },
+                {
+                    $match: {
+                    messageDate: dateString,
+                    },
+                },
+                {
+                    $project: {
+                    messageDate: 0,
+                    },
+                },
+                {
+                    $replaceRoot: {
+                    newRoot:  "$chat"
+                    }
+                }
+                ]
+            ).toArray()
+            if(!chatData) throw new Error
+            
+            res.json({ _id : collectionId, chat : chatData, chatType})
+        }
+        else throw new Error
+    } catch (error) {
+        res.status(400).json({ error : "failed to get the filtered chats"}) 
+    }
+}
 // gets all the messages of a specific group chat
 exports.getGroupChatData = async(req, res)=>{
     const { chatId} = req.params

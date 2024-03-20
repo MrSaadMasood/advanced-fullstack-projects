@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { ChatType } from "../../Types/dataTypes"
+import { ChatType, FilterOptions } from "../../Types/dataTypes"
 
 function useSearch() {
  
     const [ searchInput , setSearchInput] = useState("")
     const [ chatSearchInput , setChatSearchInput ] = useState("")
-    const [ filterOptions , setFilterOptions ] = useState({ filterClicked : false, type : "normal"})
+    const [ filterOptions , setFilterOptions ] = useState<FilterOptions>({ filterClicked : false, type : "normal"})
 
     function handleIsFilterClicked( value : boolean, type : ChatType){
         setFilterOptions({ filterClicked : value, type})

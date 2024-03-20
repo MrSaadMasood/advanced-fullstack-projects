@@ -101,6 +101,10 @@ router.post("/add-group-chat-image", (req,_,next)=>{ req.groupImage = true; next
 // saves the message sent in group chat in the database
 router.post("/group-data", stringValidation("content"), userController.updateGroupChatData)
 
+router.post("/group-members", stringValidation("collectionId"), userController.getGroupMembers)
+
+router.post("/filter-chat", stringValidation("date"), stringValidation("chatType"), stringValidation("collectionId"), userController.filterChat)
+
 // deletes a specific message from either the normal chat or group chat
 router.delete("/delete-message", userController.deleteMessage)
 

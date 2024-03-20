@@ -69,10 +69,12 @@ export default function Home() {
         groupChatData,
         friendData,
         generalGroupData,
+        groupMembers,
         chatDataSetter, 
+        getFilteredChat,
         removeDeletedMessageFromChat, 
         getChatData,
-    } = useWebSockets(chatListArraySetter, userData)
+    } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)
 
     // console.log("the filterd chat list is", searchInput, filteredChatList)
     // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with 
@@ -251,8 +253,13 @@ export default function Home() {
             {showDeleteMessageOptions &&
                 <DeleteMessage deleteMessage={deleteMessage} handleMessageDeleteCancellation={handleMessageDeleteCancellation} />
             }
-            {filterOptions.filterClicked && 
-                <FilterOptions />
+            {filterOptions.filterClicked  && 
+                <FilterOptions 
+                    filterOptions={filterOptions} 
+                    groupMembers={groupMembers}
+                    handleIsFilterClicked={handleIsFilterClicked}
+                    getFilteredChat={getFilteredChat}
+                />
             }
             <div className="lg:flex">
                 <SideBar

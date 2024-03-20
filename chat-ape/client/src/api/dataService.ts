@@ -1,7 +1,7 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
-import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, MessageToDelete, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FilterChat, MessageToDelete, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
@@ -239,6 +239,15 @@ export async function addNewProfilePicture({ axiosPrivate, formData }: AddNewPro
 export async function updateUserBio({axiosPrivate, text} : { axiosPrivate : AxiosInstance, text : string}) {
     try {   
         await axiosPrivate.post("/user/change-bio", { bio: text });
+    } catch (error) {
+        console.log((error as AxiosError).message)
+    }
+}
+
+export async function filterChat({ axiosPrivate, chatType, date, groupMemberId, collectionId }: FilterChat) {
+    try {
+        const response = await axiosPrivate.post("/user/filter-chat", { chatType, date, groupMemberId, collectionId })
+        return response.data
     } catch (error) {
         console.log((error as AxiosError).message)
     }
