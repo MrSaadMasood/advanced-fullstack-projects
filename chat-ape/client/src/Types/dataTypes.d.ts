@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios"
+import { Axios, AxiosInstance } from "axios"
 
 interface UserDataIncomplete {
     bio: string
@@ -173,3 +173,11 @@ export interface FilterChat extends AxiosCustom {
     groupMemberId : string
     collectionId : string
 }
+export interface FetchChatData extends AxiosCustom {
+    chatType : ChatType
+    chatId : string
+    docsSkipCount : number
+}
+
+export type GetChatData = (data : AcceptedDataOptions )=>void
+export type BoxSide = "right" | "left"

@@ -7,14 +7,17 @@ interface FilterOptionsProps {
     handleIsFilterClicked : handleFilterClicked
     getFilteredChat : (date : Date, groupMember : string, chatType : ChatType)=>void
 }
+
 function FilterOptions({
     filterOptions,
     groupMembers,
     handleIsFilterClicked,
     getFilteredChat
 }: FilterOptionsProps) {
+
         const [ date , setDate] = useState(new Date())
         const [ filterMember , setFilterMember] = useState("")
+
     return (
         <div className="relative">
             <div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center">

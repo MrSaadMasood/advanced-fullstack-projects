@@ -10,8 +10,7 @@ export default function useLocalStorage(){
     const getItem = (key : string)=>{
         const item = localStorage.getItem(key)
         if(!item) return
-        const value = JSON.parse(item)
-        return value
+        return JSON.parse(item)
 
     }
 

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import useInterceptor from "../hooks/useInterceptors";
-import { AssessoryData, CommonProp, CommonUserData } from "../../Types/dataTypes";
+import { AssessoryData, CommonProp, CommonUserData, GetChatData } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
 import ImageDiv from "../MiscComponents/ImageDiv";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
+import { useMutation } from "@tanstack/react-query";
+import { removeAFriend } from "../../api/dataService";
 
 interface FriendsProps extends CommonProp {
     data : AssessoryData,
     selectedOptionSetter: (option : number, text : string) => void,
     isUserChangedSetter : (value : boolean)=> void, 
     removeFriendFromDataArray : (id : string, type : string)=> void,
-    getChatData : (data : CommonUserData) => void, 
+    getChatData : GetChatData, 
 }
 
 export default function Friends({ 
@@ -25,7 +27,15 @@ export default function Friends({
     const axiosPrivate = useInterceptor()
     const url = profilePictureUrlMaker(data.profilePicture)
     const image = useImageHook(url)
-    const [loading, setLoading] = useState(false)
+    const [ removedFriendId , setRemovedFriendId ]= useState("")
+
+    const { mutate : removeFriendMutation, isPending : isRemoveFriendPending } = useMutation({
+        mutationFn : removeAFriend,
+        onSuccess : ()=>{
+            isUserChangedSetter(true)
+            removeFriendFromDataArray(removedFriendId, "friends")
+        }
+    })
 
     function sendMessage(data : AssessoryData){
         selectedOptionSetter(1, "Chats")
@@ -34,17 +44,9 @@ export default function Friends({
         getChatData(commonUserData)
     }
 
-    async function removeFriend(id : string){
-        try {
-            setLoading(true)
-            await axiosPrivate.delete(`/user/remove-friend/${id}`)
-            isUserChangedSetter(true) 
-            removeFriendFromDataArray(id, "friends")
-            setLoading(false)
-        } catch (error) {
-            console.log("error while removing the friends", error)
-            setLoading(false)
-        }
+    function removeFriend(id : string){
+        setRemovedFriendId(id)
+        removeFriendMutation({ axiosPrivate, id})
     }
     return(
         <div className=" p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">
@@ -63,9 +65,9 @@ export default function Friends({
                         <button 
                         onClick={()=>removeFriend(data._id)} 
                         className=" bg-red-600 hover:bg-red-700 h-[100%] w-[45%] rounded-md"
-                        disabled={loading}
+                        disabled={isRemoveFriendPending}
                         >
-                            {loading ? "Removing" : "Remove"}
+                            {isRemoveFriendPending ? "Removing" : "Remove"}
                         </button>
                     </div>
                 </div>

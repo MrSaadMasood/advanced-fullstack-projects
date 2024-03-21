@@ -20,9 +20,7 @@ import { UserSaved } from "../../Types/dataTypes";
 
 export default function LoginForm() {
 
-    const context = useContext(isAuth);
-    if(!context) return
-    const { isAuthenticated, setIsAuthenticated } = context
+    const { isAuthenticated, setIsAuthenticated } = useContext(isAuth);
     // is input checked
     const [checked, setChecked] = useState(false);
     // if login failed its set to true
@@ -36,7 +34,6 @@ export default function LoginForm() {
             try {
                 const response = await server.post("/auth-user/google", { code : tokenResponse.code})
                 const data : UserSaved = response.data
-                console.log('google server data is', data)
                 handleLoginDataFromServer(data)
             } catch (error) {
                 console.log("the rquest sent for google login has failed") 
@@ -48,7 +45,6 @@ export default function LoginForm() {
     const { mutate : loginUserMutation } = useMutation({
         mutationFn : loginUser,
         onSuccess : (data)=>{
-            console.log("the data from the server is", data)
             handleLoginDataFromServer(data)
         },
         onError : ()=> setIsFailed(true)

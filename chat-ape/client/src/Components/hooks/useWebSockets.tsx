@@ -3,8 +3,8 @@ import { io, Socket } from "socket.io-client"
 import { AcceptedDataOptions, AssessoryData, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData } from "../../Types/dataTypes";
 import { generateRoomId } from "../../utils/roomIdGenerator";
 import useInterceptor from "./useInterceptors";
-import { useMutation } from "@tanstack/react-query";
-import { filterChat } from "../../api/dataService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { fetChatDataBasedOnType, filterChat } from "../../api/dataService";
 
 
 function useWebSockets(
@@ -28,17 +28,49 @@ function useWebSockets(
     const [generalGroupData, setGeneralGroupData] = useState<GeneralGroupList>();
 
     const axiosPrivate = useInterceptor()
+    const [ isMoreChatRequested , setIsMoreChatRequested] = useState(false)
+    const [ docsSkipCount , setDocsSkipCount] = useState(10)
+    const [ chatId , setChatId] = useState("")
+    const [ chatType , setChatType] = useState<ChatType>("normal")
 
+    const { data } = useQuery({
+        queryKey : [chatId, isMoreChatRequested],
+        queryFn :  ()=> fetChatDataBasedOnType({axiosPrivate, chatId, chatType, docsSkipCount }),
+        enabled : !!chatId || !!isMoreChatRequested
+    })
+    
     const { mutate : getFilteredChatMutation } = useMutation({
         mutationFn : filterChat,
         onSuccess : (data)=>{
-            console.log("the data obtained from the server is", data)
             if(data.chatType === "normal"){
                 return setCompleteChatData({_id : data._id, chat : data.chat})
             }
             setGroupChatData([...data.groupChatData])
         }
     })
+
+    useEffect(()=>{
+        if(isMoreChatRequested) setIsMoreChatRequested(false)
+    }, [isMoreChatRequested])
+
+    useEffect(()=>{ 
+        if(!data) return
+        setDocsSkipCount((docsSkipCount)=> docsSkipCount + 10)
+        if(chatType === "normal") {
+            return setCompleteChatData((prevData)=>{
+            const chatArray = [...data.chat ,...prevData.chat]
+            return {
+                ...prevData,
+                chat : chatArray
+            }
+        })
+        }
+    
+        setGroupChatData((prevData)=>{
+            return [...data.groupChatData , ...prevData]
+        })
+        setGroupMembers(data.members)
+     },[data])
 
     // create a socket instance when the component renders/ mounts
     useEffect(() => {
@@ -140,35 +172,25 @@ function useWebSockets(
         if(!socket) return 
 
         if (data.type === "normal") {
-            axiosPrivate.get(`/user/get-chat/${data._id}`).then(res => {
-                setCompleteChatData(res.data.chatData);
-            }).catch(error => {
-                console.log("error occurred while getting the chat", error);
-                setCompleteChatData({ _id : "", chat: [] });
-            });
-    
+            console.log("the type has been mentioned")
+            setChatType("normal")
             const roomId = generateRoomId(userData._id, data._id);
             socket.emit("join-room", joinedRoom, roomId);
             setFriendData(data);
         }
     
         if (data.type === "group") {
-            axiosPrivate.get(`/user/get-group-chat/${data._id}`).then(res => {
-                setGroupChatData(res.data.groupChatData);
-            }).catch(error => {
-                console.log("error occurred while getting the group chat data", error);
-                setGroupChatData([]);
-            });
-
-            axiosPrivate.post("/user/group-members", { collectionId : data._id}).then(res=>{
-                res.data.push({ _id : "", fullName : "None" })
-                setGroupMembers(res.data)
-            }).catch(error=> console.log(error))
     
+            setChatType("group")
             const roomId = generateRoomId(data._id, data.groupName);
             socket.emit("join-room", joinedRoom, roomId);
     
             setGeneralGroupData(data);
+        }
+
+        if(data._id !== chatId){
+            setDocsSkipCount(10)
+            setChatId(data._id)
         }
     }
     
@@ -176,6 +198,9 @@ function useWebSockets(
         const collectionId = chatType === "normal" ? completeChatData._id : groupChatData[0]._id 
         getFilteredChatMutation({axiosPrivate , chatType, collectionId, date, groupMemberId : groupMember})
         handleIsFilterClicked(false, chatType)
+    }
+    function handleIsMoreChatRequested(value : boolean){
+        setIsMoreChatRequested(value)
     }
     return {
         joinedRoom,
@@ -188,7 +213,8 @@ function useWebSockets(
         chatDataSetter,
         getFilteredChat,
         removeDeletedMessageFromChat,
-        getChatData
+        getChatData,
+        handleIsMoreChatRequested
     }
 }
 

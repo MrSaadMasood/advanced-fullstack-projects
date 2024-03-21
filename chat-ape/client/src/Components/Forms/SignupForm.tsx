@@ -13,14 +13,13 @@ import PasswordCheckBox from "../ReuseableFormComponents/PasswordCheckBox";
 
 export default function SignUpForm() {
 
-    const context = useContext(isAuth)
-    if(!context) return
+    const { isAuthenticated } = useContext(isAuth)
 
-    const { isAuthenticated } = context
     const [checked, setChecked] = useState(false);
     const [isFailed, setIsFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("Could not sign you up, try again!");
     const navigate = useNavigate();
+
     const { mutate : userSignUpMutation } = useMutation({
         mutationFn : userSignUp,
         onSuccess : ()=> navigate("/login", { replace : true}),

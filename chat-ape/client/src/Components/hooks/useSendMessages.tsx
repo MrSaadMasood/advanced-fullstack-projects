@@ -20,7 +20,8 @@ function useSendMessages({
 } : useSendMessagesProps){
 
     const axiosPrivate = useInterceptor()
-  const [input, setInput] = useState("");
+    const [input, setInput] = useState("");
+
     const { mutate : sendImageMessageMutation } = useMutation({
         mutationFn : sendImageMessage,
         onSuccess : ({ filename , id })=>{
@@ -65,7 +66,9 @@ function useSendMessages({
             return chatDataSetter(data, "normal");
         }
         const endpoint = chatType === "normal" ? "/user/add-chat-image" : "/user/add-group-chat-image"  
-        const imageMessageData = chatType === "normal" ? { friendId: friendData?._id, image } : { groupId: generalGroupData?._id, image }
+        const imageMessageData = chatType === "normal" ? 
+            { friendId: friendData?._id, image } : 
+            { groupId: generalGroupData?._id, image }
         sendImageMessageMutation({axiosPrivate, endpoint , imageMessageData })
 }
 
@@ -79,7 +82,10 @@ function useSendMessages({
         if(input === "") return
 
         const endpoint = chatType === "normal" ? "/user/chat-data" : "/user/group-data"
-        const textMessageData = chatType === "normal" ? { content : input ,friendId: friendData?._id, } : { content : input, groupId : generalGroupData?._id}
+        const textMessageData = chatType === "normal" ? 
+            { content : input ,friendId: friendData?._id, } : 
+            { content : input, groupId : generalGroupData?._id}
+            
         sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })
         ;(e.target as HTMLFormElement).reset();
       } 

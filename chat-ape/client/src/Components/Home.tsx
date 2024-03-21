@@ -74,6 +74,7 @@ export default function Home() {
         getFilteredChat,
         removeDeletedMessageFromChat, 
         getChatData,
+        handleIsMoreChatRequested,
     } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)
 
     // console.log("the filterd chat list is", searchInput, filteredChatList)
@@ -189,6 +190,7 @@ export default function Home() {
     function isUserChangedSetter(value : boolean) {
         setIsUserChanged(value);
     }
+
     // depending on the chat types specific data is sent to the sockets.
     function sendMessageToWS(
         sentData : AcceptedDataOptions, 
@@ -360,6 +362,7 @@ export default function Home() {
     
                 {optionsSelected !== 6 && selectedChat === "normal" && friendData && userData &&
                     <Chat
+                        handleIsMoreChatRequested={handleIsMoreChatRequested}
                         selectedChatSetter={selectedChatSetter}
                         completeChatData={filteredNormalChats}
                         friendData={friendData}
@@ -371,10 +374,10 @@ export default function Home() {
                         handleChatSearchInputChange={handleChatSearchInputChange}
                         chatSearchInput={chatSearchInput} 
                         handleIsFilterClicked={handleIsFilterClicked}
-                        // filterOptions={isFilterClicked}
                     />}
                 {optionsSelected !== 6 && selectedChat === "group" && generalGroupData && userData &&
                     <GroupChat
+                        handleIsMoreChatRequested={handleIsMoreChatRequested}
                         userData={userData}
                         data={filteredGroupChat}
                         groupImage={friendChatImage}
@@ -386,7 +389,6 @@ export default function Home() {
                         handleChatSearchInputChange={handleChatSearchInputChange}
                         chatSearchInput={chatSearchInput} 
                         handleIsFilterClicked={handleIsFilterClicked}
-                        // filterOptions={isFilterClicked}
                     />}
                 {optionsSelected !== 6 && selectedChat === "" &&
                     <div className="hidden bg-black h-screen w-full lg:flex justify-center items-center text-white text-2xl">

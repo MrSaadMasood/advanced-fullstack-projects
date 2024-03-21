@@ -10,7 +10,6 @@ interface ChatHeaderProps extends CommonProp {
     handleChatSearchInputChange : (value : string)=>void
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
-    // isFilterClicked: boolean
 }
 export default function ChatHeader({ 
     selectedChatSetter, 
@@ -19,12 +18,12 @@ export default function ChatHeader({
     handleChatSearchInputChange,
     chatSearchInput,
     handleIsFilterClicked,
-    // isFilterClicked
 }: ChatHeaderProps) {
 
     const [ isChatSearchClicked , setIsChatSearchClicked ] = useState(false)
     const chatSearchRef = useRef<HTMLInputElement>(null)
     const filterType = dataSent.type === "group" ? "group" : "normal"
+    
     useEffect(()=>{ 
             if (isChatSearchClicked && chatSearchRef){
                 chatSearchRef.current?.focus();

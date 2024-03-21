@@ -1,12 +1,10 @@
-import {  useEffect, useRef} from "react";
-
 import ChatHeader from "./ChatHeader";
 import ErrorBox from "../ErrorComponents/ErrorBox";
 import ChatForm from "../Forms/ChatForm";
-import LeftSideBox from "./LeftSideBox";
-import RightSideBox from "./RightSideBox";
 import { ChatProps, CommonProp, GeneralGroupList, GroupChatData, UserData, handleFilterClicked } from "../../Types/dataTypes";
 import useSendMessages from "../hooks/useSendMessages";
+import useConditionalChatFetch from "../hooks/useConditionalChatFetch";
+import MessageBox from "./MessageBox";
 
 interface GroupChatProps extends ChatProps, CommonProp {
     data : GroupChatData[] ,
@@ -16,7 +14,7 @@ interface GroupChatProps extends ChatProps, CommonProp {
     handleChatSearchInputChange : (value : string)=>void
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
-    // isFilterClicked : boolean
+    handleIsMoreChatRequested : (value : boolean) => void
 }
 
 export default function GroupChat({
@@ -31,27 +29,16 @@ export default function GroupChat({
     handleChatSearchInputChange,
     chatSearchInput,
     handleIsFilterClicked,
-    // isFilterClicked 
+    handleIsMoreChatRequested,
 }: GroupChatProps ) {
 
-    const chatDiv = useRef<HTMLInputElement>(null);
     const {
         handleFileChange,
         handleSubmit,
         onChange
     } = useSendMessages({chatDataSetter, chatType : "group", sendMessageToWS , userData, generalGroupData})
-
-    // to scroll the overflowing div to the bottom
-    useEffect(() => {
-        const div = chatDiv.current;
-
-        function scrollToBottom() {
-            if(!div) return
-            div.scrollTop = div.scrollHeight;
-        }
-
-        scrollToBottom();
-    }, []);
+    
+    const { chatDiv } = useConditionalChatFetch(handleIsMoreChatRequested)
 
     function deleteMessage(id : string) {
         handleMessageDelete(id, "group");
@@ -66,7 +53,6 @@ export default function GroupChat({
                 handleChatSearchInputChange={handleChatSearchInputChange} 
                 chatSearchInput={chatSearchInput}
                 handleIsFilterClicked={handleIsFilterClicked}
-                // isFilterClicked={isFilterClicked}
             />
 
             <div
@@ -74,31 +60,26 @@ export default function GroupChat({
                 className="chatbox h-[90vh] md:h-[92vh] lg:h-[82vh] p-2 pb-20 md:pb-32 lg:pb-4 relative 
                 bg-black w-full lg:w-full overflow-y-scroll noScroll"
             >
-                {data.map((chatData, index) => {
-                    if (chatData.chat.error && chatData.chat.userId === userData._id) {
-                        return <ErrorBox key={index} data={chatData.chat} />;
-                    }
-                    if (chatData.chat.userId === userData._id) {
-                        return (
-                            <RightSideBox
-                                key={index}
-                                data={chatData.chat}
-                                deleteMessage={deleteMessage}
-                                chatType="group"
-                                sender={chatData.senderName}
-                            />
-                        );
-                    } else {
-                        return (
-                            <LeftSideBox
-                                chatType="group"
-                                key={index}
-                                data={chatData.chat}
-                                sender={chatData.senderName}
-                            />
-                        );
-                    }
-                })}
+                {data.map((chatData, index) => (
+                    chatData.chat.error ? <ErrorBox key={index} data={chatData.chat} /> :
+                    chatData.chat.userId === userData._id ? 
+                    <MessageBox 
+                        key={index} 
+                        data={chatData.chat} 
+                        deleteMessage={deleteMessage} 
+                        chatType="group" 
+                        sender={chatData.senderName}
+                        boxSide="right"
+                    /> :
+                    <MessageBox 
+                        key={index}
+                        deleteMessage={deleteMessage}
+                        data={chatData.chat}
+                        sender={chatData.senderName}
+                        chatType="group"
+                        boxSide="left"
+                    />
+                ))}
             </div>
             <div>
                 <ChatForm

@@ -1,10 +1,11 @@
-import { ChatList, CommonProp, CommonUserData } from "../../Types/dataTypes";
+import { ChatList, CommonProp, GetChatData } from "../../Types/dataTypes";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
 import useImageHook from "../hooks/useImageHook";
+import ImageDiv from "../MiscComponents/ImageDiv";
 
 interface MessageProps extends CommonProp {
     data : ChatList,
-    getChatData : (data : CommonUserData) => void, 
+    getChatData : GetChatData, 
     chatFriendImageSetter : (url : string) => void
 }
 export default function NormalMessagesList({ 
@@ -30,10 +31,7 @@ export default function NormalMessagesList({
             }}>
 
             <div className="flex justify-center items-center">
-                <div className="w-14 h-14 lg:w-10 lg:h-10 rounded-full overflow-hidden">
-                    <img src={image} alt="" width={"300px"} />
-                </div>
-
+                <ImageDiv image={image} />
                 <div className="h-16 lg:h-12 w-[17rem] lg:w-[13rem] sm:w-[26rem] flex flex-col justify-around items-start
                 text-left ml-2 sm:ml-3 md:ml-5">
                     <p className="font-bold text-base sm:text-lg lg:text-xs">

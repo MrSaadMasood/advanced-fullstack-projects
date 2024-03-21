@@ -26,6 +26,7 @@ function useImageFileHook() {
             setFriendsIncluded([...friendsIncluded, friend]);
         }
     };
+    
     return {
         handleFileInputChange,
         handleAddRemoveButtonClick,

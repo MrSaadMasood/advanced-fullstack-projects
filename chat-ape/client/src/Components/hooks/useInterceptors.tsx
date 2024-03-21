@@ -5,11 +5,7 @@ import { isAuth } from "../Context/authContext";
 
 export default function useInterceptor() {
 
-    const context = useContext(isAuth);
-    
-    if(!context) return axiosCustom
-
-    const { isAuthenticated } = context 
+    const { isAuthenticated } = useContext(isAuth);
     const { setItem } = useLocalStorage();
 
     // adds the inceptors on the request and response object

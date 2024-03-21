@@ -1,10 +1,11 @@
-import { CommonProp, GeneralGroupList, UserData } from "../../Types/dataTypes";
+import { CommonProp, GeneralGroupList, GetChatData, UserData } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
+import ImageDiv from "../MiscComponents/ImageDiv";
 
 interface GroupMessagesListProp extends CommonProp {
     data : GeneralGroupList,
     userData : UserData,
-    getChatData : (data : GeneralGroupList)=> void,
+    getChatData : GetChatData,
     chatFriendImageSetter : (url : string) => void,   
 }
 export default function GroupMessagesList({
@@ -32,9 +33,7 @@ export default function GroupMessagesList({
             }}
         >
             <div className="flex justify-center items-center">
-                <div className="w-14 h-14 lg:w-10 lg:h-10 rounded-full overflow-hidden">
-                    <img src={picture} alt="" width={"300px"} />
-                </div>
+                <ImageDiv image={picture} />
                 <div className="h-16 lg:h-12 w-[17rem] lg:w-[13rem] sm:w-[26rem] flex flex-col justify-around items-start ml-2 sm:ml-3 md:ml-5">
                     <p className="font-bold text-base sm:text-lg lg:text-xs">
                         {data.groupName}

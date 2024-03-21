@@ -8,15 +8,12 @@ import { ColorRing } from "react-loader-spinner"
 import { useNavigate } from "react-router-dom"
 
 function Factor2Auth() {
-    const context = useContext(isAuth)
-    if(!context) return
+    const { setIsAuthenticated } = useContext(isAuth)
 
     const [ factor2AuthData, setFactor2AuthData ] = useState<Factor2AuthEnabledUser>()
-    console.log("the factor 2 auth data is", factor2AuthData)
     const [ code , setCode ] = useState<string[]>(Array(6).fill(""))
     const [ isPasskeyButtonClicked, setIsPasskeyButtonClicked ] = useState(false)
     const [ errorMessage , setErrorMessage] = useState("")
-    const { setIsAuthenticated } = context
     const { getItem , setItem, removeItem} = useLocalStorage()
     const  navigate = useNavigate()
 
@@ -34,7 +31,6 @@ function Factor2Auth() {
     const { mutate : factor2AuthMutation, status } = useMutation({
         mutationFn : factor2AuthLogin,
         onSuccess : (data)=>{
-            console.log("the data on successfull otp submission is", data)
             setIsAuthenticated(data)
             removeItem("f2a")
             setItem("user", data)
@@ -64,7 +60,11 @@ function Factor2Auth() {
         if(!factor2AuthData) return
         const passKey = code.join("")
         if(passKey.length < 6 || passKey.length > 6) return setErrorMessage("Please fill all th fields")
-        factor2AuthMutation({ otp : passKey , refreshToken : factor2AuthData.refreshToken, factor2AuthToken : factor2AuthData.factor2AuthToken})
+        factor2AuthMutation({ 
+            otp : passKey , 
+            refreshToken : factor2AuthData.refreshToken, 
+            factor2AuthToken : factor2AuthData.factor2AuthToken
+        })
     }
      return (
         <div className=" w-screen h-screen bg-black flex flex-col justify-center items-center text-white">

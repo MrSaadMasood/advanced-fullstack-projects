@@ -7,4 +7,12 @@ interface AuthContext {
     setIsAuthenticated : React.Dispatch<React.SetStateAction<NormalUserAuthSaved>>
 }
 
-export const isAuth = createContext<AuthContext | null>(null)
+export const isAuth = createContext<AuthContext>({
+    isAuthenticated : {
+        accessToken : "",
+        refreshToken : "",
+        isGoogleUser : false,
+        is2FactorAuthEnabled : false
+    },
+    setIsAuthenticated : ()=> {}
+})

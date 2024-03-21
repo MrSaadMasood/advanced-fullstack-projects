@@ -4,6 +4,8 @@ import { AssessoryData } from "../../Types/dataTypes"
 import ImageDiv from "../MiscComponents/ImageDiv"
 import useImageHook from "../hooks/useImageHook"
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker"
+import { useMutation } from "@tanstack/react-query"
+import { addFriendRequest, deleteFriendRequest } from "../../api/dataService"
 
 interface FriendRequestsProps {
     data : AssessoryData,
@@ -20,33 +22,32 @@ export default function FriendRequests({
     const axiosPrivate = useInterceptor()
     const url = profilePictureUrlMaker(data.profilePicture)
     const image = useImageHook(url)
-    const [acceptLoading, setAcceptLoading] = useState(false)
-    const [declineLoading, setDeclineLoading] = useState(false)
-    
-    async function addFriend(id : string){
-        try {
-            setAcceptLoading(true)
-            await axiosPrivate.post("/user/add-friend", { friendId : id})
+    const [ idToRemove, setIdToRemove] = useState("")
+
+    const { mutate : addFriendMutation, isPending : isAddFriendPending } = useMutation({
+        mutationFn : addFriendRequest,
+        onSuccess : ()=>{
             isUserChangedSetter(true)
-            removeFollowRequest(id, "followRequests")
-            setAcceptLoading(false)
-        } catch (error) {
-           console.log("failed to add friend", error) 
-            setAcceptLoading(false)
+            removeFollowRequest(idToRemove, "followRequests")
         }
+    })
+
+    const { mutate : removeRequestMutation, isPending : isDeleteRequestPending } = useMutation({
+        mutationFn : deleteFriendRequest,
+        onSuccess : ()=>{
+            isUserChangedSetter(true)
+            removeFollowRequest(idToRemove, "followRequests")
+        }
+    })
+    
+    function addFriend(id : string){
+        setIdToRemove(id)
+        addFriendMutation({axiosPrivate , id})
     }
 
-    async function removeRequest(id : string){
-        try {
-            setDeclineLoading(true)
-            await axiosPrivate.delete(`/user/remove-follow-request/${id}`)
-            isUserChangedSetter(true)
-            removeFollowRequest(id, "followRequests")
-            setDeclineLoading(false)
-        } catch (error) {
-            console.log("failed to add friend", error) 
-            setDeclineLoading(false)
-        }
+    function removeRequest(id : string){
+        setIdToRemove(id)
+        removeRequestMutation({axiosPrivate, id})
     }
     return (
         <div className=" p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">
@@ -60,13 +61,13 @@ export default function FriendRequests({
                     <div className=" h-8 w-[100%] flex justify-between items-center">
                         <button className=" bg-red-600 hover:bg-red-700 h-[100%] w-[45%] rounded-md"
                         onClick={()=>addFriend(data._id)}
-                        disabled={acceptLoading}>
-                            {acceptLoading ? "Accepting" : "Accept"}
+                        disabled={isAddFriendPending}>
+                            {isAddFriendPending ? "Accepting" : "Accept"}
                         </button>
                         <button className="  bg-red-600 hover:bg-red-700 h-[100%] w-[45%] rounded-md " 
                         onClick={()=>removeRequest(data._id)}
-                        disabled={declineLoading}>
-                            {declineLoading ? "Decligning" : "Decline"}
+                        disabled={isDeleteRequestPending}>
+                            {isDeleteRequestPending ? "Decligning" : "Decline"}
                         </button>
                     </div>
                 </div>

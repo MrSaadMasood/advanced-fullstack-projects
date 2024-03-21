@@ -14,7 +14,8 @@ const {
     getCustomData, 
     updateGroupChat, 
     deleteMessageFromChat, 
-    dataBaseConnectionMaker
+    dataBaseConnectionMaker,
+    chatArraySizeFinder
 } = require("./controllerHelpers");
 
 const mongoUrl = process.env.MONGO_URL
@@ -175,6 +176,7 @@ exports.updateChatData = async (req, res)=>{
 exports.getChatData = async (req, res) =>{
     const { id} = req.user
     const friendId  = req.params.id
+    const { docsSkipCount } = req.query
     try {
         const user = await database.collection("users").findOne({ _id : id})
         if( !user.normalChats ){
@@ -185,10 +187,44 @@ exports.getChatData = async (req, res) =>{
             for(let i = 0; i < user.normalChats.length; i++){
                 const iter = user.normalChats[i]
                 if(iter.friendId === friendId){
-                    const chatData = await database.collection("normalChats").findOne(
-                        { _id : iter.collectionId}
-                    )
-                    return res.json({ chatData})
+                    const chatArrayCountObject = await chatArraySizeFinder(database, iter.collectionId, "normalChats")
+                    if(chatArrayCountObject.size < 10){
+                        const chatData = await database.collection("normalChats").findOne({ _id : iter.collectionId})
+                        return res.json(chatData)
+                    }
+                    if(docsSkipCount > chatArrayCountObject.size) return res.json({ _id : chatArrayCountObject._id, chat : []})
+                    const chatData = await database.collection("normalChats").aggregate(
+                        [
+                            {
+                                $match: {
+                                _id: chatArrayCountObject._id,
+                                },
+                            },
+                            {
+                                $unwind: "$chat",
+                            },
+                            {
+                                $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
+                            },
+                            {
+                                $limit: 10,
+                            },
+                            {
+                                $project: {
+                                _id: 0,
+                                chat: "$chat",
+                                },
+                            },
+                            {
+                                $replaceRoot: {
+                                newRoot: "$chat",
+                                },
+                            },
+                            ]
+                    ).toArray()
+                    console.log("the chat dat is ", chatData);
+                    if(!chatData) throw new Error
+                    return res.json({ _id : chatArrayCountObject._id, chat : chatData })
                 }
             }
         }
@@ -655,46 +691,58 @@ exports.filterChat = async (req, res)=>{
 }
 // gets all the messages of a specific group chat
 exports.getGroupChatData = async(req, res)=>{
-    const { chatId} = req.params
+    const { chatId } = req.params
+    const { docsSkipCount } = req.query
     try {
+        const chatArrayCountObject = await chatArraySizeFinder(database, chatId , "groupChats")
+        if(chatArrayCountObject.size < 10) {
+
+        }
+        if(docsSkipCount > chatArrayCountObject.size) return res.json([])
         const groupChatData = await database.collection("groupChats").aggregate(
             [
                 {
-                  $match: {
-                    _id: chatId ,
-                  },
-                },
-                {
-                  $unwind: "$chat",
-                },
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "chat.userId",
-                    foreignField: "_id",
-                    as: "senderData",
-                  },
-                },
-                {
-                  $addFields: {
-                    sender: {
-                      $arrayElemAt: ["$senderData", -1],
+                    $match: {
+                    _id: chatId,
                     },
-                  },
                 },
                 {
-                  $project: {
-                    _id: 1,
-                    chat: "$chat",
-                    senderName: "$sender.fullName",
-                  },
+                $unwind: "$chat",
+            },
+            {
+                $lookup: {
+                from: "users",
+                localField: "chat.userId",
+                foreignField: "_id",
+                as: "senderData",
                 },
-              ]
+            },
+            {
+                $addFields: {
+                sender: {
+                    $arrayElemAt: ["$senderData", -1],
+                },
+                },
+            },
+            {
+                $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
+            },
+            {
+                $limit: 10,
+            },
+            {
+                $project: {
+                _id: 1,
+                chat: "$chat",
+                senderName: "$sender.fullName",
+                },
+            },
+        ]
         ).toArray()
-
+        console.log(groupChatData);
         if(!groupChatData) throw new Error
 
-        res.json({ groupChatData})
+        res.json( groupChatData )
     } catch (error) {
         res.status(400).json({ error : "failed to get the group chat data"})
     }

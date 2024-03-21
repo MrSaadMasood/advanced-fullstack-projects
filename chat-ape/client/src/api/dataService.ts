@@ -1,7 +1,7 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
-import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FilterChat, MessageToDelete, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FetchChatData, FilterChat, MessageToDelete, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
@@ -44,10 +44,12 @@ export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance
 
 
 export async function fetchUserData(axiosPrivate : AxiosInstance){
-
-    const result = await requestHandler(axiosPrivate, "/user/updated-data")
-    if(result.code === 400) throw new Error(result.error.message)
-    return result.data as any
+    try {
+        const response = await axiosPrivate.get("/user/updated-data")
+        return response.data
+    } catch (error) {
+        throw new Error
+    }
 }
 
 export async function fetchPictureFromServer(axiosPrivate : AxiosInstance, endpoint : string){
@@ -71,6 +73,7 @@ export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} 
         await axiosPrivate.delete(`/user/delete-message?data=${JSON.stringify(messageToDeleteInfo)}`);
     } catch (error) {
         console.log("failed to delete the message")
+        throw new Error
     }
 }
 
@@ -193,6 +196,7 @@ export async function changefactor2AthSettings({ email , isGoogleUser, refreshTo
         return response.data
     } catch (error) {
         console.log((error as AxiosError).message);
+        throw new Error
          
     }
 }
@@ -203,6 +207,7 @@ export async function disableFactor2AuthSettings(id : string){
         return response.data
     } catch (error) {
         console.log((error as AxiosError).message)
+        throw new Error
     }
 }
 
@@ -217,6 +222,7 @@ export async function deletePreviousProfilePicture({ axiosPrivate, profilePictur
             "Failed to delete the previous profile picture",
             error
         );
+        throw new Error
     }
 }
 
@@ -233,6 +239,7 @@ export async function addNewProfilePicture({ axiosPrivate, formData }: AddNewPro
         );
     } catch (error) {
         console.log((error as AxiosError).message)    
+        throw new Error
     }
 }
 
@@ -241,6 +248,7 @@ export async function updateUserBio({axiosPrivate, text} : { axiosPrivate : Axio
         await axiosPrivate.post("/user/change-bio", { bio: text });
     } catch (error) {
         console.log((error as AxiosError).message)
+        throw new Error
     }
 }
 
@@ -250,5 +258,59 @@ export async function filterChat({ axiosPrivate, chatType, date, groupMemberId, 
         return response.data
     } catch (error) {
         console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+
+export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,docsSkipCount }: FetchChatData) {
+    try {
+        if(chatType === "normal"){
+            console.log("the docsSkipCount is", docsSkipCount);
+            
+            const response = await axiosPrivate.get(`/user/get-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
+            return response.data 
+        }
+        if(chatType === "group"){
+            const response = await axiosPrivate.get(`/user/get-group-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
+            const members = await axiosPrivate.post("/user/group-members", { collectionId : chatId })
+            members.data.push({ _id : "", fullName : "None" })
+            return { groupChatData : response.data, members : members.data }
+        }
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+
+export async function addFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+    try {
+        await axiosPrivate.post("/user/add-friend", { friendId : id})
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+export async function deleteFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+    try {
+        await axiosPrivate.delete(`/user/remove-follow-request/${id}`)
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+export async function sendFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+    try {
+        await axiosPrivate.post("/user/send-request", { receiverId: id });
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+export async function removeAFriend({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+    try {
+        await axiosPrivate.delete(`/user/remove-friend/${id}`)
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
     }
 }

@@ -22,10 +22,8 @@ export default function Profile({
     profilePictureUrl,
     isUserChangedSetter,
 } : profileProps) {
-    const context = useContext(isAuth)
-    if(!context) return
-
-    const { isAuthenticated, setIsAuthenticated } = context
+    
+    const { isAuthenticated, setIsAuthenticated } = useContext(isAuth)
     const isBio = userData.bio || "Hi there, I am using ChatApe";
     const bioInput = useRef<HTMLInputElement>(null)
     const [bio, setBio] = useState(isBio);
@@ -38,7 +36,6 @@ export default function Profile({
     const pictureRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const { removeItem, setItem } = useLocalStorage()
-console.log(isAuthenticated, userData);
 
     const { mutate : disableFactor2AuthMutation } = useMutation({
         mutationFn : disableFactor2AuthSettings,
@@ -73,7 +70,7 @@ console.log(isAuthenticated, userData);
     })
 
     // handles submission of bio to the server
-    async function handleSubmit(e : FormEvent<HTMLFormElement>) {
+    function handleSubmit(e : FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if(text === "") return
         changeBioMutation({ axiosPrivate, text });

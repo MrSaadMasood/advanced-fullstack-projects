@@ -4,6 +4,8 @@ import { AssessoryData, UserData } from "../../Types/dataTypes";
 import ImageDiv from "../MiscComponents/ImageDiv";
 import useImageHook from "../hooks/useImageHook";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
+import { useMutation } from "@tanstack/react-query";
+import { sendFriendRequest } from "../../api/dataService";
 
 interface UsersProps {
     data : AssessoryData, 
@@ -21,22 +23,22 @@ export default function Users({
     const axiosPrivate = useInterceptor();
     const url = profilePictureUrlMaker(data.profilePicture)
     const image = useImageHook(url)
-    const [ loading , setLoading ] = useState(false)
+    const [ requestSentId , setRequestSentId] = useState("")
+    
+    const { mutate : sendFriendRequestMutation, isPending : isRequestSentPending } = useMutation({
+        mutationFn : sendFriendRequest,
+        onSuccess : ()=>{
+            isUserChangedSetter(true)
+            addToSentRequests(requestSentId)
+        }
+    })
     const isRequestSend = userData.sentRequests.includes(data._id);
     const backgroundColor = isRequestSend ? "bg-red-400" : "bg-red-600 hover:bg-red-700";
 
     // to the send the follow request to the user
-    async function sendRequest() {
-        try {
-            setLoading(true)
-            await axiosPrivate.post("/user/send-request", { receiverId: data._id });
-            addToSentRequests(data._id);
-            isUserChangedSetter(true);
-            setLoading(false)
-        } catch (error) {
-            console.error("Request sending failed:", error);
-            setLoading(false)
-        }
+    function sendRequest() {
+        setRequestSentId(data._id)
+        sendFriendRequestMutation({axiosPrivate, id : data._id})
     }
 
     return (
@@ -48,7 +50,7 @@ export default function Users({
                         {data.fullName}
                     </p>
                     <div className="h-8 lg:h-6 w-[100%] flex justify-between items-center">
-                        {!loading && 
+                        {!isRequestSentPending && 
                             <button
                                 className={`h-[100%] w-[95%] rounded-md ${backgroundColor}`}
                                 onClick={sendRequest}
@@ -57,7 +59,7 @@ export default function Users({
                                 {isRequestSend ? "Request Sent" : "Follow"}
                             </button>
                         }
-                        {loading && 
+                        {isRequestSentPending && 
                             <button
                                 className={`h-[100%] w-[95%] rounded-md ${backgroundColor}`}
                                 disabled={true}

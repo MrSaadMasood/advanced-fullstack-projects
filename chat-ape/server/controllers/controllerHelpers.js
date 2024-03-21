@@ -336,6 +336,31 @@ async function deleteMessageFromChat(database, collectionId, messageId, collecti
     }
 }
 
+async function chatArraySizeFinder(database, collectionId , collectionName){
+    try {
+        const chatArrayCount = await database.collection(collectionName).aggregate(
+            [
+                {
+                    $match: {
+                    _id: collectionId,
+                    },
+                },
+                {
+                    $project: {
+                    size: {
+                        $size: "$chat",
+                    },
+                    },
+                },
+            ]
+        ).toArray()
+        if(!chatArrayCount) throw new Error
+        return chatArrayCount[0]
+    } catch (error) {
+        console.log("failed to get the size of the chat Array")
+        throw new Error
+    }
+}
 
 function clientMaker(url){
     return new MongoClient(url)
@@ -359,5 +384,6 @@ module.exports = {
     getCustomData,
     updateGroupChat,
     deleteMessageFromChat,
-    dataBaseConnectionMaker   
+    dataBaseConnectionMaker,
+    chatArraySizeFinder   
 }
