@@ -14,7 +14,7 @@ export default function useInterceptor() {
     // if yes then a seperate request is sent to the server to refresh the access token which is stored again and the original
     // request with new access token is sent to the sever
     useEffect(() => {
-
+        
         const requestInterceptor = axiosCustom.interceptors.request.use(
             (config) => {
                 // checking if the authorization headers is already added this means the request was sent second time.
@@ -60,7 +60,7 @@ export default function useInterceptor() {
             axiosCustom.interceptors.request.eject(requestInterceptor);
             axiosCustom.interceptors.response.eject(responseInterceptor);
         };
-    }, [isAuthenticated]);
+    }, []);
 
     return axiosCustom;
 }

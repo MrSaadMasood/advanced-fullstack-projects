@@ -37,3 +37,8 @@ export function filterChatData<T extends ChatData | GroupChatData>
         }
         else return chatData
     }
+
+export function groupManagerFilter<T extends AssessoryData >(array : T[], searchInput : string ){
+    if(array.length === 0) return array
+    return array.filter(data => data.fullName.toLowerCase().includes(searchInput.toLowerCase()))
+}

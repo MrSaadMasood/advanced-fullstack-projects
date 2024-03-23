@@ -111,4 +111,12 @@ router.delete("/delete-message", userController.deleteMessage)
 // deletes the previous profile picture of the user
 router.delete("/delete-previous-profile-picture/:name", userController.deletePrevProfilePicture)
 
+router.delete(`/remove-group-member`, userController.removeMemberFromGroup )
+
+router.put(`/make-member-admin`, stringValidation("memberId"), stringValidation("collectionId"),  userController.makeMemberAdmin)
+
+router.delete(`/remove-group-admin`, userController.removeGroupAdmin)
+
+router.put("/add-group-member" , stringValidation("friendId"), stringValidation("collectionId"), userController.addFriendToGroup)
+
 module.exports = router

@@ -9,6 +9,7 @@ interface SideListsHeaderProps {
     setIsSearchTriggered : React.Dispatch<React.SetStateAction<boolean>>,   
     handleSearchInputChange : (value : string) => void,
 }
+
 function SideListsHeader({
     handleSearchInputChange,
     setIsSearchTriggered,

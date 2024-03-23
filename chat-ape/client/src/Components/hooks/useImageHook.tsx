@@ -11,7 +11,7 @@ function useImageHook(url? : string) {
         queryKey : [url],
         queryFn : async ()=> {
             if(!url) return
-            return await fetchPictureFromServer(axiosPrivate, url)
+            return fetchPictureFromServer(axiosPrivate, url)
         },
         enabled : !!url
     })

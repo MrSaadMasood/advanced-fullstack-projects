@@ -76,33 +76,34 @@ export default function LoginForm() {
     }, [isFailed]);
 
     function handleLoginDataFromServer(data : UserSaved){
-            if(data.is2FactorAuthEnabled){
-                const userAuthData = {
-                    is2FactorAuthEnabled : data.is2FactorAuthEnabled,
-                    refreshToken : data.refreshToken,
-                    isGoogleUser : data.isGoogleUser,
-                    factor2AuthToken : data.factor2AuthToken!
-                }
-                return handleSuccessfullLogin(userAuthData)
-            }
+        if(data.is2FactorAuthEnabled){
             const userAuthData = {
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
+                is2FactorAuthEnabled : data.is2FactorAuthEnabled,
+                refreshToken : data.refreshToken,
                 isGoogleUser : data.isGoogleUser,
-                is2FactorAuthEnabled : data.is2FactorAuthEnabled 
+                factor2AuthToken : data.factor2AuthToken!
             }
-            handleSuccessfullLogin(userAuthData )
+            return handleSuccessfullLogin(userAuthData)
+        }
+        const userAuthData = {
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            isGoogleUser : data.isGoogleUser,
+            is2FactorAuthEnabled : data.is2FactorAuthEnabled 
+        }
+        handleSuccessfullLogin(userAuthData )
 
     }
+
     function handleSubmission(values : FormDataLogin){
         loginUserMutation({ formData : values })
     }
+    
     function handleSuccessfullLogin(userAuthData : UserSaved){
         if(userAuthData.is2FactorAuthEnabled){
             setItem("f2a", userAuthData)
             return navigate("/factor-2-auth")
         }
-        console.log("the userdata from the server is", userAuthData)    
         setItem("user", userAuthData );
         setIsAuthenticated(userAuthData );
         navigate("/", { replace: true });

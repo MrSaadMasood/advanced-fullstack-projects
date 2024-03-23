@@ -107,7 +107,7 @@ export interface CommonProp {
 export interface ChatProps {
     sendMessageToWS: (sentData: AcceptedDataOptions, content: string, contentId: string, type: ContentOrImagePath) => void
     chatDataSetter: (data: any, type: ChatType, extraDataForGroupChat?: GeneralGroupList) => void
-    handleMessageDelete: (messageId: string, type: ChatType) => void
+    handleMessageDelete: (messageId: string, type: ChatType, collectionId? : string) => void
 }
 
 export type AcceptedDataOptions = CommonUserData | GeneralGroupList
@@ -181,3 +181,6 @@ export interface FetchChatData extends AxiosCustom {
 
 export type GetChatData = (data : AcceptedDataOptions )=>void
 export type BoxSide = "right" | "left"
+export type OpenGroupManager = (groupId : string)=> void
+export type RequestsWithIds = AxiosCustom & Pick<Message, "id">
+export type RequestWithIdAndCollectionId = RequestsWithIds & Pick<NormalChats, "collectionId">

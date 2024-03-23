@@ -13,6 +13,7 @@ export default function ChatForm({
     handleSubmit,
     onChange,
 } : ChatFormProps) {
+    
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     function triggerFileInput() {

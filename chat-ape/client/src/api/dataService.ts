@@ -1,7 +1,7 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
-import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FetchChatData, FilterChat, MessageToDelete, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FetchChatData, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
@@ -46,6 +46,8 @@ export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance
 export async function fetchUserData(axiosPrivate : AxiosInstance){
     try {
         const response = await axiosPrivate.get("/user/updated-data")
+        console.log("the user data is now fetched", response.data);
+        
         return response.data
     } catch (error) {
         throw new Error
@@ -54,6 +56,7 @@ export async function fetchUserData(axiosPrivate : AxiosInstance){
 
 export async function fetchPictureFromServer(axiosPrivate : AxiosInstance, endpoint : string){
     try{
+        
         const picture = await axiosPrivate.get(endpoint , { responseType: "blob" });
         return URL.createObjectURL(picture.data);
     }
@@ -162,7 +165,6 @@ export async function sendTextMessage({ axiosPrivate , endpoint, textMessageData
 
 export async function factor2AuthLogin(formData : { otp : string , refreshToken : string, factor2AuthToken: string }){
     try {
-        console.log("the intermediary token is", formData.factor2AuthToken)
         const response = await server.post("/factor2/verify-otp", formData, {
             headers : {
                 Authorization : `Bearer ${formData.factor2AuthToken}`
@@ -177,7 +179,6 @@ export async function factor2AuthLogin(formData : { otp : string , refreshToken 
 
 export async function fetchQRCode(factor2AuthToken: string ){
     try {
-        console.log('fetching the qr code now')
         const response = await server.get("/factor2/generate-otp", {
             headers : {
                 Authorization : `Bearer ${factor2AuthToken}`
@@ -265,16 +266,12 @@ export async function filterChat({ axiosPrivate, chatType, date, groupMemberId, 
 export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,docsSkipCount }: FetchChatData) {
     try {
         if(chatType === "normal"){
-            console.log("the docsSkipCount is", docsSkipCount);
-            
             const response = await axiosPrivate.get(`/user/get-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
             return response.data 
         }
         if(chatType === "group"){
             const response = await axiosPrivate.get(`/user/get-group-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
-            const members = await axiosPrivate.post("/user/group-members", { collectionId : chatId })
-            members.data.push({ _id : "", fullName : "None" })
-            return { groupChatData : response.data, members : members.data }
+            return response.data
         }
     } catch (error) {
         console.log((error as AxiosError).message)
@@ -282,7 +279,19 @@ export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,doc
     }
 }
 
-export async function addFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+export async function fetchGroupMembers({ axiosPrivate, id } : Omit<RequestsWithIds, "collectionId">){
+    try {
+        
+        const response = await axiosPrivate.post("/user/group-members", { collectionId : id})
+        response.data.push({ _id : "", fullName : "None" })
+        return response.data
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }
+}
+
+export async function addFriendRequest({ axiosPrivate, id }: RequestsWithIds) {
     try {
         await axiosPrivate.post("/user/add-friend", { friendId : id})
     } catch (error) {
@@ -290,7 +299,7 @@ export async function addFriendRequest({ axiosPrivate, id }: { axiosPrivate : Ax
         throw new Error
     }
 }
-export async function deleteFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+export async function deleteFriendRequest({ axiosPrivate, id }: RequestsWithIds) {
     try {
         await axiosPrivate.delete(`/user/remove-follow-request/${id}`)
     } catch (error) {
@@ -298,7 +307,7 @@ export async function deleteFriendRequest({ axiosPrivate, id }: { axiosPrivate :
         throw new Error
     }
 }
-export async function sendFriendRequest({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+export async function sendFriendRequest({ axiosPrivate, id }: RequestsWithIds) {
     try {
         await axiosPrivate.post("/user/send-request", { receiverId: id });
     } catch (error) {
@@ -306,11 +315,51 @@ export async function sendFriendRequest({ axiosPrivate, id }: { axiosPrivate : A
         throw new Error
     }
 }
-export async function removeAFriend({ axiosPrivate, id }: { axiosPrivate : AxiosInstance, id: string}) {
+export async function removeAFriend({ axiosPrivate, id }: RequestsWithIds) {
     try {
         await axiosPrivate.delete(`/user/remove-friend/${id}`)
     } catch (error) {
         console.log((error as AxiosError).message)
         throw new Error
     }
+}
+
+export async function removeGroupMember({ axiosPrivate, id, collectionId} : RequestWithIdAndCollectionId ) {
+    try {
+        await axiosPrivate.delete(`/user/remove-group-member?memberId=${id}&collectionId=${collectionId}`)
+        return id
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }   
+}
+
+export async function  makeMemberGroupAdmin({ axiosPrivate, id, collectionId} : RequestWithIdAndCollectionId) {
+    try {
+        await axiosPrivate.put(`/user/make-member-admin`, { memberId : id, collectionId})
+        return id
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }   
+}
+
+export async function removeGroupAdmin({ axiosPrivate, id, collectionId} : RequestWithIdAndCollectionId) {
+    try {
+        await axiosPrivate.delete(`/user/remove-group-admin?memberId=${id}&collectionId=${collectionId}`)
+        return id
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }   
+}
+
+export async function addFriendToGroup({ axiosPrivate, id, collectionId} :RequestWithIdAndCollectionId ) {
+    try {
+        await axiosPrivate.put(`/user/add-group-member`, { friendId : id , collectionId})
+        return id        
+    } catch (error) {
+        console.log((error as AxiosError).message)
+        throw new Error
+    }   
 }

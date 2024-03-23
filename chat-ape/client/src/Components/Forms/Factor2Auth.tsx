@@ -28,6 +28,7 @@ function Factor2Auth() {
         enabled : !!factor2AuthData,
         staleTime : Infinity
     })
+
     const { mutate : factor2AuthMutation, status } = useMutation({
         mutationFn : factor2AuthLogin,
         onSuccess : (data)=>{
@@ -56,6 +57,7 @@ function Factor2Auth() {
             inputRef.current[index + 1].focus()
         }
     }
+    
     function handleSubmission(){
         if(!factor2AuthData) return
         const passKey = code.join("")

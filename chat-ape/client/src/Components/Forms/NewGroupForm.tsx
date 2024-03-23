@@ -10,7 +10,7 @@ import AddRemoveGroupFriends from "../MiscComponents/AddRemoveGroupFriends";
 export default function NewGroupForm() {
     const navigate = useNavigate();
     const [groupName, setGroupName] = useState("");
-    const [errorDiv, setErrorDiv] = useState(false);
+    const [isErrorDivPresent, setIsErrorDivPresent] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const axiosPrivate = useInterceptor();
     const imageRef = useRef<HTMLInputElement>(null);
@@ -25,7 +25,7 @@ export default function NewGroupForm() {
     const { mutate : creatGroupFormMutation } = useMutation({
         mutationFn : createNewGroup,
         onSuccess : ()=> navigate("/", { replace : true}),
-        onError : ()=> {setErrorMessage("Failed to create new Group! Try Again"); setErrorDiv(true)}
+        onError : ()=> {setErrorMessage("Failed to create new Group! Try Again"); setIsErrorDivPresent(true)}
     })
 
     const { data : friendList } = useQuery({
@@ -36,13 +36,13 @@ export default function NewGroupForm() {
     
     // timer to remove the error div
     useEffect(() => {
-        if (errorDiv) {
+        if (isErrorDivPresent) {
             const timer = setTimeout(() => {
-                setErrorDiv(false);
+                 setIsErrorDivPresent(false);
             }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [errorDiv]);
+    }, [isErrorDivPresent]);
 
 
 
@@ -54,12 +54,12 @@ export default function NewGroupForm() {
     // the request is sent and the user is then redirected to the homepage
     const handleSubmitClick = async () => {
         if (groupName === "") {
-            setErrorDiv(true);
+             setIsErrorDivPresent(true);
             return setErrorMessage("Group Name must be provided");
         }
 
         if (friendsIncluded.length < 2) {
-            setErrorDiv(true);
+             setIsErrorDivPresent(true);
             return setErrorMessage("The Group must have at least 2 Members");
         }
         if(!rawImageFile) return
@@ -103,7 +103,7 @@ export default function NewGroupForm() {
                     onChange={(e) => setGroupName(e.target.value)}
                     required
                 />
-                {errorDiv &&
+                {isErrorDivPresent &&
                     <div
                         className="flex justify-center items-center mt-3 text-white bg-red-600 w-[40%] h-8 rounded-md "
                     >

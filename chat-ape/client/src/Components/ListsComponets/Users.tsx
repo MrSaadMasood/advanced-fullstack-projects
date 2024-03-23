@@ -12,25 +12,30 @@ interface UsersProps {
     userData : UserData, 
     addToSentRequests : (id: string)=> void, 
     isUserChangedSetter : (value: boolean) => void
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Users({ 
     data, 
     userData, 
     addToSentRequests, 
-    isUserChangedSetter 
+    isUserChangedSetter,
+    setGlobalError,
 }: UsersProps) {
     const axiosPrivate = useInterceptor();
     const url = profilePictureUrlMaker(data.profilePicture)
     const image = useImageHook(url)
     const [ requestSentId , setRequestSentId] = useState("")
-    
+
     const { mutate : sendFriendRequestMutation, isPending : isRequestSentPending } = useMutation({
         mutationFn : sendFriendRequest,
         onSuccess : ()=>{
             isUserChangedSetter(true)
             addToSentRequests(requestSentId)
-        }
+        },
+        onError() {
+            setGlobalError("Failed to Send Follow Request")
+        },
     })
     const isRequestSend = userData.sentRequests.includes(data._id);
     const backgroundColor = isRequestSend ? "bg-red-400" : "bg-red-600 hover:bg-red-700";

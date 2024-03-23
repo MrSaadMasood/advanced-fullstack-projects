@@ -362,6 +362,24 @@ async function chatArraySizeFinder(database, collectionId , collectionName){
     }
 }
 
+async function groupManager(database, operationType, arrayType , memberId, collectionId, userId){
+    const arrayToPerformOperation = `groupChats.$.${arrayType}`
+    try {
+        console.log(operationType, arrayToPerformOperation, memberId, collectionId, userId);
+        const updatedGroup = await database.collection("users").updateOne(
+            {_id : userId , "groupChats.collectionId" : collectionId},
+            { [operationType] : {
+              [arrayToPerformOperation] : memberId
+            }}
+        )
+        console.log("the updated group is", updatedGroup)
+        if(!updatedGroup.modifiedCount) throw new Error
+        return updatedGroup
+    } catch (error) {
+        throw new Error
+    }
+}
+
 function clientMaker(url){
     return new MongoClient(url)
 }
@@ -385,5 +403,6 @@ module.exports = {
     updateGroupChat,
     deleteMessageFromChat,
     dataBaseConnectionMaker,
-    chatArraySizeFinder   
+    chatArraySizeFinder,
+    groupManager
 }

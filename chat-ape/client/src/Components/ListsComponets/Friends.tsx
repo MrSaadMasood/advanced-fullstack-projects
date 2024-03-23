@@ -13,6 +13,7 @@ interface FriendsProps extends CommonProp {
     isUserChangedSetter : (value : boolean)=> void, 
     removeFriendFromDataArray : (id : string, type : string)=> void,
     getChatData : GetChatData, 
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Friends({ 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { BoxSide, ChatType, Message } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
 import LazyLoad from 'react-lazy-load' 
@@ -9,7 +10,7 @@ interface MessageBoxProps {
     boxSide : BoxSide
     deleteMessage : (id: string)=> void
 }
-export default function MessageBox({ 
+const MessageBox = memo(function MessageBox({ 
     data, 
     sender, 
     chatType,
@@ -56,4 +57,7 @@ export default function MessageBox({
             </div>
         </div>
     );
-}
+})
+
+// export default React.memo(MessageBox)
+export default MessageBox

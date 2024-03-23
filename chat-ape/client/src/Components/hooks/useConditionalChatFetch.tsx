@@ -27,7 +27,7 @@ function useConditionalChatFetch(
         }
 
         scrollToBottom();
-    }, []);
+    }, [chatDiv]);
 
     return {
         chatDiv

@@ -1,5 +1,5 @@
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { AcceptedDataOptions, CommonProp, handleFilterClicked } from "../../Types/dataTypes";
+import { AcceptedDataOptions, CommonProp, handleFilterClicked, OpenGroupManager } from "../../Types/dataTypes";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { MdCancel } from "react-icons/md";
@@ -10,6 +10,7 @@ interface ChatHeaderProps extends CommonProp {
     handleChatSearchInputChange : (value : string)=>void
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
+    openGroupManager : OpenGroupManager
 }
 export default function ChatHeader({ 
     selectedChatSetter, 
@@ -18,6 +19,7 @@ export default function ChatHeader({
     handleChatSearchInputChange,
     chatSearchInput,
     handleIsFilterClicked,
+    openGroupManager
 }: ChatHeaderProps) {
 
     const [ isChatSearchClicked , setIsChatSearchClicked ] = useState(false)
@@ -28,7 +30,7 @@ export default function ChatHeader({
             if (isChatSearchClicked && chatSearchRef){
                 chatSearchRef.current?.focus();
             }
-    }, [isChatSearchClicked])
+    }, [isChatSearchClicked, chatSearchRef])
 
     // this function is used for smaller devices to go back from the chat display to chat list display
     function goBack() {
@@ -46,7 +48,10 @@ export default function ChatHeader({
                 >
                     <IoArrowBackCircleOutline size={25} />
                 </button>
-                <div 
+                <button 
+                    onClick={()=>{
+                        if(dataSent.type === "group") openGroupManager(dataSent._id)
+                    }}
                     className="flex justify-center items-center">
                     <div 
                         className="h-10 md:h-14 w-10 md:w-14 rounded-full ml-6 overflow-hidden">
@@ -64,7 +69,7 @@ export default function ChatHeader({
                         {dataSent.fullName}
                     </p>
                     }
-                </div>
+                </button>
                 
             </div>
                 {!isChatSearchClicked &&

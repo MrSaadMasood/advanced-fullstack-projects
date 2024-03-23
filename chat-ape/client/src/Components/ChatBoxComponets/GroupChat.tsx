@@ -1,10 +1,11 @@
 import ChatHeader from "./ChatHeader";
 import ErrorBox from "../ErrorComponents/ErrorBox";
 import ChatForm from "../Forms/ChatForm";
-import { ChatProps, CommonProp, GeneralGroupList, GroupChatData, UserData, handleFilterClicked } from "../../Types/dataTypes";
+import { ChatProps, CommonProp, GeneralGroupList, GroupChatData, OpenGroupManager, UserData, handleFilterClicked } from "../../Types/dataTypes";
 import useSendMessages from "../hooks/useSendMessages";
 import useConditionalChatFetch from "../hooks/useConditionalChatFetch";
 import MessageBox from "./MessageBox";
+import { useCallback, useMemo } from "react";
 
 interface GroupChatProps extends ChatProps, CommonProp {
     data : GroupChatData[] ,
@@ -15,6 +16,8 @@ interface GroupChatProps extends ChatProps, CommonProp {
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
     handleIsMoreChatRequested : (value : boolean) => void
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
+    openGroupManager : OpenGroupManager
 }
 
 export default function GroupChat({
@@ -30,19 +33,28 @@ export default function GroupChat({
     chatSearchInput,
     handleIsFilterClicked,
     handleIsMoreChatRequested,
+    setGlobalError,
+    openGroupManager
 }: GroupChatProps ) {
 
     const {
         handleFileChange,
         handleSubmit,
         onChange
-    } = useSendMessages({chatDataSetter, chatType : "group", sendMessageToWS , userData, generalGroupData})
+    } = useSendMessages({chatDataSetter, setGlobalError, chatType : "group", sendMessageToWS , userData, generalGroupData})
     
     const { chatDiv } = useConditionalChatFetch(handleIsMoreChatRequested)
 
-    function deleteMessage(id : string) {
-        handleMessageDelete(id, "group");
-    }
+    const groupChatData = useMemo(()=> data, [ data ])
+
+    const deleteMessage = useCallback((id : string) => {
+
+        const groupAdminsArray = userData.groupChats.find(group => group.collectionId === groupChatData[0]._id)?.admins
+
+        if(groupAdminsArray?.includes(userData._id)) handleMessageDelete(id, "group")
+        else setGlobalError("Only admins can delete a message")
+
+    }, [groupChatData])
 
     return (
         <div className="lg:w-full">
@@ -53,6 +65,7 @@ export default function GroupChat({
                 handleChatSearchInputChange={handleChatSearchInputChange} 
                 chatSearchInput={chatSearchInput}
                 handleIsFilterClicked={handleIsFilterClicked}
+                openGroupManager={openGroupManager}
             />
 
             <div
@@ -60,7 +73,7 @@ export default function GroupChat({
                 className="chatbox h-[90vh] md:h-[92vh] lg:h-[82vh] p-2 pb-20 md:pb-32 lg:pb-4 relative 
                 bg-black w-full lg:w-full overflow-y-scroll noScroll"
             >
-                {data.map((chatData, index) => (
+                {groupChatData.map((chatData, index) => (
                     chatData.chat.error ? <ErrorBox key={index} data={chatData.chat} /> :
                     chatData.chat.userId === userData._id ? 
                     <MessageBox 

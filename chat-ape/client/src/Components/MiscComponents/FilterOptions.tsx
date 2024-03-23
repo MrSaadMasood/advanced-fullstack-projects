@@ -15,8 +15,8 @@ function FilterOptions({
     getFilteredChat
 }: FilterOptionsProps) {
 
-        const [ date , setDate] = useState(new Date())
-        const [ filterMember , setFilterMember] = useState("")
+    const [ date , setDate] = useState(new Date())
+    const [ filterMember , setFilterMember] = useState("")
 
     return (
         <div className="relative">

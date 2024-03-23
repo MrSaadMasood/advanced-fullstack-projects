@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchingBasedOnOptionSelected } from "../../api/dataService"
 import useInterceptor from "./useInterceptors"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AssessoryData, ChatList, ChatType, GeneralGroupList, Message } from "../../Types/dataTypes";
 
 function useOptionsSelected(
@@ -48,7 +48,7 @@ function useOptionsSelected(
     }, [data])
 
     // depending on the type of chat the last message is updated in the list of chats / group chats.
-    function chatListArraySetter(id : string , data : Message, chatType : ChatType) {
+    const chatListArraySetter = useCallback((id : string , data : Message, chatType : ChatType) => {
         if (chatType === "normal") {
             setChatList((prevData) => {
                 const modified = prevData.map((item) => {
@@ -73,10 +73,10 @@ function useOptionsSelected(
                 return modified;
             });
         }
-    }
+    },[])
     
     // when the friend is added the follow request of that friend is removed from the data
-    function removeFollowRequestAndFriend(id : string, type : string) {
+    const removeFollowRequestAndFriend = useCallback((id : string, type : string) => {
         if(type === "friends") {
             setFriendsArray((prevData) => {
                 const updatedArray = prevData.filter(item => {
@@ -93,7 +93,7 @@ function useOptionsSelected(
                 return updatedArray;
             });
         }
-    }
+    }, [])
 
     return { 
         chatList, 

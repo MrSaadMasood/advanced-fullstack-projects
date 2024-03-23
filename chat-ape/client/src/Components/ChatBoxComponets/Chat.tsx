@@ -1,10 +1,11 @@
 import ErrorBox from "../ErrorComponents/ErrorBox";
 import ChatForm from "../Forms/ChatForm";
 import ChatHeader from "./ChatHeader";
-import { ChatData, ChatProps, CommonProp, CommonUserData, UserData, handleFilterClicked } from "../../Types/dataTypes";
+import { ChatData, ChatProps, CommonProp, CommonUserData, OpenGroupManager, UserData, handleFilterClicked } from "../../Types/dataTypes";
 import useSendMessages from "../hooks/useSendMessages";
 import useConditionalChatFetch from "../hooks/useConditionalChatFetch";
 import MessageBox from "./MessageBox";
+import { useCallback, useMemo } from "react";
 
 interface Props extends CommonProp, ChatProps {
   completeChatData : ChatData,
@@ -15,6 +16,8 @@ interface Props extends CommonProp, ChatProps {
   chatSearchInput : string 
   handleIsFilterClicked : handleFilterClicked
   handleIsMoreChatRequested : (value : boolean)=> void,
+  setGlobalError : React.Dispatch<React.SetStateAction<string>>
+  openGroupManager : OpenGroupManager
 }
 export default function Chat({
   selectedChatSetter,
@@ -29,6 +32,8 @@ export default function Chat({
   chatSearchInput,
   handleIsFilterClicked,
   handleIsMoreChatRequested,
+  setGlobalError,
+  openGroupManager 
 } : Props) {
 
   // reference to scroll to the bottom of the overflowing div authomatically
@@ -36,16 +41,16 @@ export default function Chat({
     handleFileChange,
     handleSubmit,
     onChange
-  } = useSendMessages({chatDataSetter, chatType : "normal", sendMessageToWS, userData, friendData})
+  } = useSendMessages({chatDataSetter, setGlobalError, chatType : "normal", sendMessageToWS, userData, friendData})
 
   const { chatDiv } = useConditionalChatFetch(handleIsMoreChatRequested)
-  const realChat = completeChatData.chat;
 
+  const realChat = useMemo(()=> completeChatData.chat, [ completeChatData ])
 
-
-  function deleteMessage(id : string) {
+  const deleteMessage = useCallback((id : string) => {
     handleMessageDelete(id, "normal");
-  }
+  }, [])
+
 
   return (
     <div className="lg:w-full">
@@ -56,6 +61,7 @@ export default function Chat({
         handleChatSearchInputChange={handleChatSearchInputChange} 
         chatSearchInput={chatSearchInput}
         handleIsFilterClicked={handleIsFilterClicked}
+        openGroupManager={openGroupManager}
         />
 
         <div

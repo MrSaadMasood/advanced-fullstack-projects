@@ -2,13 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { ChatProps, ChatType, CommonUserData, GeneralGroupList, UserData } from "../../Types/dataTypes";
 import useInterceptor from "./useInterceptors";
 import { sendImageMessage, sendTextMessage } from "../../api/dataService";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 
 interface useSendMessagesProps extends Omit<ChatProps , "handleMessageDelete"> {
     userData : UserData,
     friendData? : CommonUserData,
     chatType : ChatType
     generalGroupData? : GeneralGroupList
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 function useSendMessages({ 
     chatDataSetter, 
@@ -16,7 +17,8 @@ function useSendMessages({
     sendMessageToWS, 
     friendData, 
     chatType,
-    generalGroupData 
+    generalGroupData,
+    setGlobalError
 } : useSendMessagesProps){
 
     const axiosPrivate = useInterceptor()
@@ -33,7 +35,8 @@ function useSendMessages({
             generalGroupData!.type = "group"
             return sendMessageToWS(generalGroupData!, filename, id, "path");
 
-        }
+        },
+        onError : ()=> setGlobalError("Failed to send message")
     })
 
     const { mutate : sendTextMessageMutation } = useMutation({
@@ -46,12 +49,13 @@ function useSendMessages({
             generalGroupData!.type = "group"
             return sendMessageToWS(generalGroupData!, input, id, "content");
 
-        }
+        },
+        onError : ()=> setGlobalError("Failed to send message")
     })
   // handles the uploading of image if the image is greater than 1mb an error message is sent to the user
   // else the image is sent to the server to be stored after than the image path/address is sent to the user on the other side
   // connected to the same room
-    function handleFileChange(e : React.ChangeEvent<HTMLInputElement>) {
+    const handleFileChange = useCallback((e : React.ChangeEvent<HTMLInputElement>) => {
         if(!e.target.files) return
         const image = e.target.files[0];
         if (image.size > 1000000) {
@@ -70,14 +74,15 @@ function useSendMessages({
             { friendId: friendData?._id, image } : 
             { groupId: generalGroupData?._id, image }
         sendImageMessageMutation({axiosPrivate, endpoint , imageMessageData })
-}
+},[chatType])
 
-    function onChange(e : React.ChangeEvent<HTMLInputElement>) {
+    const onChange = useCallback((e : React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
-    }
+    },[])
 
     // if the message is stored successfully in the database the message is sent to the user/s who is/are connected to the same room
-    function handleSubmit(e : FormEvent<HTMLFormElement>) {
+    const handleSubmit = useCallback((e : FormEvent<HTMLFormElement>) => {
+        console.log("the handle submit function is being rendered now");
         e.preventDefault();
         if(input === "") return
 
@@ -85,10 +90,10 @@ function useSendMessages({
         const textMessageData = chatType === "normal" ? 
             { content : input ,friendId: friendData?._id, } : 
             { content : input, groupId : generalGroupData?._id}
-            
+
         sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })
         ;(e.target as HTMLFormElement).reset();
-      } 
+      },[chatType, input]) 
     
     
   

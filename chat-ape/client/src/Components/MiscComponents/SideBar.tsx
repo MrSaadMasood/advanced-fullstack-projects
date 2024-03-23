@@ -19,10 +19,7 @@ interface SideBarProps {
 
 export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps) {
     
-  const context = useContext(isAuth);
-  if(!context) return
-
-  const { isAuthenticated, setIsAuthenticated } = context
+  const { isAuthenticated, setIsAuthenticated } = useContext(isAuth)
   const { removeItem} = useLocalStorage();
   const navigate = useNavigate();
   

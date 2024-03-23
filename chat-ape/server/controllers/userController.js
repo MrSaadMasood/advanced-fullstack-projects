@@ -15,7 +15,8 @@ const {
     updateGroupChat, 
     deleteMessageFromChat, 
     dataBaseConnectionMaker,
-    chatArraySizeFinder
+    chatArraySizeFinder,
+    groupManager
 } = require("./controllerHelpers");
 
 const mongoUrl = process.env.MONGO_URL
@@ -150,14 +151,12 @@ exports.removeFollowRequest = async(req, res) =>{
 exports.updateChatData = async (req, res)=>{
     const { id} = req.user
     const { friendId, content } = req.body
-    console.log("the request has now been received and isbeing processed");
     const passed = validationResult(req)
 
         if(passed.isEmpty()){
             
             const client = clientMaker(mongoUrl) 
             const result = await updateChatMessageTransaction(client, id, friendId, content)
-            console.log("the request has been completed");
             if(result){
                 res.json({ id : result})
             }
@@ -222,7 +221,6 @@ exports.getChatData = async (req, res) =>{
                             },
                             ]
                     ).toArray()
-                    console.log("the chat dat is ", chatData);
                     if(!chatData) throw new Error
                     return res.json({ _id : chatArrayCountObject._id, chat : chatData })
                 }
@@ -566,6 +564,7 @@ exports.getGroupMembers = async (req, res)=>{
                 $project: {
                 _id: "$members._id",
                 fullName : "$members.fullName",
+                profilePicture : "$members.profilePicture"
                 },
             },
             ]
@@ -695,9 +694,9 @@ exports.getGroupChatData = async(req, res)=>{
     const { docsSkipCount } = req.query
     try {
         const chatArrayCountObject = await chatArraySizeFinder(database, chatId , "groupChats")
-        if(chatArrayCountObject.size < 10) {
+        // if(chatArrayCountObject.size < 10) {
 
-        }
+        // }
         if(docsSkipCount > chatArrayCountObject.size) return res.json([])
         const groupChatData = await database.collection("groupChats").aggregate(
             [
@@ -739,7 +738,6 @@ exports.getGroupChatData = async(req, res)=>{
             },
         ]
         ).toArray()
-        console.log(groupChatData);
         if(!groupChatData) throw new Error
 
         res.json( groupChatData )
@@ -786,5 +784,56 @@ exports.deleteMessage = async(req, res)=>{
     }
     else{
         res.status(400).json({error : "failed to delete the message"})
+    }
+}
+
+
+exports.makeMemberAdmin = async (req, res) =>{
+    const { memberId , collectionId } = req.body
+    const { id } = req.user
+    console.log("the make admin data is", memberId, collectionId)
+    const result = validationResult(req)
+    try {
+        if(result.isEmpty()){
+            const upatedGroup = await groupManager(database, "$push" , "admins", memberId, collectionId, id)
+            res.json({message : "successfully made admin"})     
+        }
+        else throw new Error
+    } catch (error) {
+        res.status(400).json({ error : "failed to make the member an admin"})
+    } 
+}
+
+exports.removeGroupAdmin = async (req, res)=>{
+    const { memberId, collectionId } = req.query
+    const { id } = req.user
+    console.log("the query is", req.query)
+    try {
+        const removeAdmin = await groupManager(database, "$pull", "admins", memberId, collectionId, id)
+        res.json({ message : "the admin has been successfullly removed"})
+    } catch (error) {
+        res.status(400).json({ error : "failed to remove admin"})
+    }
+}
+
+exports.removeMemberFromGroup = async (req, res)=>{
+    const { memberId, collectionId } = req.query
+    const { id } = req.user
+    try {
+        const removedMember = await groupManager(database, "$pull", "members", memberId, collectionId, id)
+        res.json({ message : "member successfullly removed"})
+    } catch (error) {
+        res.status(400).json({ error : "failed to remove the member from group"}) 
+    }
+}
+
+exports.addFriendToGroup = async (req, res)=>{
+    const { friendId, collectionId } = req.body
+    const { id } = req.user
+    try {   
+        const addedFriend = await groupManager(database, "$push", "members", friendId, collectionId, id)
+        res.json({ message : "friend successfulllye added to group"})
+    } catch (error) {
+        res.status(400).json({ error : "failed to add friend to group"})
     }
 }

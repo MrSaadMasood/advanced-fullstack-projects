@@ -11,12 +11,14 @@ interface FriendRequestsProps {
     data : AssessoryData,
     isUserChangedSetter: (value : boolean) => void, 
     removeFollowRequest: (id : string, type : string)=> void,
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function FriendRequests({ 
     data,  
     isUserChangedSetter, 
-    removeFollowRequest 
+    removeFollowRequest, 
+    setGlobalError
 }: FriendRequestsProps){
     // loading states for access and decline buttons
     const axiosPrivate = useInterceptor()
@@ -29,7 +31,8 @@ export default function FriendRequests({
         onSuccess : ()=>{
             isUserChangedSetter(true)
             removeFollowRequest(idToRemove, "followRequests")
-        }
+        },
+        onError : ()=> setGlobalError("Failed to send accept friend request")
     })
 
     const { mutate : removeRequestMutation, isPending : isDeleteRequestPending } = useMutation({
@@ -37,7 +40,8 @@ export default function FriendRequests({
         onSuccess : ()=>{
             isUserChangedSetter(true)
             removeFollowRequest(idToRemove, "followRequests")
-        }
+        },
+        onError : ()=> setGlobalError("Failed to send decline friend request")
     })
     
     function addFriend(id : string){
