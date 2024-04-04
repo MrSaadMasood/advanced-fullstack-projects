@@ -3,22 +3,23 @@ const { connectData , getData} = require("../connection");
 const { validationResult } = require("express-validator");
 const path = require("path")
 const fs = require("fs");
+const { randomUUID } = require("crypto")
 const { 
     sendingRequestsTransaction, 
     clientMaker, 
     addFriendTransaction, 
     removeFollowRequestTransaction, 
     removeFriendTransaction, 
-    updateChatMessageTransaction, 
     groupChatTransaction, 
     getCustomData, 
     updateGroupChat, 
     deleteMessageFromChat, 
     dataBaseConnectionMaker,
     chatArraySizeFinder,
-    groupManager
+    groupManager,
+    updateNormalChatData
 } = require("./controllerHelpers");
-
+const { logger } = require("../logger/conf/loggerConfiguration")
 const mongoUrl = process.env.MONGO_URL
 
 let database;
@@ -35,7 +36,7 @@ exports.getUpdatedData = async(req, res)=>{
         const updatedData = await database.collection("users").findOne(
             { _id : id}, { projection : { password : 0}}
         )
-        if(!updatedData) throw new Error
+        if(!updatedData) throw new Error("failed to get the user data from the database")
         res.json( updatedData )
     } catch (error) {
         res.status(400).json({ error : "could not get the updated user"})
@@ -59,7 +60,7 @@ exports.getUsersData = async(req, res)=>{
             })
             .toArray()
         
-        if(!users) throw new Error
+        if(!users) throw new Error("failed to get all users data")
         res.json( users )
     } catch (error) {
         res.status(400).json({ error : "error occured while getting users"})
@@ -73,6 +74,7 @@ exports.sendFollowRequest = async( req, res)=>{
     const client = clientMaker(mongoUrl) 
     const result = await sendingRequestsTransaction(client, id, receiverId)
     if(result){
+        logger.info("follow request successfully sent")
         res.json({ message : "request successfully sent"})
     }
     else {
@@ -83,11 +85,40 @@ exports.sendFollowRequest = async( req, res)=>{
 // get the firends data from the database
 exports.getFriends = async(req, res)=>{
     const { id } = req.user
-    const friends = await getCustomData(database, id, "friends")
-    if(friends && friends.length > 0){
+    try {
+        const friends = await database.collection("users").aggregate(
+            [
+                {
+                    $match: {
+                    _id: id,
+                    },
+                },
+                {
+                    $unwind: "$normalChats",
+                },
+                {
+                    $lookup: {
+                    from: "users",
+                    localField: "normalChats.friendId",
+                    foreignField: "_id",
+                    as: "friendsData",
+                    },
+                },
+                {
+                    $unwind: "$friendsData",
+                },
+                {
+                    $project: {
+                    _id: 0,
+                    fullName: "$friendsData.fullName",
+                    profilePicture: "$friendsData.profilePicture",
+                    collectionId: "$normalChats.collectionId",
+                    },
+                },
+            ]).toArray()
+
         res.json( friends )
-    }
-    else {
+    } catch (error) {
         res.status(400).json({ error : "failed to get friends"})
     }
 }
@@ -111,7 +142,7 @@ exports.addFriend = async(req, res)=>{
     const client = clientMaker(mongoUrl)
     const result = await addFriendTransaction(client , id, friendId)
     if(result){
-        res.json({message : "successfully added friend"})
+        res.json({ message : "friend successfully added"})
     }
     else {
         res.status(400).json({ error : "failed to add friend"})
@@ -149,22 +180,17 @@ exports.removeFollowRequest = async(req, res) =>{
 
 // validates the data sent and then adds the chat message to that friends chat collection
 exports.updateChatData = async (req, res)=>{
-    const { id} = req.user
-    const { friendId, content } = req.body
+    const { id } = req.user
+    const { content, collectionId } = req.body
     const passed = validationResult(req)
-
-        if(passed.isEmpty()){
-            
-            const client = clientMaker(mongoUrl) 
-            const result = await updateChatMessageTransaction(client, id, friendId, content)
-            if(result){
-                res.json({ id : result})
+        try {
+            if(passed.isEmpty()){
+                const randomMessageId = await updateNormalChatData(database, collectionId, id, "content", content)
+                res.json({ id : randomMessageId })
             }
-            else {
-                res.status(400).json({ error : "failed to add chat"})
-            }
-        }
-        else {
+            else throw new Error("failed to update normal chat with text")
+        } 
+        catch (error) {
             res.status(400).json({ error : "the form was not submitted correctly"})
         }
 }
@@ -173,62 +199,51 @@ exports.updateChatData = async (req, res)=>{
 // if the chats exists it checks which friends id matches the friend id in normal chats and
 // fetches the data from the "normalChats" collection
 exports.getChatData = async (req, res) =>{
-    const { id} = req.user
-    const friendId  = req.params.id
+    const collectionId = req.params.id
     const { docsSkipCount } = req.query
     try {
-        const user = await database.collection("users").findOne({ _id : id})
-        if( !user.normalChats ){
-            return res.status(400).json({ error : "no chats are present in the database"})
-        }
-        if( user.normalChats){
 
-            for(let i = 0; i < user.normalChats.length; i++){
-                const iter = user.normalChats[i]
-                if(iter.friendId === friendId){
-                    const chatArrayCountObject = await chatArraySizeFinder(database, iter.collectionId, "normalChats")
-                    if(chatArrayCountObject.size < 10){
-                        const chatData = await database.collection("normalChats").findOne({ _id : iter.collectionId})
-                        return res.json(chatData)
-                    }
-                    if(docsSkipCount > chatArrayCountObject.size) return res.json({ _id : chatArrayCountObject._id, chat : []})
-                    const chatData = await database.collection("normalChats").aggregate(
-                        [
-                            {
-                                $match: {
-                                _id: chatArrayCountObject._id,
-                                },
-                            },
-                            {
-                                $unwind: "$chat",
-                            },
-                            {
-                                $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
-                            },
-                            {
-                                $limit: 10,
-                            },
-                            {
-                                $project: {
-                                _id: 0,
-                                chat: "$chat",
-                                },
-                            },
-                            {
-                                $replaceRoot: {
-                                newRoot: "$chat",
-                                },
-                            },
-                            ]
-                    ).toArray()
-                    if(!chatData) throw new Error
-                    return res.json({ _id : chatArrayCountObject._id, chat : chatData })
-                }
-            }
+        const chatArrayCountObject = await chatArraySizeFinder(database, collectionId, "normalChats")
+        if(chatArrayCountObject.size < 10){
+            logger.info("the chat array has less than 10 messages")
+            const chatData = await database.collection("normalChats").findOne({ _id : collectionId})
+            return res.json(chatData)
         }
-        throw new Error
-    } catch (error) {
-        res.status(400).json({ error : "could not collect chat data"})
+        if(docsSkipCount > chatArrayCountObject.size) return res.json({ _id : chatArrayCountObject._id, chat : []})
+        const chatData = await database.collection("normalChats").aggregate(
+            [
+                {
+                    $match: {
+                    _id: chatArrayCountObject._id,
+                    },
+                },
+                {
+                    $unwind: "$chat",
+                },
+                // {
+                //     $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
+                // },
+                // {
+                //     $limit: 10,
+                // },
+                {
+                    $project: {
+                    _id: 0,
+                    chat: "$chat",
+                    },
+                },
+                {
+                    $replaceRoot: {
+                    newRoot: "$chat",
+                    },
+                },
+                ]
+        ).toArray()
+        if(!chatData) throw new Error
+        return res.json({ _id : chatArrayCountObject._id, chat : chatData })
+    }
+    catch (error) {
+        res.status(400).json({ error : "failed to get the chat data"})
     }
 }
 
@@ -236,66 +251,62 @@ exports.getChatData = async (req, res) =>{
 exports.getChatList = async(req, res) =>{
     const { id} = req.user
     try {
-        const user = await database.collection("users").findOne({ _id : id})
-        if(!user.normalChats) throw new Error
         const chatList = await database.collection("users").aggregate(
-            [
-                {
-                  $match: {
-                    _id:  id,
-                  },
+        [
+            {
+                $match: {
+                _id: id,
                 },
-                {
-                  $unwind: "$normalChats",
+            },
+            {
+                $unwind: "$normalChats",
+            },
+            {
+                $lookup: {
+                from: "users",
+                localField: "normalChats.friendId",
+                foreignField: "_id",
+                as: "friendsData",
                 },
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "normalChats.friendId",
-                    foreignField: "_id",
-                    as: "friendsData",
-                  },
+            },
+            {
+                $unwind: "$friendsData",
+            },
+            {
+                $lookup: {
+                from: "normalChats",
+                localField: "normalChats.collectionId",
+                foreignField: "_id",
+                as: "messages",
                 },
-                {
-                  $lookup: {
-                    from: "normalChats",
-                    localField: "normalChats.collectionId",
-                    foreignField: "_id",
-                    as: "messages",
-                  },
+            },
+            {
+                $unwind: "$messages",
+            },
+            {
+                $addFields: {
+                lastMessage: {
+                    $last: "$messages.chat",
                 },
-                {
-                  $addFields: {
-                    lastMessages: {
-                      $arrayElemAt: ["$messages.chat", -1],
-                    },
-                  },
                 },
-                {
-                  $addFields: {
-                    lastMessage: {
-                      $arrayElemAt: ["$lastMessages", -1],
-                    },
-                    friendData: {
-                      $arrayElemAt: ["$friendsData", -1],
-                    },
-                  },
+            },
+            {
+                $project: {
+                _id: 1,
+                lastMessage: 1,
+                friendData: {
+                    fullName: "$friendsData.fullName",
+                    _id: "$friendsData._id",
+                    profilePicture: "$friendsData.profilePicture",
+                    collectionId: "$normalChats.collectionId",
                 },
-                {
-                  $project: {
-                    _id: 1,
-                    lastMessage: 1,
-                    friendData: {
-                      fullName: "$friendData.fullName",
-                      _id : "$friendData._id",
-                      profilePicture : "$friendData.profilePicture"
-                    },
-                  },
                 },
-              ]
+            },
+            ] 
         ).toArray()
 
-        if(!chatList) throw new Error
+        if(!chatList) throw new Error("failed to get the chat list")
+        logger.info("chat list successfully collected")
         res.json( chatList )
     } catch (error) {
         res.status(400).json({ error : "failed to get the chat list"})
@@ -304,17 +315,13 @@ exports.getChatList = async(req, res) =>{
 
 // saves the filename to the database. same as the add message transaction but here the path field is used instead of "content".
 exports.saveChatImagePath = async (req, res)=>{
-    const { friendId} = req.body
+    const { collectionId } = req.body
     const { id } = req.user
-    const { filename } = req.file
-    const filePath = filename
-    const client = clientMaker(mongoUrl)
-    const result = await updateChatMessageTransaction(client, id, friendId, filePath ,"path")
-
-    if(result){
-        res.json({ filename : filename, id : result})
-    }
-    else {
+    const { filename : filePath} = req.file
+    try {
+        const randomMessageId = await updateNormalChatData(database, collectionId, id, "path", filePath)
+        res.json({ id : randomMessageId, filename : filePath })
+    } catch (error) {
         res.status(400).json({ error : "failed to add image"})
     }
 }
@@ -337,9 +344,9 @@ exports.changeBio = async(req, res)=>{
                 {_id : id},
                 { $set : { bio : bio}}
             )
-            if(!user) throw new Error
+            if(!user) throw new Error("failed to update the bio")
             res.json({message : "the bio has been successfullly added"})    
-        }else throw new Error
+        }else throw new Error("bio input validation error")
     } catch (error) {
         res.status(400).json({ error : "bio update failed"})
     }
@@ -357,7 +364,7 @@ exports.saveProfilePicturePath = async (req, res)=>{
             }
             }
         )
-        if(!addingProfilePicture) throw new Error
+        if(!addingProfilePicture) throw new Error("failed to save the profile picture of the user")
 
         res.json({ message : "profile picture successfully added"})
     } catch (error) {
@@ -417,7 +424,7 @@ exports.getFriendsData = async (req, res)=>{
             ] 
         ).toArray()
 
-        if(!friendsData) throw new Error
+        if(!friendsData) throw new Error("failed to get the friends Data")
 
         res.json(friendsData)
     } catch (error) {
@@ -530,6 +537,7 @@ exports.getGroupPicture = (req, res)=>{
     const filepath = path.join(__dirname, `../uploads/group-images/${name}`)
     res.sendFile(filepath)
 }
+
 exports.getGroupMembers = async (req, res)=>{
     const { collectionId } = req.body
     const { id } = req.user
@@ -637,7 +645,7 @@ exports.filterChat = async (req, res)=>{
                 ]
                 ).toArray()
                 if(!groupChatData) throw new Error
-
+                logger.info("group chats have been filtered")
                 return res.json({ groupChatData, chatType })
             }
             const chatData = await database.collection("normalChats").aggregate(
@@ -680,7 +688,7 @@ exports.filterChat = async (req, res)=>{
                 ]
             ).toArray()
             if(!chatData) throw new Error
-            
+            logger.info("the normal chats have been filtered")
             res.json({ _id : collectionId, chat : chatData, chatType})
         }
         else throw new Error
@@ -723,12 +731,12 @@ exports.getGroupChatData = async(req, res)=>{
                 },
                 },
             },
-            {
-                $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
-            },
-            {
-                $limit: 10,
-            },
+            // {
+            //     $skip: chatArrayCountObject.size - parseInt(docsSkipCount),
+            // },
+            // {
+            //     $limit: 10,
+            // },
             {
                 $project: {
                 _id: 1,
@@ -764,7 +772,7 @@ exports.saveGroupChatImage = async(req, res)=>{
 exports.updateGroupChatData = async(req, res)=>{
     const { groupId, content} = req.body
     const { id} = req.user
-    const result = await updateGroupChat(database,groupId, id, "content", content)
+    const result = await updateGroupChat(database, groupId, id, "content", content)
     
     if(result){
             res.json({ id : result})
@@ -777,6 +785,7 @@ exports.updateGroupChatData = async(req, res)=>{
 // depending upon the chat type the collection name is decided and the message is deleted from the database
 exports.deleteMessage = async(req, res)=>{
     const { collectionId, type, messageId } = JSON.parse(req.query.data)
+    const errors = validationResult(req)
     const collectionName = type === "normal" ? "normalChats" : "groupChats"
     const result = await deleteMessageFromChat(database, collectionId, messageId, collectionName)
     if(result){
@@ -791,7 +800,6 @@ exports.deleteMessage = async(req, res)=>{
 exports.makeMemberAdmin = async (req, res) =>{
     const { memberId , collectionId } = req.body
     const { id } = req.user
-    console.log("the make admin data is", memberId, collectionId)
     const result = validationResult(req)
     try {
         if(result.isEmpty()){
@@ -807,10 +815,13 @@ exports.makeMemberAdmin = async (req, res) =>{
 exports.removeGroupAdmin = async (req, res)=>{
     const { memberId, collectionId } = req.query
     const { id } = req.user
-    console.log("the query is", req.query)
+    const error = validationResult(req)
     try {
-        const removeAdmin = await groupManager(database, "$pull", "admins", memberId, collectionId, id)
-        res.json({ message : "the admin has been successfullly removed"})
+        if(error.isEmpty()){
+            const removeAdmin = await groupManager(database, "$pull", "admins", memberId, collectionId, id)
+            res.json({ message : "the admin has been successfullly removed"})
+        }
+        else throw new Error("failed to remove the group admin")
     } catch (error) {
         res.status(400).json({ error : "failed to remove admin"})
     }
@@ -819,9 +830,13 @@ exports.removeGroupAdmin = async (req, res)=>{
 exports.removeMemberFromGroup = async (req, res)=>{
     const { memberId, collectionId } = req.query
     const { id } = req.user
+    const errors = validationResult(req)
     try {
-        const removedMember = await groupManager(database, "$pull", "members", memberId, collectionId, id)
-        res.json({ message : "member successfullly removed"})
+        if(errors.isEmpty()){
+            const removedMember = await groupManager(database, "$pull", "members", memberId, collectionId, id)
+            res.json({ message : "member successfullly removed"})
+        }
+        else throw new Error("failed to remove the member from group")
     } catch (error) {
         res.status(400).json({ error : "failed to remove the member from group"}) 
     }
@@ -830,9 +845,13 @@ exports.removeMemberFromGroup = async (req, res)=>{
 exports.addFriendToGroup = async (req, res)=>{
     const { friendId, collectionId } = req.body
     const { id } = req.user
+    const errors = validationResult(req)
     try {   
-        const addedFriend = await groupManager(database, "$push", "members", friendId, collectionId, id)
-        res.json({ message : "friend successfulllye added to group"})
+        if(errors.isEmpty()){
+            const addedFriend = await groupManager(database, "$push", "members", friendId, collectionId, id)
+            res.json({ message : "friend successfulllye added to group"})
+        }
+        else throw new Error("failed to add friend to group")
     } catch (error) {
         res.status(400).json({ error : "failed to add friend to group"})
     }

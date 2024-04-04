@@ -40,24 +40,20 @@ async function sendingRequestsTransaction(client, senderId, receiverId){
 // removes the id from sent request of the friend and adds the user id to the friends array
 async function addFriendTransaction( client, acceptorId, friendId){
     const session = client.startSession()
+    const normalChatsCollectonId = randomUUID()
     try {
         session.startTransaction()
         const database = client.db("chat-app")
-        await database.collection("users").updateOne(
-            { _id : acceptorId},
-            {
-                    $push : { friends : friendId},
-                    $pull : { receivedRequests : friendId}
-            }, transactionOptions
-        )
-        await database.collection("users").updateOne(
-            {
-                _id : friendId
-            },
-            {
-                    $push : { friends : acceptorId},
-                    $pull : { sentRequests : acceptorId}
-                }, transactionOptions
+        await pushAddFriendChanges(database, acceptorId, friendId, normalChatsCollectonId)
+        await pushAddFriendChanges(database, friendId, acceptorId, normalChatsCollectonId)
+        await database.collection("normalChats").insertOne(
+            { _id : normalChatsCollectonId , chat : [{
+                userId : userId,
+                time : new Date(),
+                content : "You are now friends",
+                id : randomUUID() 
+            }]
+        },
         )
         await session.commitTransaction()
         return true
@@ -130,89 +126,26 @@ async function removeFollowRequestTransaction(client, userId, idToRemove){
     }
 }
 
-// it gets th user and checks if the user normalChats array is present. if present, loop over the users normal chats array
-// finds the id that matches the friends id and gets the collection id from that object and updates the collection
-// and returns that added objects id in "normalChats" collection
-async function updateChatMessageTransaction(client, userId, friendId, content, contentType = "content"){
-    const session = client.startSession()
-    try {
-        session.startTransaction()
-        const database = client.db("chat-app")
-        const randomObjectId = randomUUID()
-
-        const user = await database.collection("users").findOne({ _id : userId})
-        if(user.normalChats){
-            const index = user.normalChats.findIndex((element)=>element.friendId === friendId )
-            if(index !== -1){
-                const collectionId = user.normalChats[index].collectionId
-                const chat = await database.collection("normalChats").updateOne(
-                    { _id : collectionId},
-                    {
-                        $push : {
-                            chat : {
-                                userId : userId,
-                                time : new Date(),
-                                [contentType] : content,
-                                id : randomObjectId 
-                            }
-                        }
-                    },
-                    transactionOptions
-                )
-                await session.commitTransaction()
-                return randomObjectId
-
-            }
-        }
-        
-        // if normal chats array does not exist it creates a new document in the "normalChats" collection adds the message to it
-        // then adds the Id of the newly created document to both the users and friends normal chats array
-        // and returns the id of the newly added message in "normals chats" collection's document
-        const newChat = await database.collection("normalChats").insertOne(
-            { _id : randomUUID(), chat : [{
-                userId : userId,
-                time : new Date(),
-                [ contentType ] : content,
-                id : randomObjectId 
-            }]
-        },
-        transactionOptions
-        )   
-        const chatId = newChat.insertedId
-        const addChatIdToUser = await updateUserNormalChat(database, userId, friendId, chatId)
-        const addChatIdToFriend = await updateUserNormalChat(database, friendId, userId , chatId)
-
-        if(!addChatIdToUser || !addChatIdToFriend) throw new Error
-
-        await session.commitTransaction()
-        return randomObjectId
-    } catch (error) {
-        await session.abortTransaction()
-        return false
-    }
-    finally{
-        await session.endSession()
-    }
-}
-
 
 // updates the normal chats array and adds the friend id and the "normalChats" collection document id in the array
-async function updateUserNormalChat(database, userId ,friendId, chatId){
+async function pushAddFriendChanges(database, userId ,friendId, chatId){
     try {
-        const user = await database.collection("users").updateOne(
+        await database.collection("users").updateOne(
             { _id : userId},
-            { $push : {
-                normalChats : {
+            {
+                $push : { 
+                    friends : friendId,
+                    normalChats : {
                     friendId : friendId,
                     collectionId : chatId
                 }
-            } 
-        }
-    )
-    return true
+
+                    },
+                $pull : { receivedRequests : friendId}
+            }, transactionOptions
+        )
     } catch (error) {
-        console.log("failed to add to the chat", error)
-        return false
+        throw new Error(error)
     }
 }
 
@@ -266,12 +199,34 @@ async function groupChatTransaction(client, userId, members, groupName, groupIma
     }
 }
 
+async function updateNormalChatData(database, collectionId ,senderId, contentType, content){
+    try {
+        const randomObjectId = randomUUID()
+
+        await database.collection("normalChats").updateOne(
+            { _id : collectionId},
+            {
+                $push : {
+                    chat : {
+                        userId : senderId,
+                        time : new Date(),
+                        [contentType] : content,
+                        id : randomObjectId 
+                    }
+                }
+            },
+        )
+        return randomObjectId
+    } catch (error) {
+        throw new Error("failed to update the normal chat")
+    }
+}
 // gets used to get the friends and received requests based on type provided
 async function getCustomData (database, userId, type) {
 
     try {
         const user = await database.collection("users").findOne({ _id : userId})
-       const  data= await database.collection("users").find(
+        const  data = await database.collection("users").find(
         {
             _id : { $in : user[type]}
         },
@@ -396,7 +351,6 @@ module.exports = {
     addFriendTransaction,
     removeFollowRequestTransaction,
     removeFriendTransaction,
-    updateChatMessageTransaction,
     clientMaker,
     groupChatTransaction,
     getCustomData,
@@ -404,5 +358,6 @@ module.exports = {
     deleteMessageFromChat,
     dataBaseConnectionMaker,
     chatArraySizeFinder,
-    groupManager
+    groupManager,
+    updateNormalChatData
 }

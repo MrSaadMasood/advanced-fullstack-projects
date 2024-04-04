@@ -9,8 +9,7 @@ async function generateAccessRefreshTokens(user, database) {
         await database.collection("tokens").insertOne({ token : refreshToken})
         return { accessToken , refreshToken }
     } catch (error) {
-        console.log("failed while generating and storing the tokens")
-        throw new Error 
+        throw new Error("failed to generate the access and refresh tokens")
     }
 }
 

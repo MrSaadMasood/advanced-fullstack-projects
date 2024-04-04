@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useInterceptor from "../hooks/useInterceptors";
-import { AssessoryData, CommonProp, CommonUserData, GetChatData } from "../../Types/dataTypes";
+import { CommonProp, CommonUserData, FriendData, GetChatData } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
 import ImageDiv from "../MiscComponents/ImageDiv";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { removeAFriend } from "../../api/dataService";
 
 interface FriendsProps extends CommonProp {
-    data : AssessoryData,
+    data : FriendData,
     selectedOptionSetter: (option : number, text : string) => void,
     isUserChangedSetter : (value : boolean)=> void, 
     removeFriendFromDataArray : (id : string, type : string)=> void,
@@ -38,10 +38,10 @@ export default function Friends({
         }
     })
 
-    function sendMessage(data : AssessoryData){
+    function sendMessage(data : FriendData){
         selectedOptionSetter(1, "Chats")
         selectedChatSetter("normal")
-        const commonUserData : CommonUserData = {...data, type : "normal"}
+        const commonUserData : CommonUserData = {...data, type : "normal",}
         getChatData(commonUserData)
     }
 

@@ -1,0 +1,46 @@
+name: development pipeline
+
+on:
+    push:
+
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: [ubuntu-latest, windows-latest]
+        strategy:
+            matrix:
+                node_version: [18.x, 19.x, 20.x]
+        steps:
+            - uses: actions/checkout@v4
+            - name: Uses Node js version ${{ matrix.node_version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node_version }}
+            - run: npm install
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-npm-cache${{ matrix.node_version }}
+            - run: npm run build
+
+    test:
+        needs: [build]
+        runs-on: [ubuntu-latest, windows-latest]
+        strategy:
+            matrix:
+                node_version: [18.x, 19.x, 20.x]
+        steps:
+            - uses: actions/checkout@v4
+            - name: Users the node version ${{ matrix.node_version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node_version }}
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-npm-cache-${{ matrix.node_version }}
+            - name: install dependencies conditionally
+            #   if: steps.cache.outputs.cache-hit != true
+              run: npm install
+            - run: npm run test

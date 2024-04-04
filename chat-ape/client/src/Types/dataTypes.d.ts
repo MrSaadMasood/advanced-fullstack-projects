@@ -15,6 +15,7 @@ export interface CommonUserData {
     fullName: string
     type?: "normal"
     profilePicture?: string
+    collectionId : string
 }
 
 interface NormalChats {
@@ -129,7 +130,7 @@ export interface createNewGroupProps extends AxiosCustom {
 }
 
 interface MessageData {
-    friendId?: string
+    collectionId?: string
     groupId?: string
 }
 
@@ -184,3 +185,4 @@ export type BoxSide = "right" | "left"
 export type OpenGroupManager = (groupId : string)=> void
 export type RequestsWithIds = AxiosCustom & Pick<Message, "id">
 export type RequestWithIdAndCollectionId = RequestsWithIds & Pick<NormalChats, "collectionId">
+export type FriendData = AssessoryData & Pick<NormalChats, "collectionId">

@@ -71,7 +71,7 @@ function useSendMessages({
         }
         const endpoint = chatType === "normal" ? "/user/add-chat-image" : "/user/add-group-chat-image"  
         const imageMessageData = chatType === "normal" ? 
-            { friendId: friendData?._id, image } : 
+            { collectionId: friendData?.collectionId, image } : 
             { groupId: generalGroupData?._id, image }
         sendImageMessageMutation({axiosPrivate, endpoint , imageMessageData })
 },[chatType])
@@ -88,9 +88,9 @@ function useSendMessages({
 
         const endpoint = chatType === "normal" ? "/user/chat-data" : "/user/group-data"
         const textMessageData = chatType === "normal" ? 
-            { content : input ,friendId: friendData?._id, } : 
-            { content : input, groupId : generalGroupData?._id}
-
+            { content : input , collectionId : friendData!.collectionId, } : 
+            { content : input, groupId : generalGroupData!._id}
+        
         sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })
         ;(e.target as HTMLFormElement).reset();
       },[chatType, input]) 

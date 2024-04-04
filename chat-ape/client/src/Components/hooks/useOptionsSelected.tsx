@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchingBasedOnOptionSelected } from "../../api/dataService"
 import useInterceptor from "./useInterceptors"
 import { useCallback, useEffect, useState } from "react";
-import { AssessoryData, ChatList, ChatType, GeneralGroupList, Message } from "../../Types/dataTypes";
+import { AssessoryData, ChatList, ChatType, FriendData, GeneralGroupList, Message } from "../../Types/dataTypes";
 
 function useOptionsSelected(
     optionsSelected  : number,
@@ -13,7 +13,7 @@ function useOptionsSelected(
     const [chatList, setChatList] = useState<ChatList[]>([]);
     const [ groupChatList, setGroupChatList ] = useState<GeneralGroupList[]>([])
     // for storing the friends, request, users, group chat list etc.
-    const [ friendsArray , setFriendsArray] = useState<AssessoryData[]>([])
+    const [ friendsArray , setFriendsArray] = useState<FriendData[]>([])
     const [ followRequestsArray , setFollowRequestsArray] = useState<AssessoryData[]>([])
     const [ allUsersArray , setAllUsersArray] = useState<AssessoryData[]>([])
     const axiosPrivate = useInterceptor()

@@ -1,10 +1,14 @@
 const jwt = require("jsonwebtoken")
 const { OAuth2Client,  UserRefreshClient } = require("google-auth-library")
-const { body } = require("express-validator")
+const { body, query, param } = require("express-validator")
+const { logger } = require("../logger/conf/loggerConfiguration")
 require("dotenv").config()
 
 // to validate the incoming string
 const stringValidation  = (string)=> body(string).isString().trim().escape()
+const booleanValidation = (value) => body(value).escape().isBoolean()
+const queryValidation = (type) => query(type).escape().isString().trim()
+const paramValidation = (type) => param(type).escape().isString().trim()
 
 const oAuth2Client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
@@ -14,7 +18,10 @@ const oAuth2Client = new OAuth2Client(
 // for the verification of jwt access token
 async function authenticateUser(req, res, next){
     const authHeader = req.headers.authorization
-    if(!authHeader) return res.status(401).json({ error : "failed to authenticate user"})
+    if(!authHeader) {
+        logger.error(new Error("incorrect auth headers provided"))
+        return res.status(401).json({ error : "failed to authenticate user"})
+    }
     const accessToken = authHeader.split(" ")[1]
     const isGoogleUser = req.headers["isgoogleuser"]
     if(isGoogleUser){
@@ -36,7 +43,7 @@ async function authenticateUser(req, res, next){
 async function factor2RouteTokenAuthenticator(req, res, next){
     try {
         const authHeader = req.headers.authorization
-        if(!authHeader) throw new Error 
+        if(!authHeader) throw new Error("auth headers not provided for factor 2 authentication") 
         const intermediaryToken = authHeader.split(" ")[1]
         const user = jwt.verify(intermediaryToken, process.env.F2A_SECRET) 
         req.user = user
@@ -51,7 +58,7 @@ async function googleTokensExtractor(code){
         const { tokens} = await oAuth2Client.getToken(code)
         return tokens
     } catch (error) {
-        console.log("the error occured while extracting the tokens", error) 
+        throw new Error("failed to extract the google tokens")
     }
 }
 
@@ -65,8 +72,7 @@ async function refreshGoogleAccessToken(refreshToken){
         const { credentials } = await userRefresh.refreshAccessToken()
         return credentials
     } catch (error) {
-        console.log("failed to refresh the google access token");
-        throw new Error 
+        throw new Error("failed to refresh the google access token")
     }
 }
 module.exports = {
@@ -74,5 +80,8 @@ module.exports = {
     factor2RouteTokenAuthenticator,
     googleTokensExtractor,
     refreshGoogleAccessToken,
-    stringValidation
+    stringValidation,
+    booleanValidation,
+    queryValidation,
+    paramValidation
 }

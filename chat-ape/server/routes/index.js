@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const sessionController = require("../controllers/sessionController.js")
-const { stringValidation } = require("../middlewares/middlewares.js")
+const { stringValidation, booleanValidation } = require("../middlewares/middlewares.js")
 const { body } = require("express-validator")
 
 // sign-up route
@@ -16,14 +16,14 @@ router.post(
 router.post("/login", stringValidation("email"), stringValidation("password"), sessionController.loginUser)
 
 // to refresh the access token
-router.post("/refresh", sessionController.refreshUser)
+router.post("/refresh", stringValidation("refreshToken"), booleanValidation("isGoogleUser"), sessionController.refreshUser)
 
 // to log the user out
 router.delete("/logout", sessionController.logoutUser)
 
-router.post("/google", sessionController.googleAuthenticator)
+router.post("/google", stringValidation("code"), sessionController.googleAuthenticator)
 
-router.post("/enable-f2a",  stringValidation("email"), stringValidation("refreshToken"), body("isGoogleUser").escape().isBoolean(), sessionController.enableF2a )
+router.post("/enable-f2a",  stringValidation("email"), stringValidation("refreshToken"), booleanValidation("isGoogleUser") , sessionController.enableF2a )
 
 router.delete("/disable-factor2Auth/:id", sessionController.disableFactor2Auth)
 module.exports = router

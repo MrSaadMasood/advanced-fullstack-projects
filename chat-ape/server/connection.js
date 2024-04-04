@@ -8,7 +8,6 @@ module.exports = {
     connectData : (callback)=>{
         MongoClient.connect(process.env.MONGO_URL).then(connection=>{
              database= connection.db("chat-app")
-             console.log("the databse connection is successfull")
             return callback()
         }).catch(error =>{
             return callback(error)

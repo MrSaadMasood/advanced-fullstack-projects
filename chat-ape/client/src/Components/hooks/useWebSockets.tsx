@@ -35,9 +35,9 @@ function useWebSockets(
     const [ chatType , setChatType] = useState<ChatType>("normal")
 
     const { data } = useQuery({
-        queryKey : [chatId ,isMoreChatRequested],
+        queryKey : [chatId],
         queryFn :  ()=> fetChatDataBasedOnType({axiosPrivate, chatId, chatType, docsSkipCount }),
-        enabled : !!chatId || !!isMoreChatRequested
+        enabled : !!chatId
     })
     
     const { data : groupMambersData } = useQuery({
@@ -66,15 +66,17 @@ function useWebSockets(
     useEffect(()=>{
         
         if(!data) return
-        setDocsSkipCount((docsSkipCount)=> docsSkipCount + 10)
+        // setDocsSkipCount((docsSkipCount)=> docsSkipCount + 10)
+        console.log("the chat data from the server is", data)
         if(chatType === "normal") {
-            return setCompleteChatData((prevData)=>{
-            const chatArray = [...data.chat ,...prevData.chat]
-            return {
-                ...prevData,
-                chat : chatArray
-            }
-        })
+            return setCompleteChatData(data)
+            // return setCompleteChatData((prevData)=>{
+            // const chatArray = [...data.chat ,...prevData.chat]
+            // return {
+            //     ...prevData,
+            //     chat : chatArray
+            // }
+        // })
         }
     
         setGroupChatData((prevData)=>{
@@ -91,7 +93,7 @@ function useWebSockets(
     // create a socket instance when the component renders/ mounts
     useEffect(() => {
 
-        const socket = io(import.meta.env.VITE_REACT_APP_SITE_URL)
+        const socket = io(import.meta.env.VITE_REACT_APP_SITE_URL, { transports : ["websocket"]})
         setSocket(socket)
         
         // to set the room id so that the other user can connect to the same room
@@ -103,6 +105,7 @@ function useWebSockets(
         socket.on("received-message", (data : Message, chatType : ChatType, groupChatData : GeneralGroupList) => {
 
             if (chatType === "normal") {
+                console.log('nomral message received from sockers', data)
                 chatDataSetter(data, chatType);
                 chatListArraySetter(data.userId, data, chatType);
             }
@@ -184,13 +187,14 @@ function useWebSockets(
     const getChatData = useCallback((data : AcceptedDataOptions) => {
         if(!userData) return
         if(!data.type) return
-        if(!socket) return 
+        if(!socket) return console.log("the socket is not found and now returning")
 
         if (data.type === "normal") {
             setChatType("normal")
             const roomId = generateRoomId(userData._id, data._id);
             socket.emit("join-room", joinedRoom, roomId);
             setFriendData(data);
+            setChatId(data.collectionId)
         }
     
         if (data.type === "group") {
@@ -198,13 +202,12 @@ function useWebSockets(
             setChatType("group")
             const roomId = generateRoomId(data._id, data.groupName);
             socket.emit("join-room", joinedRoom, roomId);
-    
+            setChatId(data._id)
             setGeneralGroupData(data);
         }
 
         if(data._id !== chatId){
             setDocsSkipCount(10)
-            setChatId(data._id)
         }
     },[socket, userData, chatId, joinedRoom])
     

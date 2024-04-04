@@ -21,6 +21,7 @@ import {
     ChatList, 
     ChatType, 
     ContentOrImagePath,
+    FriendData,
     GeneralGroupList,
     GroupChatData,
     GroupChats,
@@ -128,7 +129,7 @@ export default function Home() {
         groupChatList
 
     const filteredFriendsList = optionsSelected === 2 ? 
-        getFilteredData(friendsArray, optionsSelected, searchInput) as AssessoryData[] : 
+        getFilteredData(friendsArray, optionsSelected, searchInput) as FriendData[] : 
         friendsArray
 
     const filteredFollowRequests = optionsSelected === 3 ? 

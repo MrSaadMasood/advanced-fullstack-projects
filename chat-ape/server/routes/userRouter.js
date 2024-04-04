@@ -3,7 +3,7 @@ const router = express.Router()
 const userController = require("../controllers/userController.js")
 const multer = require("multer")
 const path = require("path")
-const { stringValidation } = require("../middlewares/middlewares.js")
+const { stringValidation, queryValidation } = require("../middlewares/middlewares.js")
 
 // creating a storage instance which will store the images based on the type of the image added to the reques body and also
 // generates the random names that dont clash.
@@ -39,7 +39,7 @@ router.get("/updated-data", userController.getUpdatedData)
 router.get("/get-users", userController.getUsersData)
 
 // sending follow request
-router.post("/send-request", userController.sendFollowRequest)
+router.post("/send-request", stringValidation("receiverId") , userController.sendFollowRequest)
 
 // get friends data
 router.get("/get-friends", userController.getFriends)
@@ -48,7 +48,7 @@ router.get("/get-friends", userController.getFriends)
 router.get("/follow-requests", userController.getFollowRequests)
 
 // adds follow request of the user to friends list
-router.post("/add-friend", userController.addFriend)
+router.post("/add-friend", stringValidation("friendId"), userController.addFriend)
 
 // removes friend from the list
 router.delete("/remove-friend/:id", userController.removeFriend)
@@ -57,10 +57,10 @@ router.delete("/remove-friend/:id", userController.removeFriend)
 router.delete("/remove-follow-request/:id", userController.removeFollowRequest)
 
 // gets the chat data with a particular friend / user
-router.get("/get-chat/:id", userController.getChatData )
+router.get("/get-chat/:id", stringValidation("docsSkipCount") ,userController.getChatData )
 
 // adds the message sent by the user to the normal chats collection
-router.post("/chat-data", stringValidation("content"), userController.updateChatData)
+router.post("/chat-data", stringValidation("content"), stringValidation("collectionId"), userController.updateChatData)
 
 // gets the list of all the chats done with users
 router.get("/get-chatlist", userController.getChatList)
@@ -106,16 +106,16 @@ router.post("/group-members", stringValidation("collectionId"), userController.g
 router.post("/filter-chat", stringValidation("date"), stringValidation("chatType"), stringValidation("collectionId"), userController.filterChat)
 
 // deletes a specific message from either the normal chat or group chat
-router.delete("/delete-message", userController.deleteMessage)
+router.delete("/delete-message", queryValidation("collectionId"), queryValidation("type"), queryValidation("messageId") ,userController.deleteMessage)
 
 // deletes the previous profile picture of the user
 router.delete("/delete-previous-profile-picture/:name", userController.deletePrevProfilePicture)
 
-router.delete(`/remove-group-member`, userController.removeMemberFromGroup )
+router.delete(`/remove-group-member`, queryValidation("collectionId"), queryValidation("memberId"), userController.removeMemberFromGroup )
 
 router.put(`/make-member-admin`, stringValidation("memberId"), stringValidation("collectionId"),  userController.makeMemberAdmin)
 
-router.delete(`/remove-group-admin`, userController.removeGroupAdmin)
+router.delete(`/remove-group-admin`, queryValidation("memberId"), queryValidation("collectionId"), userController.removeGroupAdmin)
 
 router.put("/add-group-member" , stringValidation("friendId"), stringValidation("collectionId"), userController.addFriendToGroup)
 
