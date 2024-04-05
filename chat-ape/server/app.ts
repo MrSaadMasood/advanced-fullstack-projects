@@ -1,27 +1,29 @@
-const express = require("express")
-const { Server } = require("socket.io")
-const http = require("http")
-const cors = require("cors")
-const helmet = require("helmet")
-const cluster = require("node:cluster")
-const os = require("os")
-const { setupPrimary, createAdapter } = require("@socket.io/cluster-adapter")
-const morgan = require("morgan")
-const { serverLogger } = require("./logger/conf/loggerConfiguration.js")
+import { Socket } from "socket.io"
 
-const authIndex = require("./routes/index.js")
-const userRouter = require("./routes/userRouter.js")
-const factor2Router = require("./routes/factor2Auth.js")
+import express from "express"
+import { Server } from "socket.io"
+import http from "http"
+import cors from "cors"
+import helmet from "helmet"
+import cluster from "node:cluster"
+import os from "os"
+import { setupPrimary, createAdapter } from "@socket.io/cluster-adapter"
+import morgan from "morgan"
+import { serverLogger } from "./logger/conf/loggerConfiguration.js"
 
-const { connectData} = require("./connection.js")
-const { authenticateUser, factor2RouteTokenAuthenticator } = require("./middlewares/middlewares.js")
+import authIndex from "./routes/index.js"
+import userRouter from "./routes/userRouter.js"
+import factor2Router from "./routes/factor2Auth.js"
+
+import { connectData } from "./connection.js"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares.js"
 
 require("dotenv").config()
 
 const numCPUs = os.availableParallelism()
 const PORT = process.env.PORT
 
-morgan.token("authoken", (req, res)=>{
+morgan.token("authoken", (req, _)=>{
     return req.headers["authorization"]
 })
 
@@ -74,7 +76,7 @@ else {
 
     // the io instance of the server from the socket.io is used to listen for the connection event
     // if connected the socket object / instance will be given which will listen to customized events
-    io.on("connection" , (socket)=>{
+    io.on("connection" , (socket : Socket)=>{
 
         socket.on("join-room", (oldRoomId, newRoomId)=>{
 

@@ -6,7 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node app.js",
     "test": "cross-env NODE_ENV=test jest ./tests/init ./tests/err  --coverage --coverageReporters='text-summary' --verbose --runInBand --detectOpenHandles",
-    "dev": "cross-env NODE_ENV=development nodemon app.js"
+    "dev": "ts-node-dev — respawn — pretty — transpile-only app.ts",
+    "tsc": "tsc",
+    "start-ts": "npm run tsc"
   },
   "keywords": [],
   "author": "",
@@ -35,10 +37,19 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.12.4",
+    "@typescript-eslint/parser": "^7.5.0",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^9.1.6",
     "nodemon": "^3.0.3",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.4"
   },
   "jest": {
     "testEnvironment": "node"
