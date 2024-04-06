@@ -1,7 +1,7 @@
 import { Db, MongoClient } from "mongodb";
 require("dotenv").config()
 
-let database : undefined | Db ;
+let database : Db ;
 const mongourl = process.env.MONGO_URL
 // connecting to the database based on the url. and the database we want to connect to
 export async function connectData( callback: ConnectDataCallback) {

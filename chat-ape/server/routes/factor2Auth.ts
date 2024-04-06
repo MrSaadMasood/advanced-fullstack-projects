@@ -1,8 +1,7 @@
-const express = require("express")
-const { body } = require("express-validator")
+import express from "express"
 const router = express.Router()
-const sessionController = require("../controllers/sessionController")
-const { stringValidation} = require("../middlewares/middlewares")
+import sessionController from "../controllers/sessionController"
+import { stringValidation } from "../middlewares/middlewares"
 
 router.get("/generate-otp", sessionController.generateOTP )
 

@@ -1,22 +1,24 @@
-const jwt = require("jsonwebtoken")
-const { OAuth2Client,  UserRefreshClient } = require("google-auth-library")
-const { body, query, param } = require("express-validator")
-const { logger } = require("../logger/conf/loggerConfiguration")
+import jwt from "jsonwebtoken"
+import { OAuth2Client, UserRefreshClient } from "google-auth-library"
+import { body, query, param } from "express-validator"
+import { logger } from '../logger/conf/loggerConfiguration' 
+import { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../utils/env-variable"
+import { Request, Response, NextFunction } from 'express' 
 require("dotenv").config()
 
 // to validate the incoming string
-const stringValidation  = (string)=> body(string).isString().trim().escape()
-const booleanValidation = (value) => body(value).escape().isBoolean()
-const queryValidation = (type) => query(type).escape().isString().trim()
-const paramValidation = (type) => param(type).escape().isString().trim()
+const stringValidation  = (string : string)=> body(string).isString().trim().escape()
+const booleanValidation = (value : string) => body(value).escape().isBoolean()
+const queryValidation = (type : string ) => query(type).escape().isString().trim()
+const paramValidation = (type : string) => param(type).escape().isString().trim()
 
 const oAuth2Client = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
     "postmessage"
 )
 // for the verification of jwt access token
-async function authenticateUser(req, res, next){
+async function authenticateUser(req : Request, res : Response, next : NextFunction){
     const authHeader = req.headers.authorization
     if(!authHeader) {
         logger.error(new Error("incorrect auth headers provided"))
@@ -27,33 +29,35 @@ async function authenticateUser(req, res, next){
     if(isGoogleUser){
         try {
             const verifiedToken = await oAuth2Client.getTokenInfo(accessToken)
-            req.user = { id: verifiedToken.sub }
+            req.user = { id: verifiedToken.sub || "" }
             return next()
         } catch (error) {
             return res.status(401).json({ error : "failed to authenticate user"})
         }
     }
-    jwt.verify(accessToken, process.env.ACCESS_SECRET, (err, user)=>{
+    if(!ACCESS_SECRET) throw new Error("access secret env not set")
+    jwt.verify(accessToken, ACCESS_SECRET, (err : any, user : any) =>{
         if(err) return res.status(401).json({ error : "failed to authenticate user"})
         req.user = user
-        next()
+        return next()
     }) 
 }
 
-async function factor2RouteTokenAuthenticator(req, res, next){
+async function factor2RouteTokenAuthenticator(req : Request, res : Response, next : NextFunction){
     try {
         const authHeader = req.headers.authorization
         if(!authHeader) throw new Error("auth headers not provided for factor 2 authentication") 
         const intermediaryToken = authHeader.split(" ")[1]
-        const user = jwt.verify(intermediaryToken, process.env.F2A_SECRET) 
-        req.user = user
+        if(!F2A_SECRET) throw new Error("F2A secret env not set")
+        const user = jwt.verify(intermediaryToken, F2A_SECRET) 
+        req.user = user as tokenUser
         next()
     } catch (error) {
         res.status(401).json({error : "failed to authenticate the intermediary path"}) 
     }
 }
 
-async function googleTokensExtractor(code){
+async function googleTokensExtractor(code : string){
     try {
         const { tokens} = await oAuth2Client.getToken(code)
         return tokens
@@ -62,7 +66,7 @@ async function googleTokensExtractor(code){
     }
 }
 
-async function refreshGoogleAccessToken(refreshToken){
+async function refreshGoogleAccessToken(refreshToken : string){
     try {
         const userRefresh = new UserRefreshClient(
             process.env.GOOGLE_CLIENT_ID,
@@ -75,7 +79,7 @@ async function refreshGoogleAccessToken(refreshToken){
         throw new Error("failed to refresh the google access token")
     }
 }
-module.exports = {
+export {
     authenticateUser,
     factor2RouteTokenAuthenticator,
     googleTokensExtractor,

@@ -1,5 +1,4 @@
 import { Db } from "mongodb";
-
 import jwt from "jsonwebtoken";
 import { ACCESS_SECRET, REFRESH_SECRET } from "./env-variable";
 
@@ -19,7 +18,12 @@ async function generateAccessRefreshTokens(user : tokenUser, database : Db ) {
     }
 }
 
+function envValidator(env : string | undefined, envName : string ) {
+    if(!env) throw new Error(` ${envName} env value not provided`)
+    return env
+}
 
-module.exports = {
+export {
     generateAccessRefreshTokens,
+    envValidator
 }

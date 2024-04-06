@@ -11,12 +11,12 @@ import { setupPrimary, createAdapter } from "@socket.io/cluster-adapter"
 import morgan from "morgan"
 import { serverLogger } from "./logger/conf/loggerConfiguration.js"
 
-import authIndex from "./routes/index.js"
+import authIndex from "./routes/authUser.js"
 import userRouter from "./routes/userRouter.js"
 import factor2Router from "./routes/factor2Auth.js"
 
 import { connectData } from "./connection.js"
-import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares.js"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares.ts/index.js"
 
 require("dotenv").config()
 

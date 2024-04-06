@@ -1,14 +1,12 @@
-const { MongoClient, } = require("mongodb")
-const { getData, connectData } = require("../connection")
-const { randomUUID } = require("crypto")
+import { Db, MongoClient, UpdateOptions } from "mongodb"
+import { randomUUID } from "crypto"
 
-const transactionOptions = {
+const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
-    maxCommitTimeMs : 1000
 }
 
 // a tranasaction where the senders sent requests array and the receivers receive request array are updated in an atomic way
-async function sendingRequestsTransaction(client, senderId, receiverId){
+async function sendingRequestsTransaction(client : MongoClient, senderId : string, receiverId : string){
 
     const session = client.startSession()
 
@@ -16,11 +14,11 @@ async function sendingRequestsTransaction(client, senderId, receiverId){
         session.startTransaction()
         const database = client.db("chat-app")
 
-        await database.collection("users").updateOne({ _id : senderId}, {
+        await database.collection<DocumentInput>("users").updateOne({ _id : senderId}, {
             $push : {sentRequests : receiverId}
         }, transactionOptions)
 
-        await database.collection("users").updateOne({ _id : receiverId}, { 
+        await database.collection<DocumentInput>("users").updateOne({ _id : receiverId}, { 
             $push : { receivedRequests : senderId}
         }, transactionOptions)
 
@@ -38,7 +36,7 @@ async function sendingRequestsTransaction(client, senderId, receiverId){
 
 // it adds the friend id to the users friends array and removes the friend id from the recerived requests array
 // removes the id from sent request of the friend and adds the user id to the friends array
-async function addFriendTransaction( client, acceptorId, friendId){
+async function addFriendTransaction( client : MongoClient, acceptorId : string, friendId : string){
     const session = client.startSession()
     const normalChatsCollectonId = randomUUID()
     try {
@@ -46,9 +44,9 @@ async function addFriendTransaction( client, acceptorId, friendId){
         const database = client.db("chat-app")
         await pushAddFriendChanges(database, acceptorId, friendId, normalChatsCollectonId)
         await pushAddFriendChanges(database, friendId, acceptorId, normalChatsCollectonId)
-        await database.collection("normalChats").insertOne(
+        await database.collection<DocumentInput>("normalChats").insertOne(
             { _id : normalChatsCollectonId , chat : [{
-                userId : userId,
+                userId : randomUUID(),
                 time : new Date(),
                 content : "You are now friends",
                 id : randomUUID() 
@@ -67,19 +65,19 @@ async function addFriendTransaction( client, acceptorId, friendId){
 }
 
 // removes the friend from the friends array from both the user and the other friend
-async function removeFriendTransaction(client, userId, idToRemove){
+async function removeFriendTransaction(client : MongoClient, userId : string, idToRemove : string){
     const session = client.startSession()
     try {
         session.startTransaction()
         const database = client.db("chat-app")
         
-        await database.collection("users").updateOne(
+        await database.collection<DocumentInput>("users").updateOne(
             { _id : userId}, 
             { $pull : { friends : idToRemove}},
             transactionOptions
         )
 
-        await database.collection("users").updateOne(
+        await database.collection<DocumentInput>("users").updateOne(
             { _id : idToRemove},
             { $pull : { friends : userId} },
             transactionOptions
@@ -98,18 +96,18 @@ async function removeFriendTransaction(client, userId, idToRemove){
 }
 
 // removes the users id from the sent requests and the sender ids from the received requests array
-async function removeFollowRequestTransaction(client, userId, idToRemove){
+async function removeFollowRequestTransaction(client : MongoClient, userId : string, idToRemove : string){
     const session = client.startSession()
     try {
         session.startTransaction()
         const database = client.db("chat-app")
         
-        await database.collection("users").updateOne(
+        await database.collection<DocumentInput>("users").updateOne(
             { _id : userId},
             { $pull : { receivedRequests : idToRemove}}
         )
 
-        await database.collection("users").updateOne(
+        await database.collection<DocumentInput>("users").updateOne(
             { _id : idToRemove},
             { $pull : { sentRequests : userId}}
         )
@@ -128,9 +126,9 @@ async function removeFollowRequestTransaction(client, userId, idToRemove){
 
 
 // updates the normal chats array and adds the friend id and the "normalChats" collection document id in the array
-async function pushAddFriendChanges(database, userId ,friendId, chatId){
+async function pushAddFriendChanges(database : Db, userId : string ,friendId : string, chatId : string){
     try {
-        await database.collection("users").updateOne(
+        await database.collection<DocumentInput>("users").updateOne(
             { _id : userId},
             {
                 $push : { 
@@ -145,21 +143,23 @@ async function pushAddFriendChanges(database, userId ,friendId, chatId){
             }, transactionOptions
         )
     } catch (error) {
-        throw new Error(error)
+        throw new Error(error as string)
     }
 }
 
 // creates a new group and adds a messages to in the chat and then adds the id of the document in the "groupChats" collection
 // to all the members in the members array
 // if group image is not provided null is added in the field
-async function groupChatTransaction(client, userId, members, groupName, groupImage){
+async function groupChatTransaction(
+    client : MongoClient, userId : string, members : string[], groupName : string, groupImage : string
+    ){
     const filename = groupImage ? groupImage : null
     const session = client.startSession()
     try {
         session.startTransaction()
         const database = client.db("chat-app")
         const randomId = randomUUID()
-        const newGroup = await database.collection("groupChats").insertOne(
+        await database.collection<DocumentInput>("groupChats").insertOne(
             {   _id : randomId,
                 chat : [
                     {
@@ -171,7 +171,7 @@ async function groupChatTransaction(client, userId, members, groupName, groupIma
                 ]
              }
         )
-        const updatingUsers = await database.collection("users").updateMany(
+        await database.collection<DocumentInput>("users").updateMany(
             { _id : { $in : members }},
             {
                 $push : {
@@ -199,18 +199,20 @@ async function groupChatTransaction(client, userId, members, groupName, groupIma
     }
 }
 
-async function updateNormalChatData(database, collectionId ,senderId, contentType, content){
+async function updateNormalChatData
+    (database : Db, collectionId : string ,senderId : string, contentType : string, content : string)
+    {
     try {
         const randomObjectId = randomUUID()
 
-        await database.collection("normalChats").updateOne(
+        await database.collection<Omit<DocumentInput, "chat">>("normalChats").updateOne(
             { _id : collectionId},
             {
                 $push : {
                     chat : {
                         userId : senderId,
-                        time : new Date(),
                         [contentType] : content,
+                        time : new Date(),
                         id : randomObjectId 
                     }
                 }
@@ -222,11 +224,12 @@ async function updateNormalChatData(database, collectionId ,senderId, contentTyp
     }
 }
 // gets used to get the friends and received requests based on type provided
-async function getCustomData (database, userId, type) {
+async function getCustomData (database : Db, userId : string, type : string) {
 
     try {
         const user = await database.collection("users").findOne({ _id : userId})
-        const  data = await database.collection("users").find(
+        if(!user) throw new Error
+        const data = await database.collection<DocumentInput>("users").find(
         {
             _id : { $in : user[type]}
         },
@@ -246,10 +249,12 @@ async function getCustomData (database, userId, type) {
 }
 
 // updates the groupChats document based on the content type provided either is it "path" for images or "content"/ normal message
-async function updateGroupChat(database, collectionId, userId, contentType, content){
+async function updateGroupChat
+    (database : Db, collectionId : string, userId : string, contentType : string, content : string)
+    {
     try {
         const randomId = randomUUID()
-        const updated = await database.collection("groupChats").updateOne(
+        const updated = await database.collection<Omit<DocumentInput, "chat">>("groupChats").updateOne(
             {
                 _id : collectionId
             },
@@ -272,9 +277,9 @@ async function updateGroupChat(database, collectionId, userId, contentType, cont
 
 
 // deletes the specific message based on the collection name
-async function deleteMessageFromChat(database, collectionId, messageId, collectionName){
+async function deleteMessageFromChat(database : Db, collectionId : string, messageId : string, collectionName : string){
     try {
-        const deletedMessage = await database.collection(collectionName).updateOne(
+        const deletedMessage = await database.collection<DocumentInput>(collectionName).updateOne(
             {_id : collectionId},
             { $pull : {
                 chat : {
@@ -291,9 +296,9 @@ async function deleteMessageFromChat(database, collectionId, messageId, collecti
     }
 }
 
-async function chatArraySizeFinder(database, collectionId , collectionName){
+async function chatArraySizeFinder(database : Db, collectionId : string , collectionName : string){
     try {
-        const chatArrayCount = await database.collection(collectionName).aggregate(
+        const chatArrayCount = await database.collection<DocumentInput>(collectionName).aggregate(
             [
                 {
                     $match: {
@@ -317,11 +322,17 @@ async function chatArraySizeFinder(database, collectionId , collectionName){
     }
 }
 
-async function groupManager(database, operationType, arrayType , memberId, collectionId, userId){
+async function groupManager(
+    database : Db, 
+    operationType: operationType , 
+    arrayType: operatedArray, 
+    memberId : string, 
+    collectionId : string, 
+    userId: string){
     const arrayToPerformOperation = `groupChats.$.${arrayType}`
     try {
         console.log(operationType, arrayToPerformOperation, memberId, collectionId, userId);
-        const updatedGroup = await database.collection("users").updateOne(
+        const updatedGroup = await database.collection<DocumentInput>("users").updateOne(
             {_id : userId , "groupChats.collectionId" : collectionId},
             { [operationType] : {
               [arrayToPerformOperation] : memberId
@@ -335,18 +346,18 @@ async function groupManager(database, operationType, arrayType , memberId, colle
     }
 }
 
-function clientMaker(url){
+function clientMaker(url : string){
     return new MongoClient(url)
 }
 
-async function dataBaseConnectionMaker(url){
+async function dataBaseConnectionMaker(url : string){
     const client = new MongoClient(url)
     await client.connect()
     const database = client.db("chat-app")
     return database
 }
 
-module.exports = { 
+export { 
     sendingRequestsTransaction,
     addFriendTransaction,
     removeFollowRequestTransaction,
