@@ -176,14 +176,14 @@ async function groupChatTransaction(
             {
                 $push : {
                     groupChats : { 
-                            id : randomUUID(),
-                            members : members,
-                            admins : [
-                                userId
-                            ],
-                            collectionId : randomId,
-                            groupName : groupName,
-                            groupImage : filename
+                        id : randomUUID(),
+                        members : members,
+                        admins : [
+                            userId
+                        ],
+                        collectionId : randomId,
+                        groupName : groupName,
+                        groupImage : filename
                     }
                 }
             }
@@ -224,14 +224,15 @@ async function updateNormalChatData
     }
 }
 // gets used to get the friends and received requests based on type provided
-async function getCustomData (database : Db, userId : string, type : string) {
+async function getCustomData (database : Db, userId : string, type : ChatType) {
 
     try {
-        const user = await database.collection("users").findOne({ _id : userId})
+        const user = await database.collection<DocumentInput>("users").findOne({ _id : userId})
         if(!user) throw new Error
+        const chatTypeArray = !user[type] || user[type].length === 0 ? [] : user[type]
         const data = await database.collection<DocumentInput>("users").find(
         {
-            _id : { $in : user[type]}
+            _id : { $in : user[type] || ["random"]}
         },
         {
             projection : {

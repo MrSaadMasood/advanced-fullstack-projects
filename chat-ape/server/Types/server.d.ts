@@ -7,9 +7,19 @@ interface tokenUser {
 
 interface DocumentInput {
     _id : string
-    chat : Message[]
-    normalChats : string,
-    groupChats : string
+    chat : Message[],
+    normalChats? : {
+        friendId : string,
+        collectionId : string
+    }[],
+    groupChats? : {
+        id : string
+        members : string[]
+        admins : string[]
+        collectionId : string
+        groupName : string
+        groupImage : string | null
+    }[]
 }
 
 interface Message {
@@ -18,10 +28,8 @@ interface Message {
     content :string,
     id : string
 }
-interface User {
-    normalChats : string[],
-    groupChats : string[]
-}
+type User = Exclude<keyof DocumentInput, "_id" | "chat"> 
 
 type operationType = "$push" | "$pull"
 type operatedArray = "members" | "admins"
+type ChatType = "normalChats" | "groupChats"
