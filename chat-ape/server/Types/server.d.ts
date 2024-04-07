@@ -19,7 +19,9 @@ interface DocumentInput {
         collectionId : string
         groupName : string
         groupImage : string | null
-    }[]
+    }[],
+    receivedRequests? : string[],
+    friends? : string[]
 }
 
 interface Message {
@@ -32,4 +34,5 @@ type User = Exclude<keyof DocumentInput, "_id" | "chat">
 
 type operationType = "$push" | "$pull"
 type operatedArray = "members" | "admins"
-type ChatType = "normalChats" | "groupChats"
+type FriendsNRequests = "receivedRequests" | "friends"
+type ChatType = "normal" | "group"

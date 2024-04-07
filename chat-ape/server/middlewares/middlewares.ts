@@ -2,9 +2,10 @@ import jwt from "jsonwebtoken"
 import { OAuth2Client, UserRefreshClient } from "google-auth-library"
 import { body, query, param } from "express-validator"
 import { logger } from '../logger/conf/loggerConfiguration' 
-import { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../utils/env-variable"
 import { Request, Response, NextFunction } from 'express' 
 require("dotenv").config()
+
+const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_SECRET, GOOGLE_CLIENT_ID } = process.env
 
 // to validate the incoming string
 const stringValidation  = (string : string)=> body(string).isString().trim().escape()

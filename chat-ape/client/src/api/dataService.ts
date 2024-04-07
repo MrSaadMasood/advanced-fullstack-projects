@@ -73,7 +73,8 @@ interface deleteMessageFromChatArgs {
 }
 export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} : deleteMessageFromChatArgs ){
     try {
-        await axiosPrivate.delete(`/user/delete-message?data=${JSON.stringify(messageToDeleteInfo)}`);
+        await axiosPrivate.delete(`/user/delete-message?collectionId=${messageToDeleteInfo.collectionId}&
+            type=${messageToDeleteInfo.type}&messageId=${messageToDeleteInfo.messageId}`);
     } catch (error) {
         console.log("failed to delete the message")
         throw new Error

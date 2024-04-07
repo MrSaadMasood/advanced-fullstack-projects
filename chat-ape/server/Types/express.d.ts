@@ -7,5 +7,14 @@ declare namespace Express {
         headers : {
             isGoogleUser : boolean
         }
+        file : {
+            filename : string | undefined
+        } 
+        query : {
+            collectionId? : string,
+            messageId? : string,
+            type: ChatType
+        }
+                
     }
 }

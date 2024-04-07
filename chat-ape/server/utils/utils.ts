@@ -1,15 +1,12 @@
 import { Db } from "mongodb";
 import jwt from "jsonwebtoken";
-import { ACCESS_SECRET, REFRESH_SECRET } from "./env-variable";
+const { ACCESS_SECRET, REFRESH_SECRET } = process.env
 
 // to generate the access token
 async function generateAccessRefreshTokens(user : tokenUser, database : Db ) {
     try {
-        if(!ACCESS_SECRET) throw new Error
-        if(!REFRESH_SECRET) throw new Error
-
-        const accessToken =  jwt.sign(user, ACCESS_SECRET);
-        const refreshToken = jwt.sign(user, REFRESH_SECRET)
+        const accessToken =  jwt.sign(user, envValidator(ACCESS_SECRET, "access secret"));
+        const refreshToken = jwt.sign(user, envValidator(REFRESH_SECRET, "refresh secret"))
         if(!accessToken || !refreshToken) throw new Error
         await database.collection("tokens").insertOne({ token : refreshToken})
         return { accessToken , refreshToken }

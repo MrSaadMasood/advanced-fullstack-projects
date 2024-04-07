@@ -270,7 +270,7 @@ export async function enableF2a(req : Request, res : Response){
     const result = validationResult(req)
     try {
         if(result.isEmpty()){
-                const updatedUser = await database.collection("users").updateOne(
+                await database.collection("users").updateOne(
                     { email },
                     { $set : { 
                         is2FactorAuthEnabled : true

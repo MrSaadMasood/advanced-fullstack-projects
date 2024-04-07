@@ -224,15 +224,14 @@ async function updateNormalChatData
     }
 }
 // gets used to get the friends and received requests based on type provided
-async function getCustomData (database : Db, userId : string, type : ChatType) {
+async function getCustomData (database : Db, userId : string, type : FriendsNRequests) {
 
     try {
         const user = await database.collection<DocumentInput>("users").findOne({ _id : userId})
         if(!user) throw new Error
-        const chatTypeArray = !user[type] || user[type].length === 0 ? [] : user[type]
         const data = await database.collection<DocumentInput>("users").find(
         {
-            _id : { $in : user[type] || ["random"]}
+            _id : { $in : user[type]}
         },
         {
             projection : {
@@ -293,7 +292,7 @@ async function deleteMessageFromChat(database : Db, collectionId : string, messa
             
         return true
     } catch (error) {
-        return false
+        throw new Error(error as string)
     }
 }
 

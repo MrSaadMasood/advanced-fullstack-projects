@@ -1,11 +1,16 @@
 import express from "express"
 const router = express.Router()
-import sessionController from "../controllers/sessionController"
+import { verifyOTP, generateOTP } from "../controllers/sessionController"
 import { stringValidation } from "../middlewares/middlewares"
 
-router.get("/generate-otp", sessionController.generateOTP )
+router.get("/generate-otp", generateOTP )
 
-router.post("/verify-otp", stringValidation("otp"), stringValidation("refreshToken"), stringValidation("factor2AuthToken"), sessionController.verifyOTP)
+router.post("/verify-otp", 
+    stringValidation("otp"), 
+    stringValidation("refreshToken"), 
+    stringValidation("factor2AuthToken"), 
+    verifyOTP
+)
 
 
-module.exports = router
+export default router

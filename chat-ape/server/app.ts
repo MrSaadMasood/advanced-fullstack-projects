@@ -16,7 +16,7 @@ import userRouter from "./routes/userRouter.js"
 import factor2Router from "./routes/factor2Auth.js"
 
 import { connectData } from "./connection.js"
-import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares.ts/index.js"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares"
 
 require("dotenv").config()
 

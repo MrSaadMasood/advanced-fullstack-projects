@@ -180,7 +180,7 @@ const tokensCollectionSchema =
         }
     }
 
-module.exports = {
+export {
     usersCollectionSchema,
     normalChatsCollectionSchema,
     groupChatsCollectionSchema,
