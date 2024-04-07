@@ -33,6 +33,11 @@ import {
     updateChatData,
     updateGroupChatData, 
 } from "../controllers/userController";
+// import { fileURLToPath } from 'url';
+// import { dirname } from 'path';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 import multer from "multer"
 import path from "path"
@@ -42,7 +47,7 @@ import { Request } from 'express'
 // creating a storage instance which will store the images based on the type of the image added to the reques body and also
 // generates the random names that dont clash.
 const storage = multer.diskStorage({
-    destination : (req : Request, _ ,  callback)=>{
+    destination : (req : Request, _res ,  callback)=>{
         let absolutePath;
 
         if(req.chatImage){
@@ -58,7 +63,7 @@ const storage = multer.diskStorage({
         callback(null, absolutePath)
     },
 
-    filename : (_, file, callback)=>{
+    filename : (_req , file, callback)=>{
         const suffix = `${Date.now()}${Math.round(Math.random()* 1E9)}.jpg`
         callback(null, file.fieldname + "-" + suffix)
 
@@ -101,10 +106,10 @@ router.post("/chat-data", stringValidation("content"), stringValidation("collect
 router.get("/get-chatlist",  getChatList)
 
 // save the image in the chat-images folder and ads the filename to the database
-router.post("/add-chat-image",(req , _, next)=>{ req.chatImage = true ; next()}, upload.single("image"),  saveChatImagePath)
+router.post("/add-chat-image",(req , _res, next)=>{ req.chatImage = true ; next()}, upload.single("image"),  saveChatImagePath)
 
 // saves the profile image to adds filename to the database
-router.post("/add-profile-image", (req,_,next)=>{ req.profileImage = true; next()} , upload.single("image"),  saveProfilePicturePath)
+router.post("/add-profile-image", (req, _res,next)=>{ req.profileImage = true; next()} , upload.single("image"),  saveProfilePicturePath)
 
 // sends the chat images to the user 
 router.get("/get-chat-image/:name",  getChatImage )
@@ -119,7 +124,7 @@ router.post("/change-bio", stringValidation("bio"),  changeBio)
 router.get("/get-friends-data",  getFriendsData)
 
 // for creating a new group
-router.post("/create-new-group",(req ,_,next)=>{ req.groupImage = true; next()}, upload.single("image") ,  createNewForm)
+router.post("/create-new-group",(req ,_res ,next)=>{ req.groupImage = true; next()}, upload.single("image") ,  createNewForm)
 
 // get list of all the group chats ever done
 router.get("/group-chats",  getGroupChats)
@@ -131,7 +136,7 @@ router.get("/group-picture/:name",  getGroupPicture)
 router.get("/get-group-chat/:chatId",  getGroupChatData)
 
 // adds image sent inside the group chat
-router.post("/add-group-chat-image", (req, _,next)=>{ req.groupImage = true; next()}, upload.single("image"),  saveGroupChatImage)
+router.post("/add-group-chat-image", (req, _res ,next)=>{ req.groupImage = true; next()}, upload.single("image"),  saveGroupChatImage)
 
 // saves the message sent in group chat in the database
 router.post("/group-data", stringValidation("content"),  updateGroupChatData)

@@ -1,5 +1,7 @@
 import { Db } from "mongodb";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
+dotenv.config()
 const { ACCESS_SECRET, REFRESH_SECRET } = process.env
 
 // to generate the access token
@@ -20,7 +22,12 @@ function envValidator(env : string | undefined, envName : string ) {
     return env
 }
 
+function fileValidator(file : Express.Multer.File | undefined){
+    if(!file) throw new Error("file not provided")
+    return file.filename
+}
 export {
     generateAccessRefreshTokens,
+    fileValidator,
     envValidator
 }

@@ -4,13 +4,10 @@ declare namespace Express {
         chatImage : boolean
         profileImage : boolean
         groupImage : boolean
-        headers : {
+        incomingMessage : {
             isGoogleUser : boolean
         }
-        file : {
-            filename : string | undefined
-        } 
-        query : {
+        ReqQuery : {
             collectionId? : string,
             messageId? : string,
             type: ChatType

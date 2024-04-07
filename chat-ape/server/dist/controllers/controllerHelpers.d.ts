@@ -1,0 +1,15 @@
+import { Db, MongoClient } from "mongodb";
+declare function sendingRequestsTransaction(client: MongoClient, senderId: string, receiverId: string): Promise<boolean>;
+declare function addFriendTransaction(client: MongoClient, acceptorId: string, friendId: string): Promise<boolean>;
+declare function removeFriendTransaction(client: MongoClient, userId: string, idToRemove: string): Promise<boolean>;
+declare function removeFollowRequestTransaction(client: MongoClient, userId: string, idToRemove: string): Promise<boolean>;
+declare function groupChatTransaction(client: MongoClient, userId: string, members: string[], groupName: string, groupImage: string): Promise<boolean>;
+declare function updateNormalChatData(database: Db, collectionId: string, senderId: string, contentType: string, content: string): Promise<`${string}-${string}-${string}-${string}-${string}`>;
+declare function getCustomData(database: Db, userId: string, type: FriendsNRequests): Promise<import("mongodb").WithId<DocumentInput>[] | undefined>;
+declare function updateGroupChat(database: Db, collectionId: string, userId: string, contentType: string, content: string): Promise<false | `${string}-${string}-${string}-${string}-${string}`>;
+declare function deleteMessageFromChat(database: Db, collectionId: string, messageId: string, collectionName: string): Promise<boolean>;
+declare function chatArraySizeFinder(database: Db, collectionId: string, collectionName: string): Promise<import("bson").Document>;
+declare function groupManager(database: Db, operationType: operationType, arrayType: operatedArray, memberId: string, collectionId: string, userId: string): Promise<import("mongodb").UpdateResult<DocumentInput>>;
+declare function clientMaker(url: string): MongoClient;
+declare function dataBaseConnectionMaker(url: string): Promise<Db>;
+export { sendingRequestsTransaction, addFriendTransaction, removeFollowRequestTransaction, removeFriendTransaction, clientMaker, groupChatTransaction, getCustomData, updateGroupChat, deleteMessageFromChat, dataBaseConnectionMaker, chatArraySizeFinder, groupManager, updateNormalChatData };

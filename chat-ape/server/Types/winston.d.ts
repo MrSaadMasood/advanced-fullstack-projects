@@ -1,8 +1,6 @@
-import { FileTransportOptions } from "winston/lib/winston/transports";
-
+import { transports } from "winston"
 declare module "winston-daily-rotate-file" {
-    import { transports } from "winston"
-    interface DailyRotateFileTransportOptions extends 
+    export interface DailyRotateFile extends 
         Pick<transports.FileTransportOptions, Exclude<keyof transports.FileTransportOptions, "maxFiles">>{
             datePattern : string,
         }
@@ -10,5 +8,4 @@ declare module "winston-daily-rotate-file" {
         new (options : DailyRotateFileTransportOptions) : DailyRotateFileTransportOptions
     }
     const DailyRotateFile : DailyRotateFileTransportInstance
-    export = DailyRotateFile
 }

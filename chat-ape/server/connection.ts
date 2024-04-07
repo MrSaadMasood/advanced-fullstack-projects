@@ -1,5 +1,6 @@
 import { Db, MongoClient } from "mongodb";
-require("dotenv").config()
+import dotenv from "dotenv"
+dotenv.config()
 
 let database : Db ;
 const mongourl = process.env.MONGO_URL

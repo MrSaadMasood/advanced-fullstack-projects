@@ -1,31 +1,33 @@
-import { hash, compare } from "bcrypt";
 import post from 'axios' 
 import { authenticator } from "otplib";
 import { toDataURL } from "qrcode";
 import { connectData, getData } from "../connection";
 import { validationResult } from "express-validator";
-import { sign, verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { envValidator, generateAccessRefreshTokens } from "../utils/utils";
 import { Db } from "mongodb";
-import { dataBaseConnectionMaker } from "./controllerHelpers";
+// import { dataBaseConnectionMaker } from "./controllerHelpers.ts";
 import { OAuth2Client } from "google-auth-library";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { googleTokensExtractor, refreshGoogleAccessToken } from "../middlewares/middlewares";
 import { logger } from "../logger/conf/loggerConfiguration";
 import { Request, Response } from 'express' 
+import dotenv from "dotenv"
+import bcrypt from "bcrypt"
+
+dotenv.config()
 
 const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REFRESH_SECRET } = process.env 
-
-require("dotenv").config();
 
 const oAuth2Client = new OAuth2Client(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
     "postmessage"
 )
+const { sign, verify } = jwt
 
 let database: Db;
-const mongoUrl = process.env.MONGO_URL || ""
+// const mongoUrl = process.env.MONGO_URL || ""
 
 connectData((err) => {
     if (!err) {
@@ -38,7 +40,7 @@ export async function createUser(req : Request, res : Response) {
     const result = validationResult(req);
     const { fullName, email, password, isGoogleUser, profilePicture, id } = req.body;
     if (result.isEmpty()) {
-        hash(password, 10, async (err, hashedPassword) => {
+        return bcrypt.hash(password, 10, async (err, hashedPassword) => {
             if (err) return res.status(400).json({ error: "the user could not be created" });
             try {
                 logger.info("password successfully hashed")
@@ -62,7 +64,6 @@ export async function createUser(req : Request, res : Response) {
             }
         });
     } else {
-        logger.error("input error while signing up the user")
         return res.status(400).json({ error: "input error" });
     }
 }
@@ -71,51 +72,50 @@ export async function createUser(req : Request, res : Response) {
 export async function loginUser(req : Request, res : Response) {
     const result = validationResult(req);
     const { email, password } = req.body;
-    if (result.isEmpty()) {
         try {
-            const user = await database.collection("users").findOne(
-                { email: email },
-                {
-                    projection: {
-                        fullName: 1,
-                        friends: 1,
-                        sentRequests: 1,
-                        receivedRequests: 1,
-                        password: 1,
-                        isGoogleUser : 1,
-                        is2FactorAuthEnabled : 1
-                    },
-                }
-            );
-            if (!user) throw new Error("failed to find the user data from database");
-            
-            const match = await compare(password, user.password);
+            if (result.isEmpty()) {
+                const user = await database.collection("users").findOne(
+                    { email: email },
+                    {
+                        projection: {
+                            fullName: 1,
+                            friends: 1,
+                            sentRequests: 1,
+                            receivedRequests: 1,
+                            password: 1,
+                            isGoogleUser : 1,
+                            is2FactorAuthEnabled : 1
+                        },
+                    }
+                );
+                if (!user) throw new Error("failed to find the user data from database");
+                
+                const match = await bcrypt.compare(password, user.password);
 
-            if (!match) throw new Error("failed to match the passwords");
-            
-            try {
+                if (!match) throw new Error("failed to match the passwords");
+                
+                try {
 
-                const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id.toString() }, database)
-                if(user.is2FactorAuthEnabled){
-                    const factor2AuthToken = sign({ email : email}, envValidator(F2A_SECRET, "f2a"), { expiresIn : "5m" })
-                    return res.json({ 
-                        factor2AuthToken, 
-                        refreshToken, 
-                        is2FactorAuthEnabled : user.is2FactorAuthEnabled,
-                        isGoogleUser : user.isGoogleUser
-                    })
+                    const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id.toString() }, database)
+                    if(user.is2FactorAuthEnabled){
+                        const factor2AuthToken = sign({ email : email}, envValidator(F2A_SECRET, "f2a"), { expiresIn : "5m" })
+                        return res.json({ 
+                            factor2AuthToken, 
+                            refreshToken, 
+                            is2FactorAuthEnabled : user.is2FactorAuthEnabled,
+                            isGoogleUser : user.isGoogleUser
+                        })
+                    }
+                    return res.json({ accessToken, refreshToken, isGoogleUser : user.isGoogleUser, is2FactorAuthEnabled : user.is2FactorAuthEnabled });
+                } catch (error) {
+                    return res.status(404).json({ error: "login failed" });
                 }
-                return res.json({ accessToken, refreshToken, isGoogleUser : user.isGoogleUser, is2FactorAuthEnabled : user.is2FactorAuthEnabled });
-            } catch (error) {
-                logger.error("failed to generate the access and refresh tokens", error)
-                return res.status(404).json({ error: "login failed" });
             }
+            else throw new Error
         } catch (error) {
-            logger.error("login input error", error)
             return res.status(404).json({ error: "login input error" });
         }
     }
-}
 
 // on token expiration the request is sent from the front end to and the access token is refreshed if the refresh token
 // is present in the database of the user

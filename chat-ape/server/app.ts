@@ -1,4 +1,4 @@
-import { Socket } from "socket.io"
+import { Socket} from "socket.io"
 
 import express from "express"
 import { Server } from "socket.io"
@@ -9,21 +9,21 @@ import cluster from "node:cluster"
 import os from "os"
 import { setupPrimary, createAdapter } from "@socket.io/cluster-adapter"
 import morgan from "morgan"
-import { serverLogger } from "./logger/conf/loggerConfiguration.js"
+import { serverLogger } from "./logger/conf/loggerConfiguration"
 
-import authIndex from "./routes/authUser.js"
-import userRouter from "./routes/userRouter.js"
-import factor2Router from "./routes/factor2Auth.js"
+import authIndex from "./routes/authUser"
+import userRouter from "./routes/userRouter"
+import factor2Router from "./routes/factor2Auth"
 
-import { connectData } from "./connection.js"
+import { connectData } from "./connection"
 import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares"
-
-require("dotenv").config()
+import dotenv from "dotenv"
+dotenv.config()
 
 const numCPUs = os.availableParallelism()
-const PORT = process.env.PORT
+const { PORT, CROSS_ORIGIN } = process.env
 
-morgan.token("authoken", (req, _)=>{
+morgan.token("authoken", (req, _res)=>{
     return req.headers["authorization"]
 })
 
@@ -38,10 +38,11 @@ if(cluster.isPrimary){
 else { 
     const app = express()
     const server = http.createServer(app)
-    // creating a new server instance form the above server made with http. this server instance will be used for websockets
+    
+    // creating a new server instance form the above server made with http. this server instance will be used for websock
     const io = new Server(server , {
         cors : {
-            origin : process.env.CROSS_ORIGIN
+            origin : CROSS_ORIGIN
         },
         adapter : createAdapter()
     })
@@ -49,7 +50,7 @@ else {
     app.use(helmet())
     app.use(morgan("dev"))
     app.use(cors({
-        origin : process.env.CROSS_ORIGIN
+        origin : CROSS_ORIGIN
     }))
 
     app.use(express.json())
@@ -75,7 +76,7 @@ else {
     app.use("/user", authenticateUser , userRouter)
 
     // the io instance of the server from the socket.io is used to listen for the connection event
-    // if connected the socket object / instance will be given which will listen to customized events
+    // if connected the socket object / instance will be given which will listen to customized eve
     io.on("connection" , (socket : Socket)=>{
 
         socket.on("join-room", (oldRoomId, newRoomId)=>{

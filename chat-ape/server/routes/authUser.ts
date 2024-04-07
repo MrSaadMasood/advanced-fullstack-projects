@@ -1,6 +1,12 @@
 import { Router } from "express"
 const router = Router()
-import { createUser, loginUser, refreshUser, logoutUser, googleAuthenticator, enableF2a, disableFactor2Auth } from "../controllers/sessionController.js"
+import { createUser, 
+    loginUser, 
+    refreshUser, 
+    logoutUser, 
+    googleAuthenticator, 
+    enableF2a, 
+    disableFactor2Auth } from "../controllers/sessionController"
 import { stringValidation, booleanValidation } from "../middlewares/middlewares"
 
 // sign-up route

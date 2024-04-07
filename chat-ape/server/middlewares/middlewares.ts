@@ -3,8 +3,8 @@ import { OAuth2Client, UserRefreshClient } from "google-auth-library"
 import { body, query, param } from "express-validator"
 import { logger } from '../logger/conf/loggerConfiguration' 
 import { Request, Response, NextFunction } from 'express' 
-require("dotenv").config()
-
+import dotenv from "dotenv"
+dotenv.config()
 const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_SECRET, GOOGLE_CLIENT_ID } = process.env
 
 // to validate the incoming string
@@ -70,8 +70,8 @@ async function googleTokensExtractor(code : string){
 async function refreshGoogleAccessToken(refreshToken : string){
     try {
         const userRefresh = new UserRefreshClient(
-            process.env.GOOGLE_CLIENT_ID,
-            process.env.GOOGLE_CLIENT_SECRET,
+            GOOGLE_CLIENT_ID,
+            GOOGLE_CLIENT_SECRET,
             refreshToken
         )
         const { credentials } = await userRefresh.refreshAccessToken()

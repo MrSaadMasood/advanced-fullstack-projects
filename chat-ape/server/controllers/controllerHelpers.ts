@@ -1,5 +1,5 @@
 import { Db, MongoClient, UpdateOptions } from "mongodb"
-import { randomUUID } from "crypto"
+import { randomUUID } from "node:crypto"
 
 const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
@@ -271,7 +271,7 @@ async function updateGroupChat
 
         return randomId
     } catch (error) {
-        return false
+        throw new Error(error as string)
     }
 }
 

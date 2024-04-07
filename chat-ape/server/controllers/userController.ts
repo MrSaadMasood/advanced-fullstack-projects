@@ -13,15 +13,22 @@ import {
     getCustomData, 
     updateGroupChat, 
     deleteMessageFromChat, 
-    dataBaseConnectionMaker, 
+    // dataBaseConnectionMaker, 
     chatArraySizeFinder, 
     groupManager, 
     updateNormalChatData
  } from "./controllerHelpers";
 import { logger } from "../logger/conf/loggerConfiguration";
 import { Request, Response } from 'express' 
-import { envValidator } from "../utils/utils";
+import { envValidator, fileValidator } from "../utils/utils";
+import dotenv from "dotenv"
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config()
 const mongoUrl = process.env.MONGO_URL || ""
 
 let database : Db;
@@ -46,7 +53,7 @@ export const getUpdatedData = async(req: Request, res: Response)=>{
 }
 
 // get the full name and id of all users from the database
-export const getUsersData = async( _ : Request, res: Response)=>{
+export const getUsersData = async( _req : Request, res: Response)=>{
     try {
         const users = await database.collection<DocumentInput>("users").find({},
             { 
@@ -318,10 +325,10 @@ export const getChatList = async(req: Request, res: Response) =>{
 export const saveChatImagePath = async (req: Request, res: Response)=>{
     const { collectionId } = req.body
     const { id } = req.user
-    const { filename : filePath } = req.file
     try {
-        const randomMessageId = await updateNormalChatData(database, collectionId, id, "path", envValidator(filePath, "filename"))
-        res.json({ id : randomMessageId, filename : filePath })
+        const filename = fileValidator(req.file)
+        const randomMessageId = await updateNormalChatData(database, collectionId, id, "path", filename)
+        res.json({ id : randomMessageId, filename : filename })
     } catch (error) {
         res.status(400).json({ error : "failed to add image"})
     }
@@ -356,8 +363,8 @@ export const changeBio = async(req: Request, res: Response)=>{
 // adds the profile picture name to the users document
 export const saveProfilePicturePath = async (req: Request, res: Response)=>{
     const { id} = req.user
-    const { filename } = req.file
     try {
+        const filename = fileValidator(req.file)
         const addingProfilePicture = await database.collection<DocumentInput>("users").updateOne(
             {_id : id}, 
             { $set : { 
@@ -439,13 +446,12 @@ export const createNewForm = async (req: Request, res: Response)=>{
         if(result.isEmpty()){
             const { members, groupName} = req.body
             const { id} = req.user
-            const { filename } = req.file
-
+            const filename = fileValidator(req.file)
             const parsedMembers = JSON.parse(members)
             const allMembers = parsedMembers.concat(id)
 
             const client = clientMaker(mongoUrl)
-            const result = await groupChatTransaction(client,id , allMembers , groupName, envValidator(filename, "filename"))
+            const result = await groupChatTransaction(client,id , allMembers , groupName, filename)
             if(result) {
                 res.json({ message : "the group is successfully created"})
             }
@@ -754,14 +760,13 @@ export const getGroupChatData = async(req: Request, res: Response)=>{
 // saves the image name in the chat document
 export const saveGroupChatImage = async(req: Request, res: Response)=>{
     const { id} = req.user
-    const { filename } = req.file
-    const { groupId } = req.body
-    const result = await updateGroupChat(database, groupId, id, "path", envValidator(filename, "filename"))
-    if(result){
-        res.json({ filename, id : result})
-    }
-    else{
-        res.status(400).json({error : "failed to update the group chat"})
+    try {
+        const filename = fileValidator(req.file)
+        const { groupId } = req.body
+        const result = await updateGroupChat(database, groupId, id, "path", envValidator(filename, "filename"))
+        return res.json({ filename, id : result})
+    } catch (error) {
+        return res.status(400).json({error : "failed to update the group chat"})
     }
 }
 

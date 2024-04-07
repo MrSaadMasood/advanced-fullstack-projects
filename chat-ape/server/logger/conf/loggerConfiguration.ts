@@ -1,8 +1,15 @@
 import winston from "winston"
 import path from "path"
-import DailyRotateFile from "winston-daily-rotate-file"
-require("dotenv").config()
-require("winston-daily-rotate-file")
+import dotenv from "dotenv"
+import "winston-daily-rotate-file"
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config()
+
 const logLevel = process.env.LOGGER_LEVEL || "info"
 const { combine, json, timestamp, errors } = winston.format
 const loggingFormat = combine(errors({ stack : true }), timestamp(), json())
