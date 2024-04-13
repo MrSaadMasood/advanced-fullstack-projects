@@ -1,5 +1,7 @@
 import { Db, MongoClient, UpdateOptions } from "mongodb"
 import { randomUUID } from "node:crypto"
+import { BadRequest } from "../ErrorHandler/customError"
+import { generalErrorMessage } from "../utils/utils"
 
 const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
@@ -25,8 +27,8 @@ async function sendingRequestsTransaction(client : MongoClient, senderId : strin
         await session.commitTransaction()
         return true
     } catch (error) {
-       await session.abortTransaction() 
-       return false
+        await session.abortTransaction() 
+        throw new BadRequest(generalErrorMessage("failed to send the follow requests"))
     }
     finally{
         await session.endSession()
@@ -53,11 +55,20 @@ async function addFriendTransaction( client : MongoClient, acceptorId : string, 
             }]
         },
         )
+        const friendData = await database.collection<DocumentInput>("users").findOne(
+            { _id : friendId},
+            { projection : {
+                fullName : 1,
+                profilePicture : 1,
+                collectionId : normalChatsCollectonId
+            }}
+        )
+        if(!friendData) throw new Error
         await session.commitTransaction()
-        return true
+        return friendData
     } catch (error) {
         await session.abortTransaction()
-        return false
+        throw new BadRequest(generalErrorMessage("failed to add friend"))
     }
     finally {
         await session.endSession()
@@ -86,9 +97,8 @@ async function removeFriendTransaction(client : MongoClient, userId : string, id
         await session.commitTransaction()
         return true
     } catch (error) {
-        console.log("transaction to remove the friend failed")
         await session.abortTransaction()
-        return false
+        throw new BadRequest(generalErrorMessage("failed to remove friend"))
     }
     finally {
         await session.endSession()
@@ -115,36 +125,31 @@ async function removeFollowRequestTransaction(client : MongoClient, userId : str
         await session.commitTransaction()
         return true
     } catch (error) {
-        console.log("error occured while removing the follow request")
         await session.abortTransaction()
-        return false
+        throw new BadRequest(generalErrorMessage("failed to remove friend"))
     }
     finally{
-        session.endSession()
+        await session.endSession()
     }
 }
 
 
 // updates the normal chats array and adds the friend id and the "normalChats" collection document id in the array
 async function pushAddFriendChanges(database : Db, userId : string ,friendId : string, chatId : string){
-    try {
-        await database.collection<DocumentInput>("users").updateOne(
-            { _id : userId},
-            {
-                $push : { 
-                    friends : friendId,
-                    normalChats : {
-                    friendId : friendId,
-                    collectionId : chatId
-                }
+    await database.collection<DocumentInput>("users").updateOne(
+        { _id : userId},
+        {
+            $push : { 
+                friends : friendId,
+                normalChats : {
+                friendId : friendId,
+                collectionId : chatId
+            }
 
-                    },
-                $pull : { receivedRequests : friendId}
-            }, transactionOptions
-        )
-    } catch (error) {
-        throw new Error(error as string)
-    }
+                },
+            $pull : { receivedRequests : friendId}
+        }, transactionOptions
+    )
 }
 
 // creates a new group and adds a messages to in the chat and then adds the id of the document in the "groupChats" collection
@@ -153,7 +158,6 @@ async function pushAddFriendChanges(database : Db, userId : string ,friendId : s
 async function groupChatTransaction(
     client : MongoClient, userId : string, members : string[], groupName : string, groupImage : string
     ){
-    const filename = groupImage ? groupImage : null
     const session = client.startSession()
     try {
         session.startTransaction()
@@ -183,143 +187,121 @@ async function groupChatTransaction(
                         ],
                         collectionId : randomId,
                         groupName : groupName,
-                        groupImage : filename
+                        groupImage : groupImage || null
                     }
                 }
             }
         )
-        session.commitTransaction()
+        await session.commitTransaction()
         return true
     } catch (error) {
-        session.abortTransaction()
-        return false
+        await session.abortTransaction()
+        throw new BadRequest(generalErrorMessage("failed to create a new group"))
     }
     finally {
-        session.endSession()
+        await session.endSession()
     }
 }
 
 async function updateNormalChatData
     (database : Db, collectionId : string ,senderId : string, contentType : string, content : string)
     {
-    try {
-        const randomObjectId = randomUUID()
+    const randomObjectId = randomUUID()
 
-        await database.collection<Omit<DocumentInput, "chat">>("normalChats").updateOne(
-            { _id : collectionId},
-            {
-                $push : {
-                    chat : {
-                        userId : senderId,
-                        [contentType] : content,
-                        time : new Date(),
-                        id : randomObjectId 
-                    }
+    await database.collection<Omit<DocumentInput, "chat">>("normalChats").updateOne(
+        { _id : collectionId},
+        {
+            $push : {
+                chat : {
+                    userId : senderId,
+                    [contentType] : content,
+                    time : new Date(),
+                    id : randomObjectId 
                 }
-            },
-        )
-        return randomObjectId
-    } catch (error) {
-        throw new Error("failed to update the normal chat")
-    }
+            }
+        },
+    )
+    return randomObjectId
 }
 // gets used to get the friends and received requests based on type provided
 async function getCustomData (database : Db, userId : string, type : FriendsNRequests) {
 
-    try {
-        const user = await database.collection<DocumentInput>("users").findOne({ _id : userId})
-        if(!user) throw new Error
-        const data = await database.collection<DocumentInput>("users").find(
-        {
-            _id : { $in : user[type]}
-        },
-        {
-            projection : {
-                fullName : 1,
-                profilePicture : 1
-            }
+    const user = await database.collection<DocumentInput>("users").findOne({ _id : userId})
+    if(!user) throw new Error
+    const data = await database.collection<DocumentInput>("users").find(
+    {
+        _id : { $in : user[type]}
+    },
+    {
+        projection : {
+            fullName : 1,
+            profilePicture : 1
         }
-       ).toArray()
-       if(!data) throw new Error
-       return data
-    } catch (error) {
-       console.log("cannot get the custom data") 
-       return
     }
+    ).toArray()
+    return data
 }
 
 // updates the groupChats document based on the content type provided either is it "path" for images or "content"/ normal message
 async function updateGroupChat
     (database : Db, collectionId : string, userId : string, contentType : string, content : string)
     {
-    try {
-        const randomId = randomUUID()
-        const updated = await database.collection<Omit<DocumentInput, "chat">>("groupChats").updateOne(
-            {
-                _id : collectionId
-            },
-            { $push : {
-                chat : {
-                    [contentType ] : content,
-                    id : randomId,
-                    userId : userId,
-                    time : new Date()
-                }
-            }}
-        )
-        if(!updated) throw new Error
-
-        return randomId
-    } catch (error) {
-        throw new Error(error as string)
-    }
+    const randomId = randomUUID()
+    const updated = await database.collection<Omit<DocumentInput, "chat">>("groupChats").updateOne(
+        {
+            _id : collectionId
+        },
+        { $push : {
+            chat : {
+                [contentType ] : content,
+                id : randomId,
+                userId : userId,
+                time : new Date()
+            }
+        }}
+    )
+    if(!updated.modifiedCount) throw new Error
+    return randomId
 }
 
 
 // deletes the specific message based on the collection name
 async function deleteMessageFromChat(database : Db, collectionId : string, messageId : string, collectionName : string){
-    try {
-        const deletedMessage = await database.collection<DocumentInput>(collectionName).updateOne(
-            {_id : collectionId},
-            { $pull : {
-                chat : {
-                    id : messageId
-                } 
+    const deletedMessage = await database.collection<DocumentInput>(collectionName).updateOne(
+        {_id : collectionId},
+        { $pull : {
+            chat : {
+                id : messageId
             } 
-        }
-        )
-        if(!deletedMessage) throw new Error
-            
-        return true
-    } catch (error) {
-        throw new Error(error as string)
+        } 
     }
+    )
+    
+    if(!deletedMessage.modifiedCount) throw new Error
+        
+    return true
 }
 
 async function chatArraySizeFinder(database : Db, collectionId : string , collectionName : string){
-    try {
-        const chatArrayCount = await database.collection<DocumentInput>(collectionName).aggregate(
-            [
-                {
-                    $match: {
-                    _id: collectionId,
-                    },
+    const chatArrayCount = await database.collection<DocumentInput>(collectionName).aggregate(
+        [
+            {
+                $match: {
+                _id: collectionId,
                 },
-                {
-                    $project: {
-                    size: {
-                        $size: "$chat",
-                    },
-                    },
+            },
+            {
+                $project: {
+                size: {
+                    $size: "$chat",
                 },
-            ]
-        ).toArray()
-        if(!chatArrayCount) throw new Error
-        return chatArrayCount[0]
-    } catch (error) {
-        console.log("failed to get the size of the chat Array")
-        throw new Error
-    }
+                },
+            },
+        ]
+    ).toArray()
+
+    if(!chatArrayCount) throw new Error
+    return chatArrayCount[0]
 }
 
 async function groupManager(
@@ -328,22 +310,18 @@ async function groupManager(
     arrayType: operatedArray, 
     memberId : string, 
     collectionId : string, 
-    userId: string){
+    userId: string
+){
+
     const arrayToPerformOperation = `groupChats.$.${arrayType}`
-    try {
-        console.log(operationType, arrayToPerformOperation, memberId, collectionId, userId);
-        const updatedGroup = await database.collection<DocumentInput>("users").updateOne(
-            {_id : userId , "groupChats.collectionId" : collectionId},
-            { [operationType] : {
-              [arrayToPerformOperation] : memberId
-            }}
-        )
-        console.log("the updated group is", updatedGroup)
-        if(!updatedGroup.modifiedCount) throw new Error
-        return updatedGroup
-    } catch (error) {
-        throw new Error
-    }
+    const updatedGroup = await database.collection<DocumentInput>("users").updateOne(
+        {_id : userId , "groupChats.collectionId" : collectionId},
+        { [operationType] : {
+            [arrayToPerformOperation] : memberId
+        }}
+    )
+    if(!updatedGroup.modifiedCount) throw new Error
+    return updatedGroup
 }
 
 function clientMaker(url : string){
