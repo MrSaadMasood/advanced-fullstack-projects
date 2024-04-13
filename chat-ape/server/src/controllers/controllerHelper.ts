@@ -1,7 +1,9 @@
 import { Db, MongoClient, UpdateOptions } from "mongodb"
 import { randomUUID } from "node:crypto"
 import { BadRequest } from "../ErrorHandler/customError"
-import { generalErrorMessage } from "../utils/utils"
+import { generalErrorMessage, generalInputValidationError } from "../utils/utils"
+import { Request } from "express"
+import { validationResult } from "express-validator"
 
 const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
@@ -335,6 +337,11 @@ async function dataBaseConnectionMaker(url : string){
     return database
 }
 
+function incomingDataValidationHandler(req : Request){
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) throw new BadRequest(generalInputValidationError)
+}
+
 export { 
     sendingRequestsTransaction,
     addFriendTransaction,
@@ -348,5 +355,6 @@ export {
     dataBaseConnectionMaker,
     chatArraySizeFinder,
     groupManager,
-    updateNormalChatData
+    updateNormalChatData,
+    incomingDataValidationHandler
 }
