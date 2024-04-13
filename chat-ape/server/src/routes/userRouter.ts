@@ -1,4 +1,5 @@
-import express from "express"
+import express from 'express' 
+import { Request } from 'express' 
 const router = express.Router()
 import {
     addFriend,
@@ -41,8 +42,8 @@ import {
 
 import multer from "multer"
 import path from "path"
-import { stringValidation, queryValidation } from "../middlewares/middlewares"
-import { Request } from 'express' 
+import { stringValidation, queryValidation, paramValidation } from "../middlewares/middlewares"
+// import { allUsersCache, chachedFriendList } from '../controllers/redisControllers';
 
 // creating a storage instance which will store the images based on the type of the image added to the reques body and also
 // generates the random names that dont clash.
@@ -76,13 +77,13 @@ const upload = multer({ storage : storage })
 router.get("/updated-data",  getUpdatedData)
 
 // get data of all users
-router.get("/get-users",  getUsersData)
+router.get("/get-users" ,getUsersData)
 
 // sending follow request
 router.post("/send-request", stringValidation("receiverId") ,  sendFollowRequest)
 
 // get friends data
-router.get("/get-friends",  getFriends)
+router.get("/get-friends" , getFriends)
 
 // get follow requests data
 router.get("/follow-requests",  getFollowRequests)
@@ -91,13 +92,13 @@ router.get("/follow-requests",  getFollowRequests)
 router.post("/add-friend", stringValidation("friendId"),  addFriend)
 
 // removes friend from the list
-router.delete("/remove-friend/:id",  removeFriend)
+router.delete("/remove-friend/:id", paramValidation("id"),  removeFriend)
 
 // removes the follow request
-router.delete("/remove-follow-request/:id",  removeFollowRequest)
+router.delete("/remove-follow-request/:id", paramValidation("id"),  removeFollowRequest)
 
 // gets the chat data with a particular friend / user
-router.get("/get-chat/:id", stringValidation("docsSkipCount") , getChatData )
+router.get("/get-chat/:id", paramValidation("id") ,stringValidation("docsSkipCount") , getChatData )
 
 // adds the message sent by the user to the normal chats collection
 router.post("/chat-data", stringValidation("content"), stringValidation("collectionId"),  updateChatData)
@@ -112,10 +113,10 @@ router.post("/add-chat-image",(req , _res, next)=>{ req.chatImage = true ; next(
 router.post("/add-profile-image", (req, _res,next)=>{ req.profileImage = true; next()} , upload.single("image"),  saveProfilePicturePath)
 
 // sends the chat images to the user 
-router.get("/get-chat-image/:name",  getChatImage )
+router.get("/get-chat-image/:name", paramValidation("name"), getChatImage )
 
 // gets the profile picture 
-router.get("/get-profile-picture/:name",  getProfilePicture )
+router.get("/get-profile-picture/:name", paramValidation("name"), getProfilePicture )
 
 // saves the bio of the user to the database
 router.post("/change-bio", stringValidation("bio"),  changeBio)
@@ -130,10 +131,10 @@ router.post("/create-new-group",(req ,_res ,next)=>{ req.groupImage = true; next
 router.get("/group-chats",  getGroupChats)
 
 // to get the group picture
-router.get("/group-picture/:name",  getGroupPicture)
+router.get("/group-picture/:name", paramValidation("name"),  getGroupPicture)
 
 // get all the messages of a specific group chat
-router.get("/get-group-chat/:chatId",  getGroupChatData)
+router.get("/get-group-chat/:chatId",paramValidation("chatId"),  getGroupChatData)
 
 // adds image sent inside the group chat
 router.post("/add-group-chat-image", (req, _res ,next)=>{ req.groupImage = true; next()}, upload.single("image"),  saveGroupChatImage)
@@ -149,7 +150,7 @@ router.post("/filter-chat", stringValidation("date"), stringValidation("chatType
 router.delete("/delete-message", queryValidation("collectionId"), queryValidation("type"), queryValidation("messageId") , deleteMessage)
 
 // deletes the previous profile picture of the user
-router.delete("/delete-previous-profile-picture/:name",  deletePrevProfilePicture)
+router.delete("/delete-previous-profile-picture/:name", paramValidation("name"),  deletePrevProfilePicture)
 
 router.delete(`/remove-group-member`, queryValidation("collectionId"), queryValidation("memberId"),  removeMemberFromGroup )
 

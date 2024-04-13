@@ -9,7 +9,7 @@ const {
     updateGroupChat,
     deleteMessageFromChat,
     convertStringArrayToObjectIdsArray
-} = require("../../controllers/controllerHelpers")
+} = require("../../src/controllers/controllerHelpers")
 
 const { client, database , errorClient, errorDatabase} = require("../testUtils")
 jest.mock("mongodb", ()=>{

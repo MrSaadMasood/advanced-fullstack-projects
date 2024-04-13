@@ -2,8 +2,17 @@ import { Db } from "mongodb";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config()
+
 const { ACCESS_SECRET, REFRESH_SECRET } = process.env
 
+const generalInputValidationError = {
+    message : "incorrect input provided",
+    statusCode : 400
+}
+
+const generalErrorMessage = (message : string ) =>{
+    return { message }
+}
 // to generate the access token
 async function generateAccessRefreshTokens(user : tokenUser, database : Db ) {
     try {
@@ -29,5 +38,7 @@ function fileValidator(file : Express.Multer.File | undefined){
 export {
     generateAccessRefreshTokens,
     fileValidator,
-    envValidator
+    envValidator,
+    generalInputValidationError,
+    generalErrorMessage,
 }

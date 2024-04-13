@@ -36,3 +36,8 @@ type operationType = "$push" | "$pull"
 type operatedArray = "members" | "admins"
 type FriendsNRequests = "receivedRequests" | "friends"
 type ChatType = "normal" | "group"
+
+type Users = Pick<DocumentInput, "_id"> & {
+    profilePicture : string
+    fullName : string
+}

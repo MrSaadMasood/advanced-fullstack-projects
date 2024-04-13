@@ -24,8 +24,8 @@ const {
     updateGroupChatData, 
     deleteMessage,
     deletePrevProfilePicture,
-    saveChatImagePath } = require("../../controllers/userController") 
-const helpers = require("../../controllers/controllerHelpers")
+    saveChatImagePath } = require("../../src/controllers/userController") 
+const helpers = require("../../src/controllers/controllerHelpers")
 
 jest.mock("mongodb", ()=>{
     

@@ -1,5 +1,5 @@
 import { Socket} from "socket.io"
-
+import "express-async-errors"
 import express from "express"
 import { Server } from "socket.io"
 import http from "http"
@@ -9,15 +9,16 @@ import cluster from "node:cluster"
 import os from "os"
 import { setupPrimary, createAdapter } from "@socket.io/cluster-adapter"
 import morgan from "morgan"
-import { serverLogger } from "./logger/conf/loggerConfiguration"
+import { serverLogger } from "./src/logger/conf/loggerConfiguration"
 
-import authIndex from "./routes/authUser"
-import userRouter from "./routes/userRouter"
-import factor2Router from "./routes/factor2Auth"
+import authIndex from "./src/routes/authRouter"
+import userRouter from "./src/routes/userRouter"
+import factor2Router from "./src/routes/factor2Router"
 
 import { connectData } from "./connection"
-import { authenticateUser, factor2RouteTokenAuthenticator } from "./middlewares/middlewares"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/middlewares"
 import dotenv from "dotenv"
+import { errorMiddleware } from "./src/middlewares/errorMiddleware"
 dotenv.config()
 
 const numCPUs = os.availableParallelism()
@@ -38,7 +39,6 @@ if(cluster.isPrimary){
 else { 
     const app = express()
     const server = http.createServer(app)
-    
     // creating a new server instance form the above server made with http. this server instance will be used for websock
     const io = new Server(server , {
         cors : {
@@ -73,7 +73,9 @@ else {
 
     app.use("/factor2", factor2RouteTokenAuthenticator , factor2Router)
 
-    app.use("/user", authenticateUser , userRouter)
+    app.use("/user", authenticateUser, userRouter)
+
+    app.use(errorMiddleware)
 
     // the io instance of the server from the socket.io is used to listen for the connection event
     // if connected the socket object / instance will be given which will listen to customized eve

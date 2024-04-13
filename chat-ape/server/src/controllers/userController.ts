@@ -1,5 +1,5 @@
 import { Db } from "mongodb";
-import { connectData, getData } from "../connection";
+import { connectData, getData } from "../../connection";
 import { validationResult } from "express-validator";
 import path from "path";
 import fs from "fs";
@@ -17,7 +17,7 @@ import {
     chatArraySizeFinder, 
     groupManager, 
     updateNormalChatData
- } from "./controllerHelpers";
+ } from "./controllerHelper";
 import { logger } from "../logger/conf/loggerConfiguration";
 import { Request, Response } from 'express' 
 import { envValidator, fileValidator } from "../utils/utils";

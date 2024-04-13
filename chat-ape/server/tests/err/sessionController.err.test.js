@@ -1,4 +1,4 @@
-const { createUser, loginUser, refreshUser, logoutUser } = require("../../controllers/sessionController")
+const { createUser, loginUser, refreshUser, logoutUser } = require("../../src/controllers/sessionController")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
