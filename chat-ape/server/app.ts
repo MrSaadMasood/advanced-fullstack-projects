@@ -1,8 +1,11 @@
 import { Socket} from "socket.io"
 import "express-async-errors"
 import express from "express"
+import compression from 'compression' 
+import fs from 'fs' 
+import path from 'path' 
 import { Server } from "socket.io"
-import http from "http"
+import https from 'https' 
 import cors from "cors"
 import helmet from "helmet"
 import cluster from "node:cluster"
@@ -23,6 +26,11 @@ dotenv.config()
 
 const numCPUs = os.availableParallelism()
 const { PORT, CROSS_ORIGIN } = process.env
+const dirPath = import.meta.dirname
+const httpsServerOptions = {
+    key : fs.readFileSync(path.join(dirPath, "./cert/private-key.pem")),
+    cert : fs.readFileSync(path.join(dirPath, "./cert/public-key.pem"))
+}
 
 morgan.token("authoken", (req, _res)=>{
     return req.headers["authorization"]
@@ -38,7 +46,7 @@ if(cluster.isPrimary){
 }
 else { 
     const app = express()
-    const server = http.createServer(app)
+    const server = https.createServer(httpsServerOptions, app)
     // creating a new server instance form the above server made with http. this server instance will be used for websock
     const io = new Server(server , {
         cors : {
@@ -52,7 +60,7 @@ else {
     app.use(cors({
         origin : CROSS_ORIGIN
     }))
-
+    app.use(compression())
     app.use(express.json())
     app.use(express.urlencoded({ extended : false}))
     app.use(express.static("uploads"))
@@ -74,6 +82,9 @@ else {
     app.use("/factor2", factor2RouteTokenAuthenticator , factor2Router)
 
     app.use("/user", authenticateUser, userRouter)
+    app.get("/random", (req, res)=>{
+        res.json("this is running with htps server")
+    })
 
     app.use(errorMiddleware)
 
