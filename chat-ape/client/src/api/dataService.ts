@@ -81,11 +81,11 @@ export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} 
     }
 }
 
-export async function logoutUser({ token } : { token : string}){
+export async function logoutUser({ refreshToken } : { refreshToken : string}){
     try {
         await server.delete(`/auth-user/logout`, {
             data : {
-                token
+                refreshToken 
             }
         })
     } catch (error) {

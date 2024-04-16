@@ -12,7 +12,8 @@
     "noEmit": true,
     "moduleResolution": "Node",
     "strictNullChecks": true,
-    "allowJs": true
+    "allowJs": true,
+    "typeRoots": ["./Types"]
 
   }
 }

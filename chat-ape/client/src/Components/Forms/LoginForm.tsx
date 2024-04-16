@@ -32,7 +32,7 @@ export default function LoginForm() {
     const login = useGoogleLogin({
         onSuccess : async (tokenResponse)=> {
             try {
-                const response = await server.post("/auth-user/google", { code : tokenResponse.code})
+                const response = await server.post("/auth-user/google", { code : encodeURIComponent(tokenResponse.code)})
                 const data : UserSaved = response.data
                 handleLoginDataFromServer(data)
             } catch (error) {
@@ -168,12 +168,6 @@ export default function LoginForm() {
                         onClick={()=>login()}
                     >
                         Sign in with Google 
-                    </button>
-                    <button 
-                        className="p-2 h-10 w-[23rem] rounded-lg bg-red-600 hover:bg-red-700 "
-                        type="button"
-                    >
-                        Sign In with GitHub
                     </button>
                 </div>
                 

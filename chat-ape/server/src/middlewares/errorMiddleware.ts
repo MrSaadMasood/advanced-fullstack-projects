@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from "express";
 import { BadRequest } from "../ErrorHandler/customError";
 import { logger } from "../logger/conf/loggerConfiguration";
 
-export const errorMiddleware = (err : Error, _req : Request, res : Response, _next : NextFunction ) => {
+export const errorMiddleware : ErrorRequestHandler = (err, _req, res, _next) => {
 
     if (err instanceof BadRequest) {
         logger.error(err.stack)

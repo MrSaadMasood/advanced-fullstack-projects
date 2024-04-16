@@ -1,17 +1,12 @@
 declare namespace Express {
     interface Request {
-        user : tokenUser
-        chatImage : boolean
-        profileImage : boolean
-        groupImage : boolean
-        incomingMessage : {
-            isGoogleUser : boolean
-        }
+        chatImage : string
+        profileImage : string
+        groupImage : string
         ReqQuery : {
             collectionId? : string,
             messageId? : string,
             type: ChatType
         }
-                
     }
 }

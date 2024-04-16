@@ -1,8 +1,8 @@
-import { NextFunction, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 
 export const imageHandlerMiddleware = (propertyName : string) => {
-    return ( req : any , _res : Response , next : NextFunction) => {
-        req[propertyName] = true
+    return ( req : Request , _res : Response , next : NextFunction) => {
+        Object.defineProperty(req, propertyName , { value : true })
         next()
     }
 }

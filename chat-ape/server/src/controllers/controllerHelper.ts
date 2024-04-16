@@ -308,8 +308,8 @@ async function chatArraySizeFinder(database : Db, collectionId : string , collec
 
 async function groupManager(
     database : Db, 
-    operationType: operationType , 
-    arrayType: operatedArray, 
+    operationType: OperationType, 
+    arrayType: OperatedArray, 
     memberId : string, 
     collectionId : string, 
     userId: string

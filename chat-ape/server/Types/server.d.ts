@@ -1,13 +1,28 @@
+interface ExtraUserProps {
+    isGoogleUser : boolean
+    receivedRequests : string[],
+    friends : string[]
+    sentRequests : string[]
+    is2FactorAuthEnabled: boolean
+}
+
+interface GeneralObjectWithStringProps {
+    [ index : string ] : string
+}
+
+type CreateNewUser = 
+    GeneralObjectWithStringProps & 
+    ExtraUserProps
 type ConnectDataCallback = (value? : Error) => void
 
-interface tokenUser {
+interface JWTTokenPayload {
     id : string
     email? : string
 }
 
-interface DocumentInput {
+interface MongoDocument {
     _id : string
-    chat : Message[],
+    chat? : Message[],
     normalChats? : {
         friendId : string,
         collectionId : string
@@ -20,9 +35,8 @@ interface DocumentInput {
         groupName : string
         groupImage : string | null
     }[],
-    receivedRequests? : string[],
-    friends? : string[]
 }
+type DocumentInput = Partial<Pick<CreateNewUser, "receivedRequests" | "friends">> & MongoDocument 
 
 interface Message {
     userId : string,
@@ -30,14 +44,14 @@ interface Message {
     content :string,
     id : string
 }
-type User = Exclude<keyof DocumentInput, "_id" | "chat"> 
+type AppUser = Exclude<keyof DocumentInput, "_id" | "chat"> 
 
-type operationType = "$push" | "$pull"
-type operatedArray = "members" | "admins"
+type OperationType = "$push" | "$pull"
+type OperatedArray = "members" | "admins"
 type FriendsNRequests = "receivedRequests" | "friends"
 type ChatType = "normal" | "group"
 
-type Users = Pick<DocumentInput, "_id"> & {
+type AllUsersData = Pick<DocumentInput, "_id"> & {
     profilePicture : string
     fullName : string
 }

@@ -1,5 +1,4 @@
 import express from 'express' 
-import { Request } from 'express' 
 const router = express.Router()
 import {
     addFriend,
@@ -34,11 +33,11 @@ import {
     updateChatData,
     updateGroupChatData, 
 } from "../controllers/userController";
-// import { fileURLToPath } from 'url';
-// import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 import multer from "multer"
 import path from "path"
@@ -49,9 +48,8 @@ import { imageHandlerMiddleware } from '../middlewares/imageHandler';
 // creating a storage instance which will store the images based on the type of the image added to the reques body and also
 // generates the random names that dont clash.
 const storage = multer.diskStorage({
-    destination : (req : Request, _res ,  callback)=>{
-        let absolutePath;
-
+    destination : (req, file ,  callback)=>{
+        let absolutePath : string | undefined;
         if(req.chatImage){
             absolutePath = path.join(__dirname, "../uploads/chat-images")
         }
@@ -61,8 +59,8 @@ const storage = multer.diskStorage({
         if(req.groupImage){
             absolutePath = path.join(__dirname , "../uploads/group-images")
         }
-        if(!absolutePath) return
-        callback(null, absolutePath)
+        if(!absolutePath) return callback(new Error, file.filename)
+        return callback(null, absolutePath)
     },
 
     filename : (_req , file, callback)=>{
@@ -99,7 +97,7 @@ router.delete("/remove-friend/:id", paramValidation("id"),  removeFriend)
 router.delete("/remove-follow-request/:id", paramValidation("id"),  removeFollowRequest)
 
 // gets the chat data with a particular friend / user
-router.get("/get-chat/:id", paramValidation("id") ,stringValidation("docsSkipCount") , getChatData )
+router.get("/get-chat/:id", paramValidation("id") , queryValidation("docsSkipCount") , getChatData )
 
 // adds the message sent by the user to the normal chats collection
 router.post("/chat-data", stringValidation("content"), stringValidation("collectionId"),  updateChatData)

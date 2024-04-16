@@ -14,7 +14,7 @@ const generalErrorMessage = (message : string ) =>{
     return { message }
 }
 // to generate the access token
-async function generateAccessRefreshTokens(user : tokenUser, database : Db ) {
+async function generateAccessRefreshTokens(user : JWTTokenPayload, database : Db ) {
     try {
         const accessToken =  jwt.sign(user, envValidator(ACCESS_SECRET, "access secret"));
         const refreshToken = jwt.sign(user, envValidator(REFRESH_SECRET, "refresh secret"))

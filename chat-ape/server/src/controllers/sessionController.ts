@@ -12,10 +12,12 @@ import { OAuth2Client } from "google-auth-library";
 import { randomUUID } from "node:crypto";
 import { googleTokensExtractor, refreshGoogleAccessToken } from "../middlewares/middlewares";
 import { logger } from "../logger/conf/loggerConfiguration";
-import { Request, Response } from 'express' 
+import { Response } from 'express' 
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
 import { BadRequest } from '../ErrorHandler/customError';
+import { incomingDataValidationHandler } from './controllerHelper';
+import { CustomRequest } from '../../Types/customRequest';
 
 dotenv.config()
 
@@ -38,11 +40,9 @@ connectData((err) => {
 });
 
 // based on the validation result the password is hased and the user data is stored in the database
-export async function createUser(req : Request, res : Response) {
-    const result = validationResult(req);
-    const { fullName, email, password, isGoogleUser, profilePicture, id } = req.body;
-    if (!result.isEmpty()) throw new BadRequest(generalInputValidationError)
-    
+export const createUser  = async (req : CustomRequest, res : Response) => {
+    incomingDataValidationHandler(req)
+    const { fullName, email, password, isGoogleUser, profilePicture, id }  = req.body;
     const hashedPassword = await bcrypt.hash(password, 10) 
     logger.info("password successfully hashed")
     
@@ -59,7 +59,7 @@ export async function createUser(req : Request, res : Response) {
         is2FactorAuthEnabled : false
 
     } 
-    const createdUser = await database.collection("users").insertOne(user);
+    const createdUser = await database.collection<DocumentInput>("users").insertOne(user);
 
     if (!createdUser) throw new BadRequest(generalErrorMessage("failed to create a new user"));
 
@@ -74,11 +74,10 @@ export async function createUser(req : Request, res : Response) {
 }
 
 // based on the validation result the user is verified and the specific information is projected and sent back
-export async function loginUser(req : Request, res : Response) {
-    const result = validationResult(req);
+export const loginUser  = async (req : CustomRequest, res : Response) => {
     const { email, password } = req.body;
-    if (!result.isEmpty()) throw new BadRequest(generalInputValidationError)
-    const user = await database.collection("users").findOne(
+    incomingDataValidationHandler(req)
+    const user = await database.collection<CreateNewUser>("users").findOne(
     { email: email },
     {
         projection: {
@@ -113,7 +112,7 @@ export async function loginUser(req : Request, res : Response) {
 
 // on token expiration the request is sent from the front end to and the access token is refreshed if the refresh token
 // is present in the database of the user
-export async function refreshUser(req : Request, res : Response) {
+export const refreshUser  = async (req : CustomRequest, res : Response) => {
     const { refreshToken, isGoogleUser } = req.body;
     const tokenCheck = await database.collection("tokens").findOne({ token: refreshToken });
 
@@ -122,7 +121,7 @@ export async function refreshUser(req : Request, res : Response) {
         const credentials = await refreshGoogleAccessToken(refreshToken)
         return res.json({ newAccessToken : credentials.access_token })
     }
-    const data = verify(refreshToken, envValidator(REFRESH_SECRET, "refresh secret")) as tokenUser
+    const data = verify(refreshToken, envValidator(REFRESH_SECRET, "refresh secret")) as JWTTokenPayload
 
     const newAccessToken = sign({ id: data.id }, envValidator(ACCESS_SECRET, "access secret"), { expiresIn : "5m"});
     if (!newAccessToken) throw new BadRequest({ message : "Bad Request", statusCode : 399});
@@ -131,9 +130,9 @@ export async function refreshUser(req : Request, res : Response) {
 }
 
 // on logout the refreshed token is removed from the daatabase
-export async function logoutUser(req : Request, res : Response) {
-    const { token } = req.body;
-    const deleteToken = await database.collection("tokens").deleteOne({ token: token });
+export const logoutUser  = async (req : CustomRequest, res : Response) => {
+    const { refreshToken } = req.body;
+    const deleteToken = await database.collection("tokens").deleteOne({ token: refreshToken });
 
     if (deleteToken.deletedCount > 0) {
         res.json({ message: "user successfully logged out" });
@@ -142,9 +141,10 @@ export async function logoutUser(req : Request, res : Response) {
     }
 }
 
-export async function googleAuthenticator(req : Request, res : Response){
-    const { code } = req.body
-        const tokens = await googleTokensExtractor(code)    
+export const googleAuthenticator  = async (req : CustomRequest, res : Response) => {
+    const { code }  = req.body
+        const decodedCode = decodeURIComponent(code) 
+        const tokens = await googleTokensExtractor(decodedCode)    
         if(!tokens) throw new Error("failed to extract tokends from google code")
         const verifiedToken = await oAuth2Client.verifyIdToken({
             idToken : tokens.id_token || "",
@@ -154,7 +154,7 @@ export async function googleAuthenticator(req : Request, res : Response){
         if(!payload) throw new Error("no google payload after token verification")
         const { name , email , picture, at_hash, sub } = payload
 
-    const ifUserExists = await database.collection("users").findOne({ email : email })
+    const ifUserExists = await database.collection("users").findOne<CreateNewUser>({ email : email })
     if(!ifUserExists){
         const userData = {
             id : sub,
@@ -188,9 +188,9 @@ export async function googleAuthenticator(req : Request, res : Response){
     return res.json(googleTokens)
 }
 
-export async function generateOTP(req : Request, res : Response){
-    const { email } = req.user
-    const user = await database.collection("users").findOne({ email })
+export const generateOTP  = async (req : CustomRequest, res : Response) => {
+    const { email } = req.user!
+    const user = await database.collection("users").findOne<CreateNewUser>({ email })
     if(!user) throw new Error("failed to find the user to generate otp")
     if(!user.is2FactorAuthEnabled) throw new Error("factor 2 authentication is not enabled for the user")
     const secret = authenticator.generateSecret()
@@ -205,13 +205,13 @@ export async function generateOTP(req : Request, res : Response){
     return res.status(200).json(QRcode)
 } 
 
-export async function verifyOTP(req : Request, res : Response){
-    const { email } = req.user
+export const verifyOTP = async (req : CustomRequest, res : Response) => {
+    const { email } = req.user!
     const {otp, refreshToken : refrshTokenBody, isGoogleUser } = req.body
     const result = validationResult(req)
     if(!result.isEmpty()) throw new BadRequest(generalErrorMessage("otp verification failed"))
 
-    const user = await database.collection("users").findOne({ email })
+    const user = await database.collection<CreateNewUser>("users").findOne({ email })
     if(!user) throw new Error("user not found to verify the otp")
     if(!user.is2FactorAuthEnabled) throw new Error("factor 2 auth not enabled for the user")
     const isCodeVerified = authenticator.check(otp, user.factor2AuthSecret)
@@ -228,7 +228,7 @@ export async function verifyOTP(req : Request, res : Response){
     return res.json({ accessToken, refreshToken, isGoogleUser : false, is2FactorAuthEnabled : true })
 }
 
-export async function enableF2a(req : Request, res : Response){
+export const enableF2a  = async (req : CustomRequest, res : Response) => {
     const { email , isGoogleUser, refreshToken } = req.body
     const result = validationResult(req)
     if(!result.isEmpty()) throw new BadRequest(generalInputValidationError)
@@ -248,7 +248,7 @@ export async function enableF2a(req : Request, res : Response){
     })
 }
 
-export async function disableFactor2Auth(req : Request, res : Response){
+export const disableFactor2Auth  = async  (req : CustomRequest, res : Response) => {
     const { id } = req.params
     await database.collection<DocumentInput>("users").updateOne({ _id : id},
         {

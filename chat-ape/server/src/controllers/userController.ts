@@ -20,12 +20,13 @@ import {
     incomingDataValidationHandler
  } from "./controllerHelper";
 import { logger } from "../logger/conf/loggerConfiguration";
-import { Request, Response } from 'express' 
+import { Response } from 'express' 
 import { envValidator, fileValidator, generalErrorMessage } from "../utils/utils";
 import dotenv from "dotenv"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { BadRequest } from "../ErrorHandler/customError";
+import { CustomRequest } from "../../Types/customRequest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,8 +42,8 @@ connectData((err)=>{
 })
 
 // sends the userData to the client based on the user id
-export const getUpdatedData = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     
     const updatedData = await database.collection<DocumentInput>("users").findOne(
         { _id : id}, { projection : { password : 0}}
@@ -52,7 +53,7 @@ export const getUpdatedData = async(req: Request, res: Response)=>{
 }
 
 // get the full name and id of all users from the database
-export const getUsersData = async( _req : Request, res: Response)=>{
+export const getUsersData = async( _req : CustomRequest, res: Response)=>{
     
     const users = await database.collection<DocumentInput>("users").find({},
         { 
@@ -73,9 +74,9 @@ export const getUsersData = async( _req : Request, res: Response)=>{
 }
 
 // adds the sender id to the receivers received requests array
-export const sendFollowRequest = async( req: Request, res: Response)=>{
+export const sendFollowRequest = async( req: CustomRequest, res: Response)=>{
     const { receiverId } = req.body
-    const { id } = req.user
+    const { id } = req.user!
     const client = clientMaker(mongoUrl) 
     await sendingRequestsTransaction(client, id, receiverId)
     logger.info("follow request successfully sent")
@@ -83,8 +84,8 @@ export const sendFollowRequest = async( req: Request, res: Response)=>{
 }
 
 // get the firends data from the database
-export const getFriends = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const getFriends = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const friends = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -123,15 +124,15 @@ export const getFriends = async(req: Request, res: Response)=>{
 }
 
 // gets the follow request from the database
-export const getFollowRequests = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const getFollowRequests = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const receivedRequests = await getCustomData( database ,id, "receivedRequests")
     return res.json( receivedRequests )
 }
 
 // adds the friends to the user
-export const addFriend = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const addFriend = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const { friendId } = req.body
     const client = clientMaker(mongoUrl)
     const friendData = await addFriendTransaction(client , id, friendId)
@@ -140,8 +141,8 @@ export const addFriend = async(req: Request, res: Response)=>{
 }
 
 // removes the friend from the friends array
-export const removeFriend = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const removeFriend = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const friendId = req.params.id 
     incomingDataValidationHandler(req)
     const client = clientMaker(mongoUrl)
@@ -151,18 +152,18 @@ export const removeFriend = async(req: Request, res: Response)=>{
 }
 
 // remove the follow request if one does not want to add the friend
-export const removeFollowRequest = async(req: Request, res: Response) =>{
+export const removeFollowRequest = async(req: CustomRequest, res: Response) =>{
     const idToRemove = req.params.id
     incomingDataValidationHandler(req)
-    const { id } = req.user
+    const { id } = req.user!
     const client = clientMaker(mongoUrl)
     await removeFollowRequestTransaction( client, id, idToRemove)
     res.json({message : "successfully removed follow request"})
 }
 
 // validates the data sent and then adds the chat message to that friends chat collection
-export const updateChatData = async (req: Request, res: Response)=>{
-    const { id } = req.user
+export const updateChatData = async (req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const { content, collectionId } = req.body
     incomingDataValidationHandler(req)
     const randomMessageId = await updateNormalChatData(database, collectionId, id, "content", content)
@@ -172,17 +173,17 @@ export const updateChatData = async (req: Request, res: Response)=>{
 // the the chat data with the friend does not exist it throw and error and sends 400 http status
 // if the chats exists it checks which friends id matches the friend id in normal chats and
 // fetches the data from the "normalChats" collection
-export const getChatData = async (req: Request, res: Response) =>{
+export const getChatData = async (req: CustomRequest, res: Response) =>{
     const collectionId = req.params.id
-    // const { docsSkipCount = 0 } = req.query
+    const { docsSkipCount = 0 } = req.query
     incomingDataValidationHandler(req) 
     const chatArrayCountObject = await chatArraySizeFinder(database, collectionId, "normalChats")
-    // if(chatArrayCountObject.size < 10){
-    //     logger.info("the chat array has less than 10 messages")
-    //     const chatData = await database.collection<DocumentInput>("normalChats").findOne({ _id : collectionId})
-    //     return res.json(chatData)
-    // }
-    // if(parseInt(docsSkipCount as string) > chatArrayCountObject.size) return res.json({ _id : chatArrayCountObject._id, chat : []})
+    if(chatArrayCountObject.size < 10){
+        logger.info("the chat array has less than 10 messages")
+        const chatData = await database.collection<DocumentInput>("normalChats").findOne({ _id : collectionId})
+        return res.json(chatData)
+    }
+    if(parseInt(docsSkipCount as string) > chatArrayCountObject.size) return res.json({ _id : chatArrayCountObject._id, chat : []})
     const chatData = await database.collection<DocumentInput>("normalChats").aggregate(
         [
             {
@@ -216,8 +217,8 @@ export const getChatData = async (req: Request, res: Response) =>{
 }
 
 // uses aggregation pipeline to get the friends name and their last messages sent
-export const getChatList = async(req: Request, res: Response) =>{
-    const { id} = req.user
+export const getChatList = async(req: CustomRequest, res: Response) =>{
+    const { id} = req.user!
     const chatList = await database.collection<DocumentInput>("users").aggregate(
     [
         {
@@ -276,9 +277,10 @@ export const getChatList = async(req: Request, res: Response) =>{
 }
 
 // saves the filename to the database. same as the add message transaction but here the path field is used instead of "content".
-export const saveChatImagePath = async (req: Request, res: Response)=>{
+export const saveChatImagePath = async (req: CustomRequest, res: Response)=>{
     const { collectionId } = req.body
-    const { id } = req.user
+    const { id } = req.user!
+    
     incomingDataValidationHandler(req)
     const filename = fileValidator(req.file)
     const randomMessageId = await updateNormalChatData(database, collectionId, id, "path", filename)
@@ -286,7 +288,7 @@ export const saveChatImagePath = async (req: Request, res: Response)=>{
 }
 
 // gets the image from the server static files and sends it
-export const getChatImage = (req: Request, res: Response)=>{
+export const getChatImage = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)
     const filepath = path.join(__dirname, `../uploads/chat-images/${name}`)
@@ -294,8 +296,8 @@ export const getChatImage = (req: Request, res: Response)=>{
 }
 
 // updates the bio of the user
-export const changeBio = async(req: Request, res: Response)=>{
-    const { id } = req.user
+export const changeBio = async(req: CustomRequest, res: Response)=>{
+    const { id } = req.user!
     const { bio } = req.body
     incomingDataValidationHandler(req) 
     const user = await database.collection<DocumentInput>("users").updateOne(
@@ -307,8 +309,8 @@ export const changeBio = async(req: Request, res: Response)=>{
 }
 
 // adds the profile picture name to the users document
-export const saveProfilePicturePath = async (req: Request, res: Response)=>{
-    const { id} = req.user
+export const saveProfilePicturePath = async (req: CustomRequest, res: Response)=>{
+    const { id} = req.user!
     const filename = fileValidator(req.file)
     const addingProfilePicture = await database.collection<DocumentInput>("users").updateOne(
         {_id : id}, 
@@ -323,7 +325,7 @@ export const saveProfilePicturePath = async (req: Request, res: Response)=>{
 }
 
 // gets the static profile picture to the user
-export const getProfilePicture  = (req: Request, res: Response)=>{
+export const getProfilePicture  = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)    
     const filepath = path.join(__dirname, `../uploads/profile-images/${name}`)
@@ -331,7 +333,7 @@ export const getProfilePicture  = (req: Request, res: Response)=>{
 }
 
 // deletes the previous profile picture of the user
-export const deletePrevProfilePicture = (req: Request, res: Response)=>{
+export const deletePrevProfilePicture = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)    
     fs.unlink(`./uploads/profile-images/${name}`, (err)=>{
@@ -342,9 +344,9 @@ export const deletePrevProfilePicture = (req: Request, res: Response)=>{
 } 
 
 // gets the data of all the friends.
-export const getFriendsData = async (req: Request, res: Response)=>{
+export const getFriendsData = async (req: CustomRequest, res: Response)=>{
 
-    const {id} = req.user
+    const {id} = req.user!
     const friendsData = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -375,10 +377,10 @@ export const getFriendsData = async (req: Request, res: Response)=>{
 }
 
 // creates a new group form the given information
-export const createNewForm = async (req: Request, res: Response)=>{
+export const createNewForm = async (req: CustomRequest, res: Response)=>{
     incomingDataValidationHandler(req) 
     const { members, groupName} = req.body
-    const { id} = req.user
+    const { id} = req.user!
     const filename = fileValidator(req.file)
     const parsedMembers = JSON.parse(members)
     const allMembers = parsedMembers.concat(id)
@@ -389,8 +391,8 @@ export const createNewForm = async (req: Request, res: Response)=>{
 }
 
 // gets the group names and the last message in the group and the username that sent the message
-export const getGroupChats = async (req: Request, res: Response)=>{
-    const {id } = req.user
+export const getGroupChats = async (req: CustomRequest, res: Response)=>{
+    const {id } = req.user!
     const groupChats = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -451,16 +453,16 @@ export const getGroupChats = async (req: Request, res: Response)=>{
 }
 
 // sends the group picture to the client
-export const getGroupPicture = (req: Request, res: Response)=>{
+export const getGroupPicture = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)
     const filepath = path.join(__dirname, `../uploads/group-images/${name}`)
     res.sendFile(filepath)
 }
 
-export const getGroupMembers = async (req: Request, res: Response)=>{
+export const getGroupMembers = async (req: CustomRequest, res: Response)=>{
     const { collectionId } = req.body
-    const { id } = req.user
+    const { id } = req.user!
     incomingDataValidationHandler(req) 
     const members = await database.collection<DocumentInput>("users").aggregate(
         [
@@ -500,7 +502,7 @@ export const getGroupMembers = async (req: Request, res: Response)=>{
     res.json(members)
 }
 
-export const filterChat = async (req: Request, res: Response)=>{
+export const filterChat = async (req: CustomRequest, res: Response)=>{
     const { date, chatType, groupMemberId, collectionId } = req.body
     incomingDataValidationHandler(req)
     const dateString = new Date(date).toLocaleString(undefined, {
@@ -605,7 +607,7 @@ export const filterChat = async (req: Request, res: Response)=>{
     return res.json({ _id : collectionId, chat : chatData, chatType})
 }
 // gets all the messages of a specific group chat
-export const getGroupChatData = async(req: Request, res: Response)=>{
+export const getGroupChatData = async(req: CustomRequest, res: Response)=>{
     const { chatId } = req.params
     incomingDataValidationHandler(req)
     // const { docsSkipCount = 0 } = req.query
@@ -660,8 +662,8 @@ export const getGroupChatData = async(req: Request, res: Response)=>{
 }
 
 // saves the image name in the chat document
-export const saveGroupChatImage = async(req: Request, res: Response)=>{
-    const { id} = req.user
+export const saveGroupChatImage = async(req: CustomRequest, res: Response)=>{
+    const { id} = req.user!
     const filename = fileValidator(req.file)
     const { groupId } = req.body
     incomingDataValidationHandler(req)
@@ -670,16 +672,16 @@ export const saveGroupChatImage = async(req: Request, res: Response)=>{
 }
 
 // updates the message send sent in the database
-export const updateGroupChatData = async(req: Request, res: Response)=>{
+export const updateGroupChatData = async(req: CustomRequest, res: Response)=>{
     const { groupId, content} = req.body
-    const { id} = req.user
+    const { id} = req.user!
     incomingDataValidationHandler(req)
     const result = await updateGroupChat(database, groupId, id, "content", content)
     res.json({ id : result})
 }
 
 // depending upon the chat type the collection<DocumentInput>name is decided and the message is deleted from the database
-export const deleteMessage = async(req: Request, res: Response)=>{
+export const deleteMessage = async(req: CustomRequest, res: Response)=>{
     const { collectionId, type, messageId } = req.query
     incomingDataValidationHandler(req)
     const collectionName = type === "normal" ? "normalChats" : "groupChats"
@@ -688,34 +690,34 @@ export const deleteMessage = async(req: Request, res: Response)=>{
 }
 
 
-export const makeMemberAdmin = async (req: Request, res: Response) =>{
+export const makeMemberAdmin = async (req: CustomRequest, res: Response) =>{
     const { memberId , collectionId } = req.body
-    const { id } = req.user
+    const { id } = req.user!
     incomingDataValidationHandler(req)
     await groupManager(database, "$push" , "admins", memberId, collectionId as string, id)
     res.json({message : "successfully made admin"})     
 }
 
-export const removeGroupAdmin = async (req: Request, res: Response)=>{
+export const removeGroupAdmin = async (req: CustomRequest, res: Response)=>{
     const { memberId, collectionId } = req.query
-    const { id } = req.user
+    const { id } = req.user!
     incomingDataValidationHandler(req)
     await groupManager(database, "$pull", "admins", memberId as string, collectionId as string, id)
     res.json({ message : "the admin has been successfullly removed"})
 }
 
-export const removeMemberFromGroup = async (req: Request, res: Response)=>{
+export const removeMemberFromGroup = async (req: CustomRequest, res: Response)=>{
     const { memberId, collectionId } = req.query
-    const { id } = req.user
+    const { id } = req.user!
     incomingDataValidationHandler(req)
     await groupManager(database, "$pull", "members", memberId as string, collectionId as string, id)
     res.json({ message : "member successfullly removed"})
 }
 
-export const addFriendToGroup = async (req: Request, res: Response)=>{
+export const addFriendToGroup = async (req: CustomRequest, res: Response)=>{
     const { friendId, collectionId } = req.body
     incomingDataValidationHandler(req)
-    const { id } = req.user
+    const { id } = req.user!
     await groupManager(database, "$push", "members", friendId, collectionId as string, id)
     res.json({ message : "friend successfulllye added to group"})
 }

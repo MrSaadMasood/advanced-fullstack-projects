@@ -65,7 +65,7 @@ export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps
             <button data-testid="option5"onClick={() => { setOptions(5, "Users") }}>
             <FaRegStar size={23} />
             </button>
-            <button data-testid="option7"onClick={()=> logOutUserMutation({token : isAuthenticated.refreshToken })}>
+            <button data-testid="option7"onClick={()=> logOutUserMutation({ refreshToken : isAuthenticated.refreshToken })}>
             <IoMdLogOut size={23} />
             </button>
             <button data-testid="option6" onClick={() => setOptions(6, "Profile")} className="h-8 w-8 rounded-full overflow-hidden">
