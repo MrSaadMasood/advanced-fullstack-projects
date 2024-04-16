@@ -82,7 +82,7 @@ else {
     app.use("/factor2", factor2RouteTokenAuthenticator , factor2Router)
 
     app.use("/user", authenticateUser, userRouter)
-    app.get("/random", (req, res)=>{
+    app.get("/random", (_req, res)=>{
         res.json("this is running with htps server")
     })
 
