@@ -1,0 +1,299 @@
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:45:21.080Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:46:40.723Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:47:28.490Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:49:16.879Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:49:41.045Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:50:03.043Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:50:22.683Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:50:40.066Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:54:05.813Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:54:49.117Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:55:23.893Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:55:35.599Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:56:36.771Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:56:49.661Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:57:09.211Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:57:27.711Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:57:42.261Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:57:51.171Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:58:09.297Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:58:29.616Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:58:43.622Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:59:11.426Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T08:59:25.769Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:01:10.180Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:01:24.750Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:01:33.140Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:01:42.062Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:02:22.128Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:02:59.907Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:04:17.471Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:05:15.340Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:05:20.207Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:05:36.162Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:05:58.211Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:06:47.229Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:06:57.583Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:07:43.069Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:07:54.819Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:09:01.137Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:09:26.910Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:10:03.659Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:11:04.141Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:11:16.314Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:11:57.377Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:13:18.342Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:14:31.186Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:14:53.122Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:15:10.331Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:15:19.615Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:82:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:18:39.450Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:82:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:18:47.007Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:82:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:18:49.983Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:82:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:19:02.730Z"}
+{"level":"error","message":"Error: failed to find the user\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:98:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:20:24.445Z"}
+{"level":"error","message":"Error: failed to find the user\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:98:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:20:27.078Z"}
+{"level":"error","message":"Error: failed to find the user\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:98:22)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T09:20:28.444Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:21:46.009Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:22:05.905Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:29:54.759Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:30:15.276Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:31:09.877Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:31:56.377Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:36:07.220Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:36:12.313Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:36:17.840Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:36:34.184Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:36:57.968Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:38:25.618Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:39:05.597Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:39:28.868Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:39:44.214Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:41:36.015Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:43:59.852Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:44:29.887Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:56:58.582Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:57:30.089Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:57:42.280Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:57:53.181Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:59:09.131Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:59:17.940Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:59:50.223Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T09:59:56.489Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:02:03.926Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:02:57.205Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:03:06.563Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:04:00.350Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:04:44.229Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:04:58.815Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:05:18.203Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:05:33.206Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:06:16.925Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:06:25.169Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:07:23.415Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:07:35.523Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:07:56.918Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:08:33.235Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:08:44.033Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:09:32.463Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:09:50.157Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:10:35.278Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:10:43.518Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:10:59.789Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:11:08.707Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:11:24.100Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:11:45.523Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:12:28.803Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:13:01.612Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:13:58.168Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:14:46.565Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:15:00.443Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:15:12.762Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:15:30.221Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:15:53.172Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:16:02.642Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:16:33.442Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:16:48.224Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:16:59.249Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:17:03.586Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:17:25.480Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:18:09.850Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:18:14.590Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:18:34.798Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:18:37.709Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:19:03.965Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:19:32.155Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:19:41.156Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:21:05.296Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:21:51.184Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:21:55.074Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:21:58.442Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:22:35.248Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:28:35.860Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:28:43.198Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:29:04.077Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:29:30.599Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:29:33.921Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:30:46.995Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:33:50.122Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:34:33.969Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:35:01.654Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:35:21.388Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:39:24.844Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:39:42.506Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:39:48.800Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:39:58.983Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:40:19.255Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:40:23.136Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:40:42.137Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:41:40.034Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:42:13.314Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:42:17.821Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:42:23.856Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:43:19.668Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:43:40.057Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:43:48.784Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:55:28.024Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:55:39.752Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:57:25.240Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:58:07.622Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:58:23.950Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:59:16.094Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:59:20.003Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T10:59:43.928Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:00:00.240Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:00:47.603Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:00:55.727Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:01:08.965Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:01:53.442Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:02:36.920Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:02:41.290Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:02:52.088Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:05:57.040Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:06:13.270Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:08:08.470Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:08:38.590Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:09:13.645Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:10:30.044Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:11:31.798Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:13:01.641Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:13:18.389Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:13:37.865Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:13:44.938Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:13:59.670Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:14:04.332Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:14:29.763Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:16:11.860Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:16:40.427Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:17:39.752Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:17:43.167Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:18:04.573Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:18:07.356Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:18:57.711Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:26:48.973Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:26:54.956Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:26:58.097Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:27:09.085Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:42:11.797Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:42:14.438Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:42:49.047Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:44:48.672Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:44:59.100Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:45:52.236Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:48:24.775Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:48:52.188Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T11:48:57.789Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:27:33.632Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:27:59.140Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at createUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:45:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T12:34:04.832Z"}
+{"level":"error","message":"MongoParseError: Invalid scheme, expected connection string to start with \"mongodb://\" or \"mongodb+srv://\"\n    at ConnectionString (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb-connection-string-url/src/index.ts:133:13)\n    at parseOptions (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/connection_string.ts:254:15)\n    at MongoClient (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/mongodb/src/mongo_client.ts:365:34)\n    at dataBaseConnectionMaker (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:334:20)\n    at createUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:45:28)\n    at newFn (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-async-errors/index.js:16:20)\n    at Layer.handle [as handle_request] (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/node_modules/express-validator/src/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-04-17T12:34:10.325Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:35:29.573Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:39:49.553Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:40:10.384Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:40:18.442Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T12:40:34.852Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:17:29.882Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:18:13.554Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:19:05.410Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:19:54.289Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:19:59.305Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:20:07.704Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:20:22.001Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:20:25.873Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:20:28.177Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:21:04.585Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T13:21:51.858Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:27:54.190Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:28:34.541Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:39:59.533Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:40:15.500Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:40:53.827Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:50:20.230Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:51:37.274Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:52:41.817Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:52:44.907Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:52:49.415Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:53:17.980Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:53:28.240Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:54:02.067Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:54:04.722Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:56:33.473Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:56:47.456Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:56:47.884Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:58:05.574Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:58:06.004Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:59:03.390Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:59:03.755Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:59:42.758Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T14:59:43.233Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T14:59:55.071Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:00:06.245Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:01:02.585Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:01:11.960Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:01:27.811Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:12.280Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:25.513Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:35.356Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:44.706Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:55.358Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:07:59.496Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:08:31.346Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:09:46.584Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T15:09:48.425Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T15:59:23.466Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T15:59:25.245Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:01:21.815Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:01:23.672Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:13:25.291Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:13:37.686Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:13:39.324Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:13:39.415Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:15:17.245Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:15:18.897Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:15:18.955Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:19:55.350Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:19:57.976Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:24:05.224Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:24:06.995Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:32:07.901Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:32:10.179Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:32:10.388Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:32:32.388Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:33:36.141Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:34:30.272Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:35:43.299Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:36:00.705Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:37:08.735Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:38:04.661Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:40:35.218Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T16:43:09.984Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:43:11.716Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-17T16:43:11.782Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:48:18.114Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:49:57.785Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:52:13.411Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:53:38.156Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:54:10.875Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:54:41.060Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:54:53.861Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-17T18:55:12.630Z"}

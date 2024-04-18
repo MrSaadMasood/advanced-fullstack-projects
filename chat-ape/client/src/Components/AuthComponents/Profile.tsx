@@ -47,8 +47,10 @@ export default function Profile({
     const { mutate : factor2AuthMutation } = useMutation({
         mutationFn : changefactor2AthSettings,
         onSuccess : (data)=>{
-            removeItem("user")
+            data.isGoogleUser = isAuthenticated.isGoogleUser,
+            data.refreshToken = isAuthenticated.refreshToken
             setItem("f2a", data)
+            removeItem("user")
             navigate("/factor-2-auth")
         }
     })
@@ -114,8 +116,6 @@ export default function Profile({
         if(!isAuthenticated.is2FactorAuthEnabled){
             factor2AuthMutation({
                 email : userData.email, 
-                isGoogleUser : isAuthenticated.isGoogleUser,
-                refreshToken : isAuthenticated.refreshToken,
             })
             return is2FactorAuthEnabledSetter(true)   
         }

@@ -192,9 +192,9 @@ export async function fetchQRCode(factor2AuthToken: string ){
     }
 }
 
-export async function changefactor2AthSettings({ email , isGoogleUser, refreshToken }: EnableFactor2Auth ){
+export async function changefactor2AthSettings({ email } : {email : string }){
     try {
-        const response = await server.post("/auth-user/enable-f2a", { email, isGoogleUser, refreshToken })
+        const response = await server.post("/auth-user/enable-f2a", { email })
         return response.data
     } catch (error) {
         console.log((error as AxiosError).message);

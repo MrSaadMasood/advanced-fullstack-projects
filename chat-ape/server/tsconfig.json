@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "outDir": "./dist/",
-    "module": "ES2020",
+    "module": "ES2022",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -13,7 +13,5 @@
     "moduleResolution": "Node",
     "strictNullChecks": true,
     "allowJs": true,
-    "typeRoots": ["./Types"]
-
   }
 }

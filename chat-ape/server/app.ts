@@ -19,7 +19,7 @@ import userRouter from "./src/routes/userRouter"
 import factor2Router from "./src/routes/factor2Router"
 
 import { connectData } from "./connection"
-import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/middlewares"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/AuthMiddlewares"
 import dotenv from "dotenv"
 import { errorMiddleware } from "./src/middlewares/errorMiddleware"
 dotenv.config()

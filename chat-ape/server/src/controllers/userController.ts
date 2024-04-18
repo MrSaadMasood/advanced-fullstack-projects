@@ -13,7 +13,7 @@ import {
     getCustomData, 
     updateGroupChat, 
     deleteMessageFromChat, 
-    // dataBaseConnectionMaker, 
+    dataBaseConnectionMaker, 
     chatArraySizeFinder, 
     groupManager, 
     updateNormalChatData,
@@ -21,18 +21,18 @@ import {
  } from "./controllerHelper";
 import { logger } from "../logger/conf/loggerConfiguration";
 import { Response } from 'express' 
-import { envValidator, fileValidator, generalErrorMessage } from "../utils/utils";
+import { fileValidator, generalErrorMessage } from "../utils/utils";
 import dotenv from "dotenv"
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { BadRequest } from "../ErrorHandler/customError";
 import { CustomRequest } from "../../Types/customRequest";
+import env from "../../zodSchema/env";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+
+const currentWorkingDirectory = process.cwd()
 
 dotenv.config()
-const mongoUrl = process.env.MONGO_URL || ""
+const { MONGO_URL } = env
+const mongoUrl = process.env.TEST_URI || MONGO_URL
 
 let database : Db;
 connectData((err)=>{
@@ -44,7 +44,7 @@ connectData((err)=>{
 // sends the userData to the client based on the user id
 export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
-    
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const updatedData = await database.collection<DocumentInput>("users").findOne(
         { _id : id}, { projection : { password : 0}}
     )
@@ -54,7 +54,7 @@ export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
 
 // get the full name and id of all users from the database
 export const getUsersData = async( _req : CustomRequest, res: Response)=>{
-    
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")     
     const users = await database.collection<DocumentInput>("users").find({},
         { 
             projection : 
@@ -66,10 +66,12 @@ export const getUsersData = async( _req : CustomRequest, res: Response)=>{
             { 
                 fullName : 1,
             }
-        })
-        .toArray()
+        }).toArray()
+        
     
     await redisClient.call("json.set", "users", "$", JSON.stringify(users)) 
+    console.log("theusers form the cntroller are ", users);
+    
     res.json( users )
 }
 
@@ -291,7 +293,7 @@ export const saveChatImagePath = async (req: CustomRequest, res: Response)=>{
 export const getChatImage = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)
-    const filepath = path.join(__dirname, `../uploads/chat-images/${name}`)
+    const filepath = path.join(currentWorkingDirectory, `./uploads/chat-images/${name}`)
     res.sendFile(filepath)
 }
 
@@ -328,7 +330,7 @@ export const saveProfilePicturePath = async (req: CustomRequest, res: Response)=
 export const getProfilePicture  = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)    
-    const filepath = path.join(__dirname, `../uploads/profile-images/${name}`)
+    const filepath = path.join(currentWorkingDirectory, `./uploads/profile-images/${name}`)
     res.sendFile(filepath)
 }
 
@@ -456,7 +458,7 @@ export const getGroupChats = async (req: CustomRequest, res: Response)=>{
 export const getGroupPicture = (req: CustomRequest, res: Response)=>{
     const { name } = req.params
     incomingDataValidationHandler(req)
-    const filepath = path.join(__dirname, `../uploads/group-images/${name}`)
+    const filepath = path.join(currentWorkingDirectory, `./uploads/group-images/${name}`)
     res.sendFile(filepath)
 }
 
@@ -667,7 +669,7 @@ export const saveGroupChatImage = async(req: CustomRequest, res: Response)=>{
     const filename = fileValidator(req.file)
     const { groupId } = req.body
     incomingDataValidationHandler(req)
-    const result = await updateGroupChat(database, groupId, id, "path", envValidator(filename, "filename"))
+    const result = await updateGroupChat(database, groupId, id, "path", filename )
     return res.json({ filename, id : result})
 }
 

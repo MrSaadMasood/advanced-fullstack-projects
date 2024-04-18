@@ -2,8 +2,9 @@ import { Db, MongoClient } from "mongodb";
 import dotenv from "dotenv"
 dotenv.config()
 
+const { TEST_URI, MONGO_URL } = process.env
 let database : Db ;
-const mongourl = process.env.MONGO_URL
+const mongourl = TEST_URI || MONGO_URL
 // connecting to the database based on the url. and the database we want to connect to
 export async function connectData( callback: ConnectDataCallback) {
     try {

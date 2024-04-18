@@ -13,6 +13,7 @@ interface GeneralObjectWithStringProps {
 type CreateNewUser = 
     GeneralObjectWithStringProps & 
     ExtraUserProps
+
 type ConnectDataCallback = (value? : Error) => void
 
 interface JWTTokenPayload {
@@ -21,7 +22,6 @@ interface JWTTokenPayload {
 }
 
 interface MongoDocument {
-    _id : string
     chat? : Message[],
     normalChats? : {
         friendId : string,
@@ -36,8 +36,15 @@ interface MongoDocument {
         groupImage : string | null
     }[],
 }
-type DocumentInput = Partial<Pick<CreateNewUser, "receivedRequests" | "friends">> & MongoDocument 
 
+type DocumentInput = 
+    Partial<Pick<CreateNewUser, "receivedRequests" | "friends" | "sentRequests">> & 
+    MongoDocument & 
+    MongoId
+
+interface MongoId {
+    _id : string,
+}
 interface Message {
     userId : string,
     time : Date,

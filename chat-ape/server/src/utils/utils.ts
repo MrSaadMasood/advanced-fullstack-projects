@@ -1,9 +1,10 @@
 import { Db } from "mongodb";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
+import env from "../../zodSchema/env";
 dotenv.config()
 
-const { ACCESS_SECRET, REFRESH_SECRET } = process.env
+const { ACCESS_SECRET, REFRESH_SECRET } = env
 
 const generalInputValidationError = {
     message : "incorrect input provided",
@@ -16,8 +17,8 @@ const generalErrorMessage = (message : string ) =>{
 // to generate the access token
 async function generateAccessRefreshTokens(user : JWTTokenPayload, database : Db ) {
     try {
-        const accessToken =  jwt.sign(user, envValidator(ACCESS_SECRET, "access secret"));
-        const refreshToken = jwt.sign(user, envValidator(REFRESH_SECRET, "refresh secret"))
+        const accessToken =  jwt.sign(user, ACCESS_SECRET);
+        const refreshToken = jwt.sign(user, REFRESH_SECRET)
         if(!accessToken || !refreshToken) throw new Error
         await database.collection("tokens").insertOne({ token : refreshToken})
         return { accessToken , refreshToken }
@@ -26,10 +27,6 @@ async function generateAccessRefreshTokens(user : JWTTokenPayload, database : Db
     }
 }
 
-function envValidator(env : string | undefined, envName : string ) {
-    if(!env) throw new Error(` ${envName} env value not provided`)
-    return env
-}
 
 function fileValidator(file : Express.Multer.File | undefined){
     if(!file) throw new Error("file not provided")
@@ -38,7 +35,6 @@ function fileValidator(file : Express.Multer.File | undefined){
 export {
     generateAccessRefreshTokens,
     fileValidator,
-    envValidator,
     generalInputValidationError,
     generalErrorMessage,
 }

@@ -33,15 +33,12 @@ import {
     updateChatData,
     updateGroupChatData, 
 } from "../controllers/userController";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const currentWorkingDirectory = process.cwd()
 
 import multer from "multer"
 import path from "path"
-import { stringValidation, queryValidation, paramValidation } from "../middlewares/middlewares"
+import { stringValidation, queryValidation, paramValidation } from "../middlewares/AuthMiddlewares"
 import { allUsersCache, cachedFriendList } from '../controllers/redisController';
 import { imageHandlerMiddleware } from '../middlewares/imageHandler';
 
@@ -51,13 +48,13 @@ const storage = multer.diskStorage({
     destination : (req, file ,  callback)=>{
         let absolutePath : string | undefined;
         if(req.chatImage){
-            absolutePath = path.join(__dirname, "../uploads/chat-images")
+            absolutePath = path.join(currentWorkingDirectory, "./uploads/chat-images")
         }
         if(req.profileImage){
-            absolutePath = path.join(__dirname, "../uploads/profile-images")
+            absolutePath = path.join(currentWorkingDirectory, "./uploads/profile-images")
         }
         if(req.groupImage){
-            absolutePath = path.join(__dirname , "../uploads/group-images")
+            absolutePath = path.join(currentWorkingDirectory, "./uploads/group-images")
         }
         if(!absolutePath) return callback(new Error, file.filename)
         return callback(null, absolutePath)

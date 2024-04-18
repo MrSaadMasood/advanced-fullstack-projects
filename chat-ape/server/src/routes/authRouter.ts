@@ -7,7 +7,7 @@ import { createUser,
     googleAuthenticator, 
     enableF2a, 
     disableFactor2Auth } from "../controllers/sessionController"
-import { stringValidation, booleanValidation } from "../middlewares/middlewares"
+import { stringValidation, booleanValidation } from "../middlewares/AuthMiddlewares"
 
 // sign-up route
 router.post(
@@ -28,7 +28,8 @@ router.delete("/logout", logoutUser)
 
 router.post("/google", stringValidation("code"), googleAuthenticator)
 
-router.post("/enable-f2a",  stringValidation("email"), stringValidation("refreshToken"), booleanValidation("isGoogleUser") , enableF2a )
+router.post("/enable-f2a",  stringValidation("email"), enableF2a )
 
 router.delete("/disable-factor2Auth/:id", disableFactor2Auth)
+
 export default router
