@@ -46,14 +46,14 @@ describe("tests the /user routes", ()=>{
 
     })
 
-    // it("tests the /send-request route", async ()=>{
-    //     const result = await api.post("/user/send-request").set("Authorization", token)
-    //         .send({ receiverId : "5e9e1ef80c0b0e001f8e9999"})
+    it("tests the /send-request route", async ()=>{
+        const result = await api.post("/user/send-request").set("Authorization", token)
+            .send({ receiverId : "1914f89e-aca2-4f6a-92c6-e8cb59e62935"})
 
-    //     expect(result.status).toBe(200)
-    //     expect(result.body).toEqual({message : "request successfully sent"})
+        expect(result.status).toBe(200)
+        expect(result.body).toEqual({message : "request successfully sent"})
 
-    // })
+    })
 
     // it("tests the /get-friends route", async ()=>{
     //     const result = await api.get("/user/get-friends").set("Authorization", token)

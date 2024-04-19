@@ -68,7 +68,6 @@ export const getUsersData = async( _req : CustomRequest, res: Response)=>{
             }
         }).toArray()
         
-    
     await redisClient.call("json.set", "users", "$", JSON.stringify(users)) 
     console.log("theusers form the cntroller are ", users);
     
@@ -88,6 +87,7 @@ export const sendFollowRequest = async( req: CustomRequest, res: Response)=>{
 // get the firends data from the database
 export const getFriends = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const friends = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -128,6 +128,7 @@ export const getFriends = async(req: CustomRequest, res: Response)=>{
 // gets the follow request from the database
 export const getFollowRequests = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const receivedRequests = await getCustomData( database ,id, "receivedRequests")
     return res.json( receivedRequests )
 }
@@ -166,6 +167,7 @@ export const removeFollowRequest = async(req: CustomRequest, res: Response) =>{
 // validates the data sent and then adds the chat message to that friends chat collection
 export const updateChatData = async (req: CustomRequest, res: Response)=>{
     const { id } = req.user!
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const { content, collectionId } = req.body
     incomingDataValidationHandler(req)
     const randomMessageId = await updateNormalChatData(database, collectionId, id, "content", content)
@@ -178,6 +180,7 @@ export const updateChatData = async (req: CustomRequest, res: Response)=>{
 export const getChatData = async (req: CustomRequest, res: Response) =>{
     const collectionId = req.params.id
     const { docsSkipCount = 0 } = req.query
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     incomingDataValidationHandler(req) 
     const chatArrayCountObject = await chatArraySizeFinder(database, collectionId, "normalChats")
     if(chatArrayCountObject.size < 10){
@@ -221,6 +224,7 @@ export const getChatData = async (req: CustomRequest, res: Response) =>{
 // uses aggregation pipeline to get the friends name and their last messages sent
 export const getChatList = async(req: CustomRequest, res: Response) =>{
     const { id} = req.user!
+    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const chatList = await database.collection<DocumentInput>("users").aggregate(
     [
         {
