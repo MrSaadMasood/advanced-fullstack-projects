@@ -118,7 +118,8 @@ async function dbConnection(){
     const uri = mongoServer.getUri()
     connection = await MongoClient.connect(uri)
     process.env.TEST_URI = uri
-    
+    console.log("the connection function is running");
+     
     const database = connection.db("chat-app")
     await database.createCollection("users", usersCollectionSchema)
     await database.createCollection("tokens", tokensCollectionSchema)
@@ -128,7 +129,6 @@ async function dbConnection(){
     await database.collection<MongoId>("normalChats").insertMany(normalChats)
     await database.collection<MongoId>("groupChats").insertMany(groupChats)
     await database.collection("tokens").insertOne({ token : sampleRefreshToken})
-    
 }
 
 async function dbDisconnect(){

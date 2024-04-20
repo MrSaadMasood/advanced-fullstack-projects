@@ -283,7 +283,7 @@ export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,doc
 export async function fetchGroupMembers({ axiosPrivate, id } : Omit<RequestsWithIds, "collectionId">){
     try {
         
-        const response = await axiosPrivate.post("/user/group-members", { collectionId : id})
+        const response = await axiosPrivate.post(`/user/group-members/${id}`,)
         response.data.push({ _id : "", fullName : "None" })
         return response.data
     } catch (error) {

@@ -34,40 +34,11 @@ import {
     updateGroupChatData, 
 } from "../controllers/userController";
 
-const currentWorkingDirectory = process.cwd()
-
-import multer from "multer"
-import path from "path"
 import { stringValidation, queryValidation, paramValidation } from "../middlewares/AuthMiddlewares"
 import { allUsersCache, cachedFriendList } from '../controllers/redisController';
 import { imageHandlerMiddleware } from '../middlewares/imageHandler';
+import { upload } from '../middlewares/multer' 
 
-// creating a storage instance which will store the images based on the type of the image added to the reques body and also
-// generates the random names that dont clash.
-const storage = multer.diskStorage({
-    destination : (req, file ,  callback)=>{
-        let absolutePath : string | undefined;
-        if(req.chatImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/chat-images")
-        }
-        if(req.profileImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/profile-images")
-        }
-        if(req.groupImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/group-images")
-        }
-        if(!absolutePath) return callback(new Error, file.filename)
-        return callback(null, absolutePath)
-    },
-
-    filename : (_req , file, callback)=>{
-        const suffix = `${Date.now()}${Math.round(Math.random()* 1E9)}.jpg`
-        callback(null, file.fieldname + "-" + suffix)
-
-    }
-})
-
-const upload = multer({ storage : storage })
 
 // to get the user data
 router.get("/updated-data",  getUpdatedData)
@@ -103,7 +74,7 @@ router.post("/chat-data", stringValidation("content"), stringValidation("collect
 router.get("/get-chatlist",  getChatList)
 
 // save the image in the chat-images folder and ads the filename to the database
-router.post("/add-chat-image", imageHandlerMiddleware("chatImage"), upload.single("image"), stringValidation("collectionId") ,saveChatImagePath)
+router.post("/add-chat-image", imageHandlerMiddleware("chatImage"), upload.single("image"), stringValidation("collectionId") , saveChatImagePath)
 
 // saves the profile image to adds filename to the database
 router.post("/add-profile-image", imageHandlerMiddleware("profileImage"), upload.single("image"),  saveProfilePicturePath)
@@ -138,7 +109,7 @@ router.post("/add-group-chat-image", imageHandlerMiddleware("groupImage"), uploa
 // saves the message sent in group chat in the database
 router.post("/group-data", stringValidation("content"), stringValidation("groupId") ,updateGroupChatData)
 
-router.post("/group-members", stringValidation("collectionId"),  getGroupMembers)
+router.get("/group-members/:groupId", paramValidation("groupId"),  getGroupMembers)
 
 router.post("/filter-chat", stringValidation("date"), stringValidation("chatType"), stringValidation("collectionId"),  filterChat)
 

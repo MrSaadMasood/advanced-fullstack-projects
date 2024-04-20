@@ -83,7 +83,7 @@ async function removeFriendTransaction(client : MongoClient, userId : string, id
     try {
         session.startTransaction()
         const database = client.db("chat-app")
-        
+         
         await database.collection<DocumentInput>("users").updateOne(
             { _id : userId}, 
             { $pull : { friends : idToRemove}},
@@ -95,10 +95,11 @@ async function removeFriendTransaction(client : MongoClient, userId : string, id
             { $pull : { friends : userId} },
             transactionOptions
         )
-
+        
         await session.commitTransaction()
         return true
     } catch (error) {
+        
         await session.abortTransaction()
         throw new BadRequest(generalErrorMessage("failed to remove friend"))
     }
@@ -113,17 +114,16 @@ async function removeFollowRequestTransaction(client : MongoClient, userId : str
     try {
         session.startTransaction()
         const database = client.db("chat-app")
-        
-        await database.collection<DocumentInput>("users").updateOne(
+        const updateAppUser = await database.collection<DocumentInput>("users").updateOne(
             { _id : userId},
             { $pull : { receivedRequests : idToRemove}}
         )
-
-        await database.collection<DocumentInput>("users").updateOne(
+        const updatedRequestSender = await database.collection<DocumentInput>("users").updateOne(
             { _id : idToRemove},
             { $pull : { sentRequests : userId}}
         )
-
+        
+        if(!updateAppUser.modifiedCount || !updatedRequestSender.modifiedCount) throw new Error   
         await session.commitTransaction()
         return true
     } catch (error) {
@@ -158,7 +158,7 @@ async function pushAddFriendChanges(database : Db, userId : string ,friendId : s
 // to all the members in the members array
 // if group image is not provided null is added in the field
 async function groupChatTransaction(
-    client : MongoClient, userId : string, members : string[], groupName : string, groupImage : string
+    client : MongoClient, userId : string, members : string[], groupName : string, groupImage? : string
     ){
     const session = client.startSession()
     try {
@@ -262,7 +262,8 @@ async function updateGroupChat
             }
         }}
     )
-    if(!updated.modifiedCount) throw new Error
+    console.log('successfull till now', updated.modifiedCount)
+    if(!updated.modifiedCount) throw new BadRequest(generalErrorMessage("failed to add message to the group"))
     return randomId
 }
 
@@ -278,9 +279,9 @@ async function deleteMessageFromChat(database : Db, collectionId : string, messa
         } 
     }
     )
-    
     if(!deletedMessage.modifiedCount) throw new Error
-        
+    console.log(collectionName, deletedMessage.modifiedCount);
+    
     return true
 }
 

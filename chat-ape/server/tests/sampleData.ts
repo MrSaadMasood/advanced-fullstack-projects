@@ -5,7 +5,7 @@ const users = [{
   "password": "$2b$10$gnqfkGSEnHaF2qALSFgUq.zoQ46wnaohe8pmZYr5tMM092jbhJEYW",
   "friends": [
     "e2c9774d-9295-459c-8d9f-b06753458c94",
-    "f06ec470-49b4-4f90-bb87-93b078eea9e9"
+    "f06ec470-49b4-4f90-bb87-93b078eea9e9",
   ],
   "receivedRequests": [
     "28a2c354-3958-4a29-94c7-1440908dcd7f"
@@ -348,7 +348,7 @@ const normalChats = [
   "chat":[
   {
     "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-    time : new Date(),
+    time : new Date("4/19/2024"),
     "content": "this is ammar textin too saad simple",
     "id": "5083ddc1-0efb-429c-97c0-d8723b09addb"
   },
@@ -379,10 +379,10 @@ const groupChats = [{
   "_id": "f7f29bde-6ffb-47f4-bdeb-2bd5019312cf",
   "chat": [
     {
-      "id": "6f1d1b10-1930-4116-9aaa-b36ed8da79a8",
+      "id": "f1d1b10-1930-4116-9aaa-b36ed8da79a8",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
       "content": "You have been added in the group.",
-      time : new Date()
+      time : new Date("4/19/2024")
     },
     {
       "content": "this is the first message in group",
@@ -400,6 +400,12 @@ const groupChats = [{
       "content": "the first message was made by the system",
       "id": "36e85d06-50a6-434d-aedf-c2918f0b25be",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
+      time : new Date()
+    },
+    {
+      "content": "this the message from the second member",
+      "id": "36e85d06-50a6-434d-aedf-c2918f0b39be",
+      "userId": "e2c9774d-9295-459c-8d9f-b06753458c94",
       time : new Date()
     },
   ]
