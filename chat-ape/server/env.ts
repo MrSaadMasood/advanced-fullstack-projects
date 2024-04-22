@@ -15,7 +15,8 @@ const envSchema = z.object({
     GOOGLE_CLIENT_SECRET : zodString,
     GOOGLE_CLIENT_ID : zodString,
     GOOGLE_PUBLIC_KEY : zodString,
-    F2A_SECRET : zodString
+    F2A_SECRET : zodString,
+    LOGGER_LEVEL  : zodString.optional()
 })
 
 const env = envSchema.parse(process.env)

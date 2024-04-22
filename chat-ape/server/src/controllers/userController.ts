@@ -1,6 +1,6 @@
-// import { Db } from "mongodb";
+import { Db } from "mongodb";
 import redisClient from '../redisClient/redisClient' 
-// import { connectData, getData } from "../../connection";
+import { connectData, getData } from "../../connection";
 import path from "path";
 import fs from "fs/promises";
 import { 
@@ -13,7 +13,7 @@ import {
     getCustomData, 
     updateGroupChat, 
     deleteMessageFromChat, 
-    dataBaseConnectionMaker, 
+    // dataBaseConnectionMaker, 
     groupManager, 
     updateNormalChatData,
     incomingDataValidationHandler
@@ -33,17 +33,17 @@ dotenv.config()
 const { MONGO_URL } = env
 
 
-// let database : Db;
-// connectData((err)=>{
-//     if(!err) {
-//         database = getData()
-//     }
-// })
+let database : Db;
+connectData((err)=>{
+    if(!err) {
+        database = getData()
+    }
+})
 
 // sends the userData to the client based on the user id
 export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const updatedData = await database.collection<DocumentInput>("users").findOne(
         { _id : id}, { projection : { password : 0}}
     )
@@ -53,7 +53,7 @@ export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
 
 // get the full name and id of all users from the database
 export const getUsersData = async( _req : CustomRequest, res: Response)=>{
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")     
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")     
     const users = await database.collection<DocumentInput>("users").find({},
         { 
             projection : 
@@ -84,7 +84,7 @@ export const sendFollowRequest = async( req: CustomRequest, res: Response)=>{
 // get the firends data from the database
 export const getFriends = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const friends = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -125,7 +125,7 @@ export const getFriends = async(req: CustomRequest, res: Response)=>{
 // gets the follow request from the database
 export const getFollowRequests = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const receivedRequests = await getCustomData( database ,id, "receivedRequests")
     console.log('the follow request are ', receivedRequests)
     return res.json( receivedRequests )
@@ -167,7 +167,7 @@ export const updateChatData = async (req: CustomRequest, res: Response)=>{
     const { id } = req.user!
     const { content, collectionId } = req.body
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const randomMessageId = await updateNormalChatData(database, collectionId, id, "content", content)
     res.json({ id : randomMessageId })
 } 
@@ -178,7 +178,7 @@ export const updateChatData = async (req: CustomRequest, res: Response)=>{
 export const getChatData = async (req: CustomRequest, res: Response) =>{
     const collectionId = req.params.id
     // const { docsSkipCount = 0 } = req.query
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     incomingDataValidationHandler(req) 
     // const chatArrayCountObject = await chatArraySizeFinder(database, collectionId, "normalChats")
     // if(chatArrayCountObject.size < 10){
@@ -222,7 +222,7 @@ export const getChatData = async (req: CustomRequest, res: Response) =>{
 // uses aggregation pipeline to get the friends name and their last messages sent
 export const getChatList = async(req: CustomRequest, res: Response) =>{
     const { id} = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const chatList = await database.collection<DocumentInput>("users").aggregate(
     [
         {
@@ -285,7 +285,7 @@ export const saveChatImagePath = async (req: CustomRequest, res: Response)=>{
     const { collectionId } = req.body
     const { id } = req.user!
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const filename = fileValidator(req.file)
     const randomMessageId = await updateNormalChatData(database, collectionId, id, "path", filename)
     res.json({ id : randomMessageId, filename : filename })
@@ -304,7 +304,7 @@ export const changeBio = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
     const { bio } = req.body
     incomingDataValidationHandler(req) 
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const user = await database.collection<DocumentInput>("users").updateOne(
         {_id : id},
         { $set : { bio : bio}}
@@ -317,7 +317,7 @@ export const changeBio = async(req: CustomRequest, res: Response)=>{
 export const saveProfilePicturePath = async (req: CustomRequest, res: Response)=>{
     const { id} = req.user!
     const filename = fileValidator(req.file)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const addingProfilePicture = await database.collection<DocumentInput>("users").updateOne(
         {_id : id}, 
         { $set : { 
@@ -350,7 +350,7 @@ export const deletePrevProfilePicture = async (req: CustomRequest, res: Response
 export const getFriendsData = async (req: CustomRequest, res: Response)=>{
 
     const {id} = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const friendsData = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -396,7 +396,7 @@ export const createNewForm = async (req: CustomRequest, res: Response)=>{
 // gets the group names and the last message in the group and the username that sent the message
 export const getGroupChats = async (req: CustomRequest, res: Response)=>{
     const {id } = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const groupChats = await database.collection<DocumentInput>("users").aggregate(
         [
             {
@@ -469,7 +469,7 @@ export const getGroupMembers = async (req: CustomRequest, res: Response)=>{
     console.log('the collectionid', collectionId)
     const { id } = req.user!
     incomingDataValidationHandler(req) 
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const members = await database.collection<DocumentInput>("users").aggregate(
         [
         {
@@ -511,13 +511,16 @@ export const getGroupMembers = async (req: CustomRequest, res: Response)=>{
 export const filterChat = async (req: CustomRequest, res: Response)=>{
     const { date, chatType, groupMemberId, collectionId } = req.body
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const dateString = new Date(date).toLocaleString(undefined, {
         year : "numeric",
         day : "2-digit",
         month : "2-digit"
     })
     if(chatType === "group"){
+        const chat = await database.collection<DocumentInput>("groupChats").find({_id : collectionId}).toArray()
+        console.log(chat[0].chat);
+        
         const groupChatData = await database.collection<DocumentInput>("groupChats").aggregate(
         [
             {
@@ -557,7 +560,7 @@ export const filterChat = async (req: CustomRequest, res: Response)=>{
                     messageDate: dateString,
                     $or : [
                         { "chat.userId" : groupMemberId },
-                        { "chat.userId" : { $exists : groupMemberId ? false : true}}
+                        { "chat.userId" : { $exists : groupMemberId ? false : true }}
                     ]
                     }
             },
@@ -568,6 +571,7 @@ export const filterChat = async (req: CustomRequest, res: Response)=>{
             },
         ]
         ).toArray()
+        console.log('the chat grup filter is', collectionId, groupMemberId, dateString)
         logger.info("group chats have been filtered")
         return res.json({ groupChatData, chatType })
     }
@@ -617,7 +621,7 @@ export const filterChat = async (req: CustomRequest, res: Response)=>{
 export const getGroupChatData = async(req: CustomRequest, res: Response)=>{
     const { chatId } = req.params
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     // const { docsSkipCount = 0 } = req.query
     
         // const chatArrayCountObject = await chatArraySizeFinder(database, chatId , "groupChats")
@@ -675,7 +679,7 @@ export const saveGroupChatImage = async(req: CustomRequest, res: Response)=>{
     const filename = fileValidator(req.file)
     const { groupId } = req.body
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const result = await updateGroupChat(database, groupId, id, "path", filename )
     return res.json({ filename, id : result})
 }
@@ -686,7 +690,7 @@ export const updateGroupChatData = async(req: CustomRequest, res: Response)=>{
     console.log('the group ids', groupId)
     const { id} = req.user!
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const result = await updateGroupChat(database, groupId, id, "content", content)
     res.json({ id : result})
 }
@@ -696,7 +700,7 @@ export const deleteMessage = async(req: CustomRequest, res: Response)=>{
     const { collectionId, type, messageId } = req.query
     console.log('the req.query ', req.query)
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const collectionName = type === "normal" ? "normalChats" : "groupChats"
     await deleteMessageFromChat(database,  collectionId as string, messageId as string, collectionName)
     res.json("message successfully deleted")        
@@ -707,7 +711,7 @@ export const makeMemberAdmin = async (req: CustomRequest, res: Response) =>{
     const { memberId , collectionId } = req.body
     const { id } = req.user!
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     await groupManager(database, "$push" , "admins", memberId, collectionId as string, id)
     res.json({message : "successfully made admin"})     
 }
@@ -716,7 +720,7 @@ export const removeGroupAdmin = async (req: CustomRequest, res: Response)=>{
     const { memberId, collectionId } = req.query
     const { id } = req.user!
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     await groupManager(database, "$pull", "admins", memberId as string, collectionId as string, id)
     res.json({ message : "the admin has been successfullly removed"})
 }
@@ -725,7 +729,7 @@ export const removeMemberFromGroup = async (req: CustomRequest, res: Response)=>
     const { memberId, collectionId } = req.query
     const { id } = req.user!
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     await groupManager(database, "$pull", "members", memberId as string, collectionId as string, id)
     res.json({ message : "member successfullly removed"})
 }
@@ -733,7 +737,7 @@ export const removeMemberFromGroup = async (req: CustomRequest, res: Response)=>
 export const addFriendToGroup = async (req: CustomRequest, res: Response)=>{
     const { friendId, collectionId } = req.body
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")    
     const { id } = req.user!
     await groupManager(database, "$push", "members", friendId, collectionId as string, id)
     res.json({ message : "friend successfulllye added to group"})

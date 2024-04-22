@@ -19,7 +19,7 @@ export default function useInterceptor() {
             (config) => {
                 // checking if the authorization headers is already added this means the request was sent second time.
                 if (!config.headers.Authorization) {
-                    config.headers.Authorization = `Bearer ${isAuthenticated?.accessToken}`;
+                    config.headers.Authorization = `Bearer ${isAuthenticated.accessToken}`;
                     config.headers.isGoogleUser = isAuthenticated.isGoogleUser
                 }
 

@@ -210,7 +210,7 @@ async function updateNormalChatData
     {
     const randomObjectId = randomUUID()
 
-    await database.collection<Omit<DocumentInput, "chat">>("normalChats").updateOne(
+    const updateNormalChatData = await database.collection<Omit<DocumentInput, "chat">>("normalChats").updateOne(
         { _id : collectionId},
         {
             $push : {
@@ -223,6 +223,7 @@ async function updateNormalChatData
             }
         },
     )
+    if(!updateNormalChatData.modifiedCount) throw new BadRequest(generalErrorMessage("failed to update the normal chat"))
     return randomObjectId
 }
 // gets used to get the friends and received requests based on type provided
@@ -262,7 +263,6 @@ async function updateGroupChat
             }
         }}
     )
-    console.log('successfull till now', updated.modifiedCount)
     if(!updated.modifiedCount) throw new BadRequest(generalErrorMessage("failed to add message to the group"))
     return randomId
 }
@@ -280,7 +280,6 @@ async function deleteMessageFromChat(database : Db, collectionId : string, messa
     }
     )
     if(!deletedMessage.modifiedCount) throw new Error
-    console.log(collectionName, deletedMessage.modifiedCount);
     
     return true
 }
