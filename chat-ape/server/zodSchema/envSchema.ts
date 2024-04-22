@@ -1,10 +1,11 @@
 import { z } from 'zod' 
-
-const zodString = z.string()
-const zodUrl = z.string().url()
+import { zodString, zodUrl } from './zodUtils'
+import dotenv from 'dotenv' 
+dotenv.config()
 
 const envSchema = z.object({
     MONGO_URL : zodUrl,
+    TEST_URI : zodString.optional(),
     PORT : z.coerce.number(),
     BASE_URL : zodUrl,
     ACCESS_SECRET : zodString,

@@ -4,6 +4,7 @@ import { BadRequest } from "../ErrorHandler/customError"
 import { generalErrorMessage, generalInputValidationError } from "../utils/utils"
 import { Request } from "express"
 import { validationResult } from "express-validator"
+import { userSchema } from "../../zodSchema/zodSchemas"
 
 const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
@@ -229,8 +230,8 @@ async function updateNormalChatData
 // gets used to get the friends and received requests based on type provided
 async function getCustomData (database : Db, userId : string, type : FriendsNRequests) {
 
-    const user = await database.collection<DocumentInput>("users").findOne({ _id : userId})
-    if(!user) throw new Error
+    const userFromDatabase= await database.collection<DocumentInput>("users").findOne({ _id : userId})
+    const user = userSchema.parse(userFromDatabase)
     const data = await database.collection<DocumentInput>("users").find(
     {
         _id : { $in : user[type]}

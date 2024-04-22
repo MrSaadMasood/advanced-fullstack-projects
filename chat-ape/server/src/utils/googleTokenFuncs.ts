@@ -1,6 +1,6 @@
 import { UserRefreshClient } from "google-auth-library"
 import oAuth2Client from "./oAuth2Client"
-import env from "../../zodSchema/env"
+import env from "../../zodSchema/envSchema"
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = env
 

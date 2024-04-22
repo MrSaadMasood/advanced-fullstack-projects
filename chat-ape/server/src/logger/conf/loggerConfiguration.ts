@@ -1,10 +1,9 @@
 import winston from "winston"
 import path from "path"
-import dotenv from "dotenv"
 import "winston-daily-rotate-file"
-dotenv.config()
+import env from "../../../zodSchema/envSchema"
 
-const { LOGGER_LEVEL = "info" } = process.env 
+const { LOGGER_LEVEL = "info" } = env
 const currentWorkingDirectory = process.cwd()
 
 const { combine, json, timestamp, errors } = winston.format

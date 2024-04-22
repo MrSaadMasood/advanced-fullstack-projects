@@ -2,12 +2,10 @@ import jwt from "jsonwebtoken"
 import { body, query, param } from "express-validator"
 import { logger } from '../logger/conf/loggerConfiguration' 
 import { Response, NextFunction } from 'express' 
-import dotenv from "dotenv"
 import { CustomRequest } from "../../Types/customRequest"
 import oAuth2Client from "../utils/oAuth2Client"
-import env from "../../zodSchema/env"
+import env from "../../zodSchema/envSchema"
 import { BadRequest } from "../ErrorHandler/customError"
-dotenv.config()
 
 const { ACCESS_SECRET, F2A_SECRET } = env
 

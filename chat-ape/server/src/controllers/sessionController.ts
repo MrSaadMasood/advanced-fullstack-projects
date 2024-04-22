@@ -1,13 +1,12 @@
+import { connectData, getData } from "../../connection";
+import { Db } from "mongodb";
+// import { dataBaseConnectionMaker } from "./controllerHelper";
 import post from 'axios' 
 import redisClient from '../redisClient/redisClient' 
 import { authenticator } from "otplib";
 import { toDataURL } from "qrcode";
-// import { connectData, getData } from "../../connection";
-import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import { generalErrorMessage, generalInputValidationError, generateAccessRefreshTokens } from "../utils/utils";
-// import { Db } from "mongodb";
-import { dataBaseConnectionMaker } from "./controllerHelper";
+import { generalErrorMessage, generateAccessRefreshTokens } from "../utils/utils";
 import { randomUUID } from "node:crypto";
 import { googleTokensExtractor, refreshGoogleAccessToken } from "../../src/utils/googleTokenFuncs";
 import { logger } from "../logger/conf/loggerConfiguration";
@@ -17,8 +16,9 @@ import bcrypt from "bcrypt"
 import { BadRequest } from '../ErrorHandler/customError';
 import { incomingDataValidationHandler } from './controllerHelper';
 import { CustomRequest } from '../../Types/customRequest';
-import env from '../../zodSchema/env';
+import env from '../../zodSchema/envSchema';
 import oAuth2Client from '../utils/oAuth2Client';
+import { userSchema, tokenSchema } from "../../zodSchema/zodSchemas";
 
 dotenv.config()
 
@@ -26,19 +26,18 @@ const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, REFRESH_SECRET } = env
 
 const { sign, verify } = jwt
 
-// let database: Db;
+let database: Db;
 
-// connectData((err) => {
-//     if (!err) {
-//         database = getData();
-//     }
-// });
+connectData((err) => {
+    if (!err) {
+        database = getData();
+    }
+});
 
 // based on the validation result the password is hased and the user data is stored in the database
 export const createUser  = async (req : CustomRequest, res : Response) => {
     incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const { fullName, email, password, isGoogleUser, profilePicture, id }  = req.body;
     const hashedPassword = await bcrypt.hash(password, 10) 
     logger.info("password successfully hashed")
@@ -53,15 +52,15 @@ export const createUser  = async (req : CustomRequest, res : Response) => {
         sentRequests: [],
         profilePicture : profilePicture || null,
         isGoogleUser : isGoogleUser || false,
-        is2FactorAuthEnabled : false
-
+        is2FactorAuthEnabled : false,
+        factor2AuthSecret : "",
     } 
     const createdUser = await database.collection<DocumentInput>("users").insertOne(user);
 
-    if (!createdUser) throw new BadRequest(generalErrorMessage("failed to create a new user"));
+    if (!createdUser.acknowledged) throw new BadRequest(generalErrorMessage("failed to create a new user"));
 
     const ifUsersCached = await redisClient.exists("users")
-    
+     
     if (ifUsersCached) await redisClient.call("json.arrappend", "users", "$", JSON.stringify({
         _id : user._id,
         fullName,
@@ -73,28 +72,15 @@ export const createUser  = async (req : CustomRequest, res : Response) => {
 // based on the validation result the user is verified and the specific information is projected and sent back
 export const loginUser  = async (req : CustomRequest, res : Response) => {
     const { email, password } = req.body;
-    incomingDataValidationHandler(req)
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-
-    const user = await database.collection<CreateNewUser>("users").findOne(
-    { email: email },
-    {
-        projection: {
-            fullName: 1,
-            friends: 1,
-            sentRequests: 1,
-            receivedRequests: 1,
-            password: 1,
-            isGoogleUser : 1,
-            is2FactorAuthEnabled : 1
-        },
-    });
+    // incomingDataValidationHandler(req)
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    console.log('the request has now reached ', email,password)
+    const userFromDatabase = await database.collection<CreateNewUser>("users").findOne({ email: email });
+    const user = userSchema.parse(userFromDatabase)
+    console.log("passed th user schema");
     
-    if (!user) throw new BadRequest(generalErrorMessage("failed to find the user"));
-
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new BadRequest(generalErrorMessage("password do not match"));
-    
     const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id.toString() }, database)
     if(user.is2FactorAuthEnabled){
         const factor2AuthToken = sign({ email : email}, F2A_SECRET, { expiresIn : "5m" })
@@ -105,18 +91,22 @@ export const loginUser  = async (req : CustomRequest, res : Response) => {
             isGoogleUser : user.isGoogleUser
         })
     }
-    return res.json({ accessToken, refreshToken, isGoogleUser : user.isGoogleUser, is2FactorAuthEnabled : user.is2FactorAuthEnabled });
+    return res.json({ 
+        accessToken, 
+        refreshToken, 
+        isGoogleUser : user.isGoogleUser, 
+        is2FactorAuthEnabled : user.is2FactorAuthEnabled });
     }
 
 // on token expiration the request is sent from the front end to and the access token is refreshed if the refresh token
 // is present in the database of the user
 export const refreshUser  = async (req : CustomRequest, res : Response) => {
     const { refreshToken, isGoogleUser } = req.body;
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    incomingDataValidationHandler(req)
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
 
     const tokenCheck = await database.collection("tokens").findOne({ token: refreshToken });
-    if (!tokenCheck) throw new BadRequest({ message : "Bad Request", statusCode : 399}) 
-        
+    tokenSchema.parse(tokenCheck) 
     if(isGoogleUser){
         const credentials = await refreshGoogleAccessToken(refreshToken)
         return res.json({ newAccessToken : credentials.access_token })
@@ -133,10 +123,10 @@ export const refreshUser  = async (req : CustomRequest, res : Response) => {
 // on logout the refreshed token is removed from the daatabase
 export const logoutUser  = async (req : CustomRequest, res : Response) => {
     const { refreshToken } = req.body;
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "" )
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "" )
     const deleteToken = await database.collection("tokens").deleteOne({ token: refreshToken });
 
-    if (deleteToken.deletedCount > 0) {
+    if (deleteToken.deletedCount) {
         res.json("user successfully logged out");
     } else {
         throw new BadRequest(generalErrorMessage("faild to delete the refresh token"));
@@ -146,7 +136,7 @@ export const logoutUser  = async (req : CustomRequest, res : Response) => {
 export const googleAuthenticator  = async (req : CustomRequest, res : Response) => {
     const { code }  = req.body
     const decodedCode = decodeURIComponent(code) 
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const tokens = await googleTokensExtractor(decodedCode)    
     if(!tokens) throw new Error("failed to extract tokends from google code")
     const verifiedToken = await oAuth2Client.verifyIdToken({
@@ -158,6 +148,7 @@ export const googleAuthenticator  = async (req : CustomRequest, res : Response) 
     const { name , email , picture, at_hash, sub } = payload
 
     const ifUserExists = await database.collection("users").findOne<CreateNewUser>({ email : email })
+
     if(!ifUserExists){
         const userData = {
             id : sub,
@@ -195,9 +186,9 @@ export const googleAuthenticator  = async (req : CustomRequest, res : Response) 
 export const generateOTP  = async (req : CustomRequest, res : Response) => {
     const { email } = req.user!
     
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-    const user = await database.collection("users").findOne<CreateNewUser>({ email })
-    if(!user) throw new Error("failed to find the user to generate otp")
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    const userFromDatabase = await database.collection("users").findOne<CreateNewUser>({ email })
+    const user = userSchema.parse(userFromDatabase) 
     if(!user.is2FactorAuthEnabled) throw new Error("factor 2 authentication is not enabled for the user")
     const secret = authenticator.generateSecret()
     const keyuri = authenticator.keyuri(user.email, "ChatApe", secret)
@@ -213,14 +204,11 @@ export const generateOTP  = async (req : CustomRequest, res : Response) => {
 
 export const verifyOTP = async (req : CustomRequest, res : Response) => {
     const { email } = req.user!
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const {otp, refreshToken : refrshTokenBody } = req.body
-    const result = validationResult(req)
-     
-    if(!result.isEmpty()) throw new BadRequest(generalErrorMessage("otp verification failed"))
-
-    const user = await database.collection<CreateNewUser>("users").findOne({ email })
-    if(!user) throw new Error("user not found to verify the otp")
+    incomingDataValidationHandler(req)
+    const userFromDatabase = await database.collection("users").findOne<CreateNewUser>({ email })
+    const user = userSchema.parse(userFromDatabase) 
     if(!user.is2FactorAuthEnabled) throw new Error("factor 2 auth not enabled for the user")
     const isCodeVerified = authenticator.check(otp, user.factor2AuthSecret)
 
@@ -245,9 +233,8 @@ export const verifyOTP = async (req : CustomRequest, res : Response) => {
 
 export const enableF2a  = async (req : CustomRequest, res : Response) => {
     const { email } = req.body
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-    const result = validationResult(req)
-    if(!result.isEmpty()) throw new BadRequest(generalInputValidationError)
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
+    incomingDataValidationHandler(req)
     await database.collection("users").updateOne(
         { email },
         { $set : { 
@@ -264,9 +251,7 @@ export const enableF2a  = async (req : CustomRequest, res : Response) => {
 
 export const disableFactor2Auth  = async  (req : CustomRequest, res : Response) => {
     const { id } = req.params
-    const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-    console.log("the request is here", id);
-    
+    // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     await database.collection<DocumentInput>("users").updateOne({ _id : id},
         {
             $set : {

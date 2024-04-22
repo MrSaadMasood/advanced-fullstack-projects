@@ -20,12 +20,11 @@ import factor2Router from "./src/routes/factor2Router"
 
 import { connectData } from "./connection"
 import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/AuthMiddlewares"
-import dotenv from "dotenv"
 import { errorMiddleware } from "./src/middlewares/errorMiddleware"
-dotenv.config()
+import env from "./zodSchema/envSchema"
 
 const numCPUs = os.availableParallelism()
-const { PORT, CROSS_ORIGIN } = process.env
+const { PORT, CROSS_ORIGIN } = env 
 const dirPath = import.meta.dirname
 const httpsServerOptions = {
     key : fs.readFileSync(path.join(dirPath, "./cert/private-key.pem")),
