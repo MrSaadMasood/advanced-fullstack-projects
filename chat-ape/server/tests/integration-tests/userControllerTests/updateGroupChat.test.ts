@@ -1,6 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it("tests the group-data route", async ()=>{
+describe('tests the /group-data route', () => { 
+
+    it("update the group chat data", async ()=>{
 
         const result = await api.post("/user/group-data").set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -11,6 +13,9 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
 
         expect(result.status).toBe(200)
         expect(result.body).toEqual({ id : expect.any(String)})
+    })
+
+    it('should fail to update the group chat data', () => { 
 
         expect(() => api.post("/user/group-data").set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -18,4 +23,5 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
                 groupId : "randomgorup1234",
                 content : "test content"
             })).rejects.toThrow()
-    })
+     })
+})

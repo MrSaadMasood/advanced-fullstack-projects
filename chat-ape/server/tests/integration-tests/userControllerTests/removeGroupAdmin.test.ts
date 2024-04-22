@@ -1,7 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
+describe('tests the remove admin from group funcationality', () => { 
 
-    it("tests the remove admin from group funcationality", async ()=>{
+    it("should remove the admin of the group", async ()=>{
         const response = await api.delete("/user/remove-group-admin")
             .set("Authorization", loggedInUserAccessToken)
             .query({
@@ -12,6 +13,10 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
         expect(response.status).toBe(200)
         expect(response.body).toEqual({ message : "the admin has been successfullly removed"})
 
+    })
+
+    it('should fail to remove the admin', () => { 
+
         expect(()=> api.delete("/user/remove-group-admin")
             .set("Authorization", loggedInUserAccessToken)
             .query({
@@ -19,4 +24,5 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
                 memberId : "fake-admin"
             })).rejects.toThrow()
 
-    })
+     })
+})

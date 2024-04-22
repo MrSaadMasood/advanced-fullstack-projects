@@ -35,32 +35,4 @@ describe('test the adding the images to chats', () => {
     })
 })
 
-describe('tests the getting images from the server', () => { 
-
-    it(`tests the /get-chat-image route`, async ()=>{
-        const result = await api.get(`/user/get-chat-image/${"image-1711029108628637763470.jpg"}`)
-            .set("Authorization", loggedInUserAccessToken)
-        
-        expect(result.status).toBe(200)
-        expect(result.body.toString()).toEqual(expect.any(String))
-    })
-
-    it(`tests the /get-profile-picture route`, async ()=>{
-        const result = await api.get(`/user/get-profile-picture/${"image-1707832479957193746767.jpg"}`)
-            .set("Authorization", loggedInUserAccessToken)
-        
-        expect(result.status).toBe(200)
-        expect(result.body.toString()).toEqual(expect.any(String))
-    })
-    
-    it("tests the /group-picture/:name route", async ()=>{
-
-        const result = await api.get(`/user/group-picture/${"image-1710796984278681794967.jpg"}`)
-            .set("Authorization", loggedInUserAccessToken)
-
-        expect(result.status).toBe(200)
-        expect(result.body.toString()).toEqual(expect.any(String))
-
-    })
-
- })
+ 

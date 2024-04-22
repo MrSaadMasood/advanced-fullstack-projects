@@ -1,7 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it("tests the /get-chatlist route", async ()=>{
+describe('tests the /get-chatlist route', () => { 
 
+    it("should get the normal chat list", async ()=>{
         const result = await api.get(`/user/get-chatlist`).set("Authorization", loggedInUserAccessToken)
 
         expect(result.status).toBe(200)
@@ -10,3 +11,4 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
             friendData : expect.any(Object)
         }))
     })
+})

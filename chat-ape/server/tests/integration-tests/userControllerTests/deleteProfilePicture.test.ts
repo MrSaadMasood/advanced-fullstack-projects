@@ -7,7 +7,7 @@ describe('tests the delete profile picture functionality', () => {
     })
     afterAll(() => jest.clearAllMocks())
 
-    it("tests the delete profile picture functionality", async () =>{
+    it("should delete the profile picture", async () =>{
         const response = await api.delete(`/user/delete-previous-profile-picture/${"randomProfilePicture"}`)
             .set("Authorization", loggedInUserAccessToken)
 

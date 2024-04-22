@@ -1,7 +1,7 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it("tests the /get-group-chat route", async ()=>{
-         
+describe('tests the /get-group-chat route', () => { 
+    it("should get the group chat data", async ()=>{
         const result = await api.get(`/user/get-group-chat/${"f7f29bde-6ffb-47f4-bdeb-2bd5019312cf"}`)
             .set("Authorization" , loggedInUserAccessToken)
     
@@ -13,3 +13,4 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
         }))
 
     })
+})

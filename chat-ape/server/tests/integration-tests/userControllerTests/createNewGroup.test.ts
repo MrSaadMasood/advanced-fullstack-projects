@@ -1,6 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it.only("tests the create-new-group route", async ()=>{
+describe('tests the create new group functionlity', () => { 
+
+    it("should create a new Group", async ()=>{
 
         const result = await api.post("/user/create-new-group").set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -12,6 +14,10 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
         
         expect(result.status).toBe(200)
         expect(result.body).toEqual({ message : "the group is successfully created"})
+        
+    })
+
+    it("negative: should fail to crate a new group", async ()=> {
 
         const error = await api.post("/user/create-new-group").set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -20,5 +26,5 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
                 groupName : "testGroup"
             })
         expect(error.status).toBe(400)
-        
     })
+ })

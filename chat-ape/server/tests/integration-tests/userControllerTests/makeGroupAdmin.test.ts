@@ -1,6 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it("tests the make a member admin funcationality", async ()=>{
+describe('tests the make a member admin funcationality', () => { 
+
+    it("should make the member admin", async ()=>{
         const response = await api.put("/user/make-member-admin")
             .set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -12,3 +14,4 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
         expect(response.status).toBe(200)
         expect(response.body).toEqual({ message : "successfully made admin" })
     })
+})

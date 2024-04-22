@@ -51,3 +51,70 @@
 {"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T10:15:43.128Z"}
 {"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T10:15:43.207Z"}
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T10:16:08.706Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T10:56:39.921Z"}
+{"level":"info","message":"follow request successfully sent","timestamp":"2024-04-22T10:56:41.245Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T10:56:44.360Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T10:56:44.430Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T10:56:44.480Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T10:56:46.471Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T10:56:46.537Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T10:56:46.602Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T10:56:52.702Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T10:56:52.748Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T10:57:03.844Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T10:57:18.265Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T10:57:56.304Z"}
+{"level":"info","message":"follow request successfully sent","timestamp":"2024-04-22T10:57:57.933Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T10:58:00.746Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T10:58:00.819Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T10:58:00.882Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T10:58:02.732Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T10:58:02.790Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T10:58:02.841Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T10:58:09.164Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T10:58:09.213Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T10:58:18.959Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T10:58:31.238Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T11:09:16.151Z"}
+{"level":"info","message":"follow request successfully sent","timestamp":"2024-04-22T11:09:17.754Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:09:19.098Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:09:19.170Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T11:09:19.220Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T11:09:21.144Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T11:09:21.194Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T11:09:21.242Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T11:09:28.571Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T11:09:28.616Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T11:09:38.139Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T11:09:50.598Z"}
+{"level":"info","message":"follow request successfully sent","timestamp":"2024-04-22T11:10:24.122Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:10:25.757Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:10:25.819Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T11:10:25.865Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T11:10:48.089Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T11:11:56.747Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T11:11:58.856Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T11:11:58.910Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T11:11:58.963Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T11:12:02.672Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T11:12:02.721Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T11:12:04.016Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T11:12:13.809Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T11:12:15.999Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T11:12:16.087Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T11:12:16.175Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T11:12:20.486Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T11:12:20.547Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T11:12:21.815Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-04-22T11:13:08.773Z"}
+{"level":"info","message":"follow request successfully sent","timestamp":"2024-04-22T11:13:10.106Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:13:11.787Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-22T11:13:11.841Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-22T11:13:11.897Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-04-22T11:13:13.590Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-04-22T11:13:13.637Z"}
+{"level":"info","message":"google credentials for the user successfully created","timestamp":"2024-04-22T11:13:13.685Z"}
+{"level":"info","message":"factor 2 auth successfully enabled","timestamp":"2024-04-22T11:13:20.898Z"}
+{"level":"info","message":"factor 2 auth successfully disabled","timestamp":"2024-04-22T11:13:20.949Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-04-22T11:13:32.195Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-22T11:13:44.759Z"}

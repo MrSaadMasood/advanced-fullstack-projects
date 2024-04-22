@@ -15,6 +15,9 @@ describe("tests the /user routes", ()=>{
         }))
 
         
+    })
+
+    it("negative: test the /updated-data route", async ()=>{
         const error = await api.get("/user/update-data").set("Authorization", `Bearer randomtoken123`)
 
         expect(error.status).toBe(401)
