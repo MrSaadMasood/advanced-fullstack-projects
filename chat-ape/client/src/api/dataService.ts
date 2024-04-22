@@ -1,7 +1,7 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
 import { requestHandler } from "./requestHandler";
-import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, EnableFactor2Auth, FetchChatData, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, FetchChatData, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 
 export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
@@ -142,6 +142,7 @@ export async function createNewGroup({ axiosPrivate, groupName, rawImageFile, fr
 
 export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageData } : sendImageMessageProps){
     try {
+        console.log('the image data sent to server is ', imageMessageData)
         const response = await axiosPrivate.post(endpoint, imageMessageData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -283,7 +284,7 @@ export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,doc
 export async function fetchGroupMembers({ axiosPrivate, id } : Omit<RequestsWithIds, "collectionId">){
     try {
         
-        const response = await axiosPrivate.post(`/user/group-members/${id}`,)
+        const response = await axiosPrivate.get(`/user/group-members/${id}`,)
         response.data.push({ _id : "", fullName : "None" })
         return response.data
     } catch (error) {

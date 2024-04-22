@@ -2,7 +2,7 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
 
 describe('filters the chat based on input', () => { 
     it("filters the group chat based on the date only", async ()=>{
-        const date = new Date()
+        const date = new Date("4/20/2024")
         const response = await api.post("/user/filter-chat").set("Authorization", loggedInUserAccessToken)
             .type("form")
             .send({
@@ -19,7 +19,7 @@ describe('filters the chat based on input', () => {
     })
 
     it("filters th group chat based on the date and the member provided", async ()=>{
-        const date = new Date()
+        const date = new Date("4/20/2024")
         const response = await api.post("/user/filter-chat").set("Authorization", loggedInUserAccessToken)
             .type("form")
             .send({
@@ -36,7 +36,7 @@ describe('filters the chat based on input', () => {
     })
 
     it("filters the normal chats", async ()=>{
-        const date = new Date()
+        const date = new Date("4/20/2024")
         const response = await api.post("/user/filter-chat").set("Authorization", loggedInUserAccessToken)
             .type("form")
             .send({

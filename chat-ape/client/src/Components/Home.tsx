@@ -82,7 +82,7 @@ export default function Home() {
         getFilteredChat,
         removeDeletedMessageFromChat, 
         getChatData,
-        handleIsMoreChatRequested,
+        // handleIsMoreChatRequested,
         handleAreGroupMembersChanged
     } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)
 
@@ -352,7 +352,8 @@ export default function Home() {
                     />
         
                     {optionsSelected === 6 && userData &&
-                        <Suspense fallback={<div>hello</div>} >
+                        <Suspense fallback={<div className="w-screen h-screen bg-black
+                        flex justify-center items-center text-white text-2xl">Loading! Please Wait</div>} >
                             <Profile
                                 userData={userData}
                                 profilePictureUrl={profilePictureUrl}
@@ -449,7 +450,7 @@ export default function Home() {
         
                     {optionsSelected !== 6 && selectedChat === "normal" && friendData && userData &&
                         <Chat
-                            handleIsMoreChatRequested={handleIsMoreChatRequested}
+                            // handleIsMoreChatRequested={handleIsMoreChatRequested}
                             selectedChatSetter={selectedChatSetter}
                             completeChatData={filteredNormalChats}
                             friendData={friendData}
@@ -466,7 +467,7 @@ export default function Home() {
                         />}
                     {optionsSelected !== 6 && selectedChat === "group" && generalGroupData && userData &&
                         <GroupChat
-                            handleIsMoreChatRequested={handleIsMoreChatRequested}
+                            // handleIsMoreChatRequested={handleIsMoreChatRequested}
                             userData={userData}
                             data={filteredGroupChat}
                             groupImage={friendChatImage}

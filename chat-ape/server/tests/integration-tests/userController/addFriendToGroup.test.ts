@@ -1,6 +1,8 @@
 import api, { loggedInUserAccessToken } from "../../jest.setup"
 
-    it("tests the add member to group funcationality", async ()=>{
+describe('test the add friend to group functionlity', () => { 
+
+    it("should add friend to the Group", async ()=>{
         const response = await api.put("/user/add-group-member")
             .set("Authorization", loggedInUserAccessToken)
             .type("form")
@@ -13,3 +15,4 @@ import api, { loggedInUserAccessToken } from "../../jest.setup"
         expect(response.body).toEqual({ message : "friend successfulllye added to group" })
 
     })
+ })

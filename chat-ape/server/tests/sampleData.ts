@@ -307,37 +307,37 @@ const normalChats = [
   "chat": [
   {
     "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-    time : new Date(),
+    time : new Date("4/19/2024"),
     "content": "hello this is saad texting to saad masood",
     "id": "92731bd9-bc45-4a8c-b982-a5b1deef137b"
   },
   {
     "userId": "100020747428319565071",
     "content": "thisi s goig",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "id": "bff5ae7b-def8-46c8-8711-4c8da2232aff"
   },
   {
     "userId": "100020747428319565071",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "content": "jsdlkjfaljf",
     "id": "468e0e5f-27d3-4a24-9d5b-5a7604178dba"
   },
   {
     "userId": "100020747428319565071",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "content": "f",
     "id": "3e5a2d35-e7a4-48d0-8908-35c8aa9ad947"
   },
   {
     "userId": "100020747428319565071",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "content": "jfdlajlfjasfjlafjla",
     "id": "ec0b1d6b-92ab-445b-b820-5d84b23c2abc"
   },
   {
     "userId": "100020747428319565071",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "content": "asheladd what are you doing",
     "id": "c00ce4ae-acd9-4d2c-870e-7349a3e9086a"
   }
@@ -354,20 +354,20 @@ const normalChats = [
   },
   {
     "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "content": "this is the first message",
     "id": "1707a982-5f56-48e8-85e6-145e6053f1c6"
   },
   {
     "userId": "e2c9774d-9295-459c-8d9f-b06753458c94",
     "content": "this is me",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "id": "55953091-b755-4a38-ac1b-208e935951cd"
   },
   {
     "userId": "e2c9774d-9295-459c-8d9f-b06753458c94",
     "path": "image-1713016736553528782468.jpg",
-    time : new Date(),
+    time : new Date("4/20/2024"),
     "id": "749cd017-2a76-4345-b5e4-9b0ae66f29f0"
   }
 ]
@@ -388,25 +388,25 @@ const groupChats = [{
       "content": "this is the first message in group",
       "id": "85eff84b-ecf2-4f21-b083-2cf90fbda37f",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-      time : new Date()
+      time : new Date("4/20/2024")
     },
     {
       "content": "actually my first message",
       "id": "cb8d1961-2a4c-4499-b6bb-5ba17cd0e6f1",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-      time : new Date()
+      time : new Date("4/20/2024")
     },
     {
       "content": "the first message was made by the system",
       "id": "36e85d06-50a6-434d-aedf-c2918f0b25be",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-      time : new Date()
+      time : new Date("4/20/2024")
     },
     {
       "content": "this the message from the second member",
       "id": "36e85d06-50a6-434d-aedf-c2918f0b39be",
       "userId": "e2c9774d-9295-459c-8d9f-b06753458c94",
-      time : new Date()
+      time : new Date("4/20/2024")
     },
   ]
 },
@@ -416,7 +416,7 @@ const groupChats = [{
     {
       "id": "105cda1f-e32e-4f8a-b27c-0199a2318861",
       "userId": "f06ec470-49b4-4f90-bb87-93b078eea9e9",
-      time : new Date(),
+      time : new Date("4/20/2024"),
       "content": "You have been added in the group."
     }
   ]

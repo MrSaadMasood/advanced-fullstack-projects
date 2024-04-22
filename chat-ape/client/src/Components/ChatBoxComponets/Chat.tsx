@@ -15,7 +15,7 @@ interface Props extends CommonProp, ChatProps {
   handleChatSearchInputChange : (value : string)=>void
   chatSearchInput : string 
   handleIsFilterClicked : handleFilterClicked
-  handleIsMoreChatRequested : (value : boolean)=> void,
+  // handleIsMoreChatRequested : (value : boolean)=> void,
   setGlobalError : React.Dispatch<React.SetStateAction<string>>
   openGroupManager : OpenGroupManager
 }
@@ -31,7 +31,7 @@ export default function Chat({
   handleChatSearchInputChange,
   chatSearchInput,
   handleIsFilterClicked,
-  handleIsMoreChatRequested,
+  // handleIsMoreChatRequested,
   setGlobalError,
   openGroupManager 
 } : Props) {
@@ -43,7 +43,7 @@ export default function Chat({
     onChange
   } = useSendMessages({chatDataSetter, setGlobalError, chatType : "normal", sendMessageToWS, userData, friendData})
 
-  const { chatDiv } = useConditionalChatFetch(handleIsMoreChatRequested)
+  const { chatDiv } = useConditionalChatFetch()
 
   const realChat = useMemo(()=> completeChatData.chat, [ completeChatData ])
 

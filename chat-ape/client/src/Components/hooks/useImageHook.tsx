@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import useInterceptor from "./useInterceptors";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPictureFromServer} from "../../api/dataService";

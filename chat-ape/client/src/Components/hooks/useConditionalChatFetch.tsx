@@ -1,22 +1,22 @@
 import { useEffect, useRef } from "react";
 
 function useConditionalChatFetch(
-    handleIsMoreChatRequested: (value: boolean) => void,
+    // handleIsMoreChatRequested: (value: boolean) => void,
 ) {
     const chatDiv = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const div = chatDiv.current;
-        if (!div) return;
+    // useEffect(() => {
+    //     const div = chatDiv.current;
+    //     if (!div) return;
 
-        function handleCompletelyScrolled() {
-            if (div?.scrollTop === 0) handleIsMoreChatRequested(true);
-        }
+    //     function handleCompletelyScrolled() {
+    //         if (div?.scrollTop === 0) handleIsMoreChatRequested(true);
+    //     }
 
-        div.addEventListener("scroll", handleCompletelyScrolled);
+    //     div.addEventListener("scroll", handleCompletelyScrolled);
 
-        return () => div.removeEventListener("scroll", handleCompletelyScrolled);
-    }, []);
+    //     return () => div.removeEventListener("scroll", handleCompletelyScrolled);
+    // }, []);
 
     useEffect(() => {
         const div = chatDiv.current;

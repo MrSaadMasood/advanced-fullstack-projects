@@ -7,14 +7,16 @@ const currentWorkingDirectory = process.cwd()
 const storage = multer.diskStorage({
     destination : (req, file ,  callback)=>{
         let absolutePath : string | undefined;
+        console.log("the req.chat image is", req.chatImage);
+        
         if(req.chatImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/chat-images")
+            absolutePath = path.join(currentWorkingDirectory, "./src/uploads/chat-images")
         }
         if(req.profileImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/profile-images")
+            absolutePath = path.join(currentWorkingDirectory, "./src/uploads/profile-images")
         }
         if(req.groupImage){
-            absolutePath = path.join(currentWorkingDirectory, "./uploads/group-images")
+            absolutePath = path.join(currentWorkingDirectory, "./src/uploads/group-images")
         }
         if(!absolutePath) return callback(new Error, file.filename)
         return callback(null, absolutePath)

@@ -15,7 +15,7 @@ interface GroupChatProps extends ChatProps, CommonProp {
     handleChatSearchInputChange : (value : string)=>void
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
-    handleIsMoreChatRequested : (value : boolean) => void
+    // handleIsMoreChatRequested : (value : boolean) => void
     setGlobalError : React.Dispatch<React.SetStateAction<string>>
     openGroupManager : OpenGroupManager
 }
@@ -32,7 +32,7 @@ export default function GroupChat({
     handleChatSearchInputChange,
     chatSearchInput,
     handleIsFilterClicked,
-    handleIsMoreChatRequested,
+    // handleIsMoreChatRequested,
     setGlobalError,
     openGroupManager
 }: GroupChatProps ) {
@@ -43,7 +43,7 @@ export default function GroupChat({
         onChange
     } = useSendMessages({chatDataSetter, setGlobalError, chatType : "group", sendMessageToWS , userData, generalGroupData})
     
-    const { chatDiv } = useConditionalChatFetch(handleIsMoreChatRequested)
+    const { chatDiv } = useConditionalChatFetch()
 
     const groupChatData = useMemo(()=> data, [ data ])
 

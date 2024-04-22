@@ -29,7 +29,7 @@ function useWebSockets(
     const [generalGroupData, setGeneralGroupData] = useState<GeneralGroupList>();
 
     const axiosPrivate = useInterceptor()
-    const [ isMoreChatRequested , setIsMoreChatRequested] = useState(false)
+    // const [ isMoreChatRequested , setIsMoreChatRequested] = useState(false)
     const [ docsSkipCount , setDocsSkipCount] = useState(10)
     const [ chatId , setChatId] = useState("")
     const [ chatType , setChatType] = useState<ChatType>("normal")
@@ -43,7 +43,7 @@ function useWebSockets(
     const { data : groupMambersData } = useQuery({
         queryKey : ["groupMembers", data, areGroupMembersChanged],
         queryFn : ()=> fetchGroupMembers({ axiosPrivate, id : chatId}),
-        // enabled : !!data || areGroupMembersChanged
+        enabled : !!data || areGroupMembersChanged
     })
     const { mutate : getFilteredChatMutation } = useMutation({
         mutationFn : filterChat,
@@ -59,9 +59,9 @@ function useWebSockets(
         if(areGroupMembersChanged) setAreGroupMembersChanged(false)
     },[areGroupMembersChanged])
 
-    useEffect(()=>{
-        if(isMoreChatRequested) setIsMoreChatRequested(false)
-    }, [isMoreChatRequested])
+    // useEffect(()=>{
+    //     if(isMoreChatRequested) setIsMoreChatRequested(false)
+    // }, [isMoreChatRequested])
 
     useEffect(()=>{
         
@@ -223,9 +223,9 @@ function useWebSockets(
     function handleAreGroupMembersChanged(value : boolean){
         setAreGroupMembersChanged(value)
     }
-    const handleIsMoreChatRequested = useCallback((value : boolean) =>{
-        setIsMoreChatRequested(value)
-    },[])
+    // const handleIsMoreChatRequested = useCallback((value : boolean) =>{
+    //     setIsMoreChatRequested(value)
+    // },[])
 
     return {
         joinedRoom,
@@ -239,7 +239,7 @@ function useWebSockets(
         getFilteredChat,
         removeDeletedMessageFromChat,
         getChatData,
-        handleIsMoreChatRequested,
+        // handleIsMoreChatRequested,
         handleAreGroupMembersChanged,
     }
 }
