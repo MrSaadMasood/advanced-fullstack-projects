@@ -47,6 +47,7 @@ function useSendMessages({
                 return sendMessageToWS(friendData!, input, id ,"content");
             }
             generalGroupData!.type = "group"
+            console.log("the group message is now sent successfully")
             return sendMessageToWS(generalGroupData!, input, id, "content");
 
         },
@@ -90,7 +91,7 @@ function useSendMessages({
         const textMessageData = chatType === "normal" ? 
             { content : input , collectionId : friendData!.collectionId, } : 
             { content : input, groupId : generalGroupData!._id}
-        
+        console.log("the chattype is", chatType, "and the ata is being now sent", textMessageData)
         sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })
         ;(e.target as HTMLFormElement).reset();
       },[chatType, input]) 

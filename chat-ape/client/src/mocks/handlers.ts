@@ -4,7 +4,7 @@ import path from "path"
 
 const baseUrl = import.meta.env.VITE_REACT_APP_SITE_URL
 
-function urlMaker(path){
+function urlMaker(path : string){
     return `${baseUrl}/${path}`
 }
 
@@ -13,18 +13,18 @@ export const handlers = [
         return HttpResponse.json({ message : "successfull"}, {status : 200})
     }),
 
-    http.post(urlMaker("auth-user/login"), async ({ request })=>{
-        const { password } = await request.json()
+    // http.post(urlMaker("auth-user/login"), async ({ request } : {})=>{
+    //     const received = await request.json()
+    //     const { password } = received
+    //     if(password.length < 8) return HttpResponse.json({}, {status : 400})
 
-        if(password.length < 8) return HttpResponse.json({}, {status : 400})
+    //     return HttpResponse.json({ 
+    //         accessToken : 'accessToken',
+    //         refreshToken : "refreshToken"
+    //     }, {status : 200})
+    // }),
 
-        return HttpResponse.json({ 
-            accessToken : 'accessToken',
-            refreshToken : "refreshToken"
-        }, {status : 200})
-    }),
-
-    http.get(urlMaker("user/get-friends-data"), ({ request })=>{
+    http.get(urlMaker("user/get-friends-data"), ({  })=>{
         return HttpResponse.json({
             friendsData : [
                 {
@@ -45,7 +45,7 @@ export const handlers = [
         }, { status : 200})
     }),
 
-    http.post(urlMaker("user/create-new-group"), async ({ request })=>{
+    http.post(urlMaker("user/create-new-group"), async ({  })=>{
         return HttpResponse.json({}, { status : 200})
     }),
 
@@ -53,7 +53,7 @@ export const handlers = [
         return HttpResponse.json({}, {status : 200})
     }),
 
-    http.get(urlMaker("user/get-chat-image/:image"), ({ params })=>{
+    http.get(urlMaker("user/get-chat-image/:image"), ({  })=>{
         const imagePath = path.join(process.cwd(), "public/pattern.jpg")
         const buffer = fs.readFileSync(imagePath)
         
@@ -65,7 +65,7 @@ export const handlers = [
         })
     }),
 
-    http.delete(urlMaker("user/delete-previous-profile-picture/:image"), ({ params })=>{
+    http.delete(urlMaker("user/delete-previous-profile-picture/:image"), ({  })=>{
         return HttpResponse.json({}, { status : 200})
     }),
 

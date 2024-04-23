@@ -1,97 +1,77 @@
-import { useQuery } from "@tanstack/react-query"
-import { fetchingBasedOnOptionSelected } from "../../api/dataService"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import useInterceptor from "./useInterceptors"
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { AssessoryData, ChatList, ChatType, FriendData, GeneralGroupList, Message } from "../../Types/dataTypes";
+import { getFollowRequestsList, getFriendsList, getGroupChatList, getNormalChatList, getUsersList } from "../../api/dataService";
 
 function useOptionsSelected(
-    optionsSelected  : number,
-    handleSearchInputChange : (value : string) =>void
+    optionsSelected?  : number,
     ) {
 
-    // for storing that chat list data so that if the user selectes another option this data persists and not fetched every time
-    const [chatList, setChatList] = useState<ChatList[]>([]);
-    const [ groupChatList, setGroupChatList ] = useState<GeneralGroupList[]>([])
-    // for storing the friends, request, users, group chat list etc.
-    const [ friendsArray , setFriendsArray] = useState<FriendData[]>([])
-    const [ followRequestsArray , setFollowRequestsArray] = useState<AssessoryData[]>([])
-    const [ allUsersArray , setAllUsersArray] = useState<AssessoryData[]>([])
     const axiosPrivate = useInterceptor()
-
-    const { data } = useQuery({
-        queryKey : [optionsSelected],
-        queryFn : ()=>{
-            handleSearchInputChange("")
-            return fetchingBasedOnOptionSelected(axiosPrivate, optionsSelected)
-        }
+    const queryClient = useQueryClient()
+    const { data : chatList = [] } = useQuery({
+        queryKey : ["normalChatList", optionsSelected],
+        queryFn : ()=> getNormalChatList(axiosPrivate),
+        enabled : optionsSelected === 1
     })
 
+    const { data : friendsArray = [] } = useQuery({
+        queryKey : ["friendsList", optionsSelected],
+        queryFn : ()=> getFriendsList(axiosPrivate),
+        enabled : optionsSelected === 2
+    })
+
+    const { data : followRequestsArray = [] } = useQuery({
+        queryKey : ["followRequestsList", optionsSelected],
+        queryFn : ()=> getFollowRequestsList(axiosPrivate),
+        enabled : optionsSelected === 3
+    })
+
+    const { data : groupChatList = [] } = useQuery({
+        queryKey : ["groupChatList", optionsSelected],
+        queryFn : ()=> getGroupChatList(axiosPrivate),
+        enabled : optionsSelected === 4
+    })
+    const { data : allUsersArray = [] } = useQuery({
+        queryKey : ["usersList", optionsSelected],
+        queryFn : ()=> getUsersList(axiosPrivate),
+        enabled : optionsSelected === 5
+    })
      
-    useEffect(()=>{
-        if(!data) return
-
-        if(optionsSelected === 1){
-            setChatList(data)
-        }
-        if(optionsSelected === 2){
-            setFriendsArray(data)
-        }
-        if(optionsSelected === 3){
-            setFollowRequestsArray(data)
-        }
-        if(optionsSelected === 4){
-            setGroupChatList(data)
-        }
-        if(optionsSelected === 5){
-            setAllUsersArray(data)
-        }
-    }, [data])
-
     // depending on the type of chat the last message is updated in the list of chats / group chats.
     const chatListArraySetter = useCallback((id : string , data : Message, chatType : ChatType) => {
         if (chatType === "normal") {
-            setChatList((prevData) => {
-                const modified = prevData.map((item) => {
-                    if (item.friendData._id === id) {
-                        item.lastMessage = data;
-                    }
-                    return item;
-                });
-                return modified;
-            });
+            queryClient.setQueryData(["normalChatList", 1], (oldNormalChatList : ChatList[])=>{
+                return oldNormalChatList.map(normalChat => {
+                    if(normalChat.friendData._id === id) normalChat.lastMessage = data
+                    return normalChat
+                } )
+            })
         }
     
         if (chatType === "group") {
-            setGroupChatList((prevData) => {
-                const modified = prevData.map(item => {
-                    if (item._id === id) {
-                        item.lastMessage = data;
-                        return item
-                    }
-                    return item;
-                });
-                return modified;
-            });
+            queryClient.setQueryData(["groupChatList", 4], (oldGroupChatList : GeneralGroupList[])=>{
+                return oldGroupChatList.map(groupChat => {
+                    if(groupChat._id === id) groupChat.lastMessage = data
+                    return groupChat
+                })
+            })
         }
     },[])
     
     // when the friend is added the follow request of that friend is removed from the data
     const removeFollowRequestAndFriend = useCallback((id : string, type : string) => {
         if(type === "friends") {
-            setFriendsArray((prevData) => {
-                const updatedArray = prevData.filter(item => {
-                    return item._id !== id;
-                });
-                return updatedArray;
-            });
+            const queryKey = ["friendsList", 2] 
+            queryClient.setQueryData(queryKey, (oldFriendList : FriendData[]) => {
+                return oldFriendList.filter(item => item._id !== id);
+            })
         }
         if(type === "followRequests") {
-            setFollowRequestsArray((prevData) => {
-                const updatedArray = prevData.filter(item => {
-                    return item._id !== id;
-                });
-                return updatedArray;
-            });
+            queryClient.setQueryData(["followRequestsList", 3], (oldFollowRequests : AssessoryData[])=>{
+                return oldFollowRequests.filter(requests => requests._id !== id)
+            })
         }
     }, [])
 

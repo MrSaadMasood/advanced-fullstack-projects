@@ -15,10 +15,14 @@ import React from 'react'
 
 const queryClient = new QueryClient()
 
-// async function deferRender(){
-//   const { worker } = await import("./mocks/browser.js")
-//   return worker.start()
-// }
+async function deferRender(){
+  const { worker } = await import("./mocks/browser")
+  return worker.start()
+}
+if(process.env.NODE_ENV === "test"){
+  (async ()=> await deferRender())()
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>

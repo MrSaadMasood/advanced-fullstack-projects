@@ -66,14 +66,13 @@ export default function Home() {
         friendsArray,
         followRequestsArray,
         allUsersArray,
-        removeFollowRequestAndFriend,
         chatListArraySetter 
-    } = useOptionsSelected(optionsSelected, handleSearchInputChange)
+    } = useOptionsSelected(optionsSelected)
 
     const { 
         joinedRoom, 
         socket, 
-        completeChatData, 
+        normalChatData, 
         groupChatData,
         friendData,
         generalGroupData,
@@ -129,7 +128,7 @@ export default function Home() {
         groupChatList
 
     const filteredFriendsList = optionsSelected === 2 ? 
-        getFilteredData(friendsArray, optionsSelected, searchInput) as FriendData[] : 
+        getFilteredData(friendsArray, optionsSelected, searchInput) as FriendData[]: 
         friendsArray
 
     const filteredFollowRequests = optionsSelected === 3 ? 
@@ -140,9 +139,9 @@ export default function Home() {
         getFilteredData(allUsersArray, optionsSelected, searchInput) as AssessoryData[] : 
         allUsersArray
 
-    const filteredNormalChats = completeChatData.chat.length === 0 ? 
-        completeChatData :  
-        filterChatData(completeChatData, "normal", chatSearchInput) as ChatData
+    const filteredNormalChats = normalChatData.chat.length === 0 ? 
+        normalChatData :  
+        filterChatData(normalChatData , "normal", chatSearchInput) as ChatData
     
     const filteredGroupChat = groupChatData.length === 0 ?
         groupChatData :
@@ -244,7 +243,9 @@ export default function Home() {
     }
     
     function changeUserDataBasedOnGroupChanges( id : string, actionType : number ){
+        console.log("the group manager is", groupManager)
         const groupToChange = userData?.groupChats.find(group => group.collectionId === groupManager)
+        console.log('the group to change is', groupToChange)
         if(!groupToChange) return
 
         setUserData((prevData)=>{
@@ -254,6 +255,7 @@ export default function Home() {
             }
             if(actionType === 1 ){
                 const memberIndex = indexfinder(groupToChange.members, id)
+                console.log('the memberindex for action 1000px', memberIndex)
                 if(memberIndex) groupToChange.members.splice(memberIndex, 1)
             }
 
@@ -295,8 +297,9 @@ export default function Home() {
     // handles the deletion of message message stored the message to delete data in state
     function handleMessageDelete(messageId : string, type : ChatType) {
         
+            console.log("the normal chat data is", normalChatData)
         setMessageToDeleteInfo({
-            collectionId: type === "normal" ? completeChatData._id : groupChatData[0]._id,
+            collectionId: type === "normal" ? normalChatData._id : groupChatData[0]._id,
             type: type,
             messageId
         });
@@ -415,7 +418,6 @@ export default function Home() {
                                                 selectedChatSetter={selectedChatSetter}
                                                 selectedOptionSetter={selectedOptionSetter}
                                                 isUserChangedSetter={isUserChangedSetter}
-                                                removeFriendFromDataArray={removeFollowRequestAndFriend}
                                                 getChatData={getChatData}
                                                 setGlobalError={setGlobalError}
                                             />
@@ -426,7 +428,6 @@ export default function Home() {
                                                 key={index}
                                                 data={data}
                                                 isUserChangedSetter={isUserChangedSetter}
-                                                removeFollowRequest={removeFollowRequestAndFriend}
                                                 setGlobalError={setGlobalError}
                                             />
                                 )})}

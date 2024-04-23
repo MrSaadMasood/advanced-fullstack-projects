@@ -6,31 +6,31 @@ import useImageHook from "../hooks/useImageHook"
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker"
 import { useMutation } from "@tanstack/react-query"
 import { addFriendRequest, deleteFriendRequest } from "../../api/dataService"
+import useOptionsSelected from "../hooks/useOptionsSelected"
 
 interface FriendRequestsProps {
     data : AssessoryData,
     isUserChangedSetter: (value : boolean) => void, 
-    removeFollowRequest: (id : string, type : string)=> void,
     setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function FriendRequests({ 
     data,  
     isUserChangedSetter, 
-    removeFollowRequest, 
     setGlobalError
 }: FriendRequestsProps){
     // loading states for access and decline buttons
     const axiosPrivate = useInterceptor()
     const url = profilePictureUrlMaker(data.profilePicture)
     const image = useImageHook(url)
+    const { removeFollowRequestAndFriend } = useOptionsSelected()
     const [ idToRemove, setIdToRemove] = useState("")
 
     const { mutate : addFriendMutation, isPending : isAddFriendPending } = useMutation({
         mutationFn : addFriendRequest,
         onSuccess : ()=>{
             isUserChangedSetter(true)
-            removeFollowRequest(idToRemove, "followRequests")
+            removeFollowRequestAndFriend(idToRemove, "followRequests" )
         },
         onError : ()=> setGlobalError("Failed to send accept friend request")
     })
@@ -39,7 +39,7 @@ export default function FriendRequests({
         mutationFn : deleteFriendRequest,
         onSuccess : ()=>{
             isUserChangedSetter(true)
-            removeFollowRequest(idToRemove, "followRequests")
+            removeFollowRequestAndFriend(idToRemove, "followRequests" )
         },
         onError : ()=> setGlobalError("Failed to send decline friend request")
     })

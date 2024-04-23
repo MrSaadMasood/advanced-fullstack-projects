@@ -6,12 +6,12 @@ import ImageDiv from "../MiscComponents/ImageDiv";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
 import { useMutation } from "@tanstack/react-query";
 import { removeAFriend } from "../../api/dataService";
+import useOptionsSelected from "../hooks/useOptionsSelected";
 
 interface FriendsProps extends CommonProp {
     data : FriendData,
     selectedOptionSetter: (option : number, text : string) => void,
     isUserChangedSetter : (value : boolean)=> void, 
-    removeFriendFromDataArray : (id : string, type : string)=> void,
     getChatData : GetChatData, 
     setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
@@ -21,21 +21,22 @@ export default function Friends({
     selectedChatSetter, 
     selectedOptionSetter, 
     isUserChangedSetter, 
-    removeFriendFromDataArray,
-    getChatData
+    getChatData,
+    setGlobalError
 } : FriendsProps ){
-    
     const axiosPrivate = useInterceptor()
     const url = profilePictureUrlMaker(data.profilePicture)
+    const { removeFollowRequestAndFriend } = useOptionsSelected()
     const image = useImageHook(url)
     const [ removedFriendId , setRemovedFriendId ]= useState("")
 
     const { mutate : removeFriendMutation, isPending : isRemoveFriendPending } = useMutation({
         mutationFn : removeAFriend,
         onSuccess : ()=>{
+            removeFollowRequestAndFriend(removedFriendId, "friends")
             isUserChangedSetter(true)
-            removeFriendFromDataArray(removedFriendId, "friends")
-        }
+        },
+        onError : ()=> setGlobalError("Failed to Remove Friend! Try Again")
     })
 
     function sendMessage(data : FriendData){
@@ -47,7 +48,7 @@ export default function Friends({
 
     function removeFriend(id : string){
         setRemovedFriendId(id)
-        removeFriendMutation({ axiosPrivate, id})
+        removeFriendMutation({ axiosPrivate, id, collectionId : data.collectionId})
     }
     return(
         <div className=" p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">

@@ -13,7 +13,6 @@ import {
     getChatList,
     getFollowRequests,
     getFriends,
-    getFriendsData,
     getGroupChatData,
     getGroupChats,
     getGroupMembers,
@@ -59,7 +58,7 @@ router.get("/follow-requests",  getFollowRequests)
 router.post("/add-friend", stringValidation("friendId"),  addFriend)
 
 // removes friend from the list
-router.delete("/remove-friend/:id", paramValidation("id"),  removeFriend)
+router.delete("/remove-friend/:id", paramValidation("id"), queryValidation("collectionId"), removeFriend)
 
 // removes the follow request
 router.delete("/remove-follow-request/:id", paramValidation("id"),  removeFollowRequest)
@@ -87,9 +86,6 @@ router.get("/get-profile-picture/:name", paramValidation("name"), getProfilePict
 
 // saves the bio of the user to the database
 router.post("/change-bio", stringValidation("bio"),  changeBio)
-
-// gets the friends data
-router.get("/get-friends-data",  getFriendsData)
 
 // for creating a new group
 router.post("/create-new-group", imageHandlerMiddleware("groupImage"), upload.single("image") ,  createNewForm)

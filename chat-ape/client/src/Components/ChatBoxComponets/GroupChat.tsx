@@ -50,7 +50,8 @@ export default function GroupChat({
     const deleteMessage = useCallback((id : string) => {
 
         const groupAdminsArray = userData.groupChats.find(group => group.collectionId === groupChatData[0]._id)?.admins
-
+        console.log("the userData is", userData)
+        console.log("the group admins array is", groupAdminsArray)
         if(groupAdminsArray?.includes(userData._id)) handleMessageDelete(id, "group")
         else setGlobalError("Only admins can delete a message")
 

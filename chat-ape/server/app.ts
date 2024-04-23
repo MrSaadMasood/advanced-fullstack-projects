@@ -62,7 +62,7 @@ else {
     app.use(compression())
     app.use(express.json())
     app.use(express.urlencoded({ extended : false}))
-    app.use(express.static("uploads"))
+    app.use(express.static("src/uploads"))
 
     // if database connection is successfull then configuring the server to listen to the port
     // server.listen(PORT , ()=> console.log("the server is connected at port", PORT))
@@ -71,7 +71,6 @@ else {
             server.listen(PORT , ()=> serverLogger.info("the server is running successfully"))
         }
         else {
-            serverLogger.info("failed to start the server")
             serverLogger.error(err)
         }
     })

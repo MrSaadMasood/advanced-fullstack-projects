@@ -1,56 +1,68 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
-import { requestHandler } from "./requestHandler";
 import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, FetchChatData, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId, UserSaved } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
+import { assessoryDataArraySchema, f2aEnableSchema, factor2LoginSchema, friendListSchema, groupChatDataArraySchema, groupChatListSchema, imageSaveSchema, loginUserSchema, normalChatDataSchema, normalChatListSchema, normalId } from "../zodSchema/schema";
+import { zodString } from "../zodSchema/zodUtils";
 
-export async function fetchingBasedOnOptionSelected(axiosPrivate : AxiosInstance, optionsSelected : number){
-        // to get the normal chat list of the user with friends containing the friend name and last message
-        if (optionsSelected === 1) {
-            const result = await requestHandler(axiosPrivate, "/user/get-chatlist" )
-            if(result.code === 400) throw new Error(result.error.message)
-            return result.data as any
-        }
-
-        // to get all the friends of the user
-        if (optionsSelected === 2) {
-            const result = await requestHandler(axiosPrivate, "/user/get-friends" )
-            if(result.code === 400) throw new Error(result.error.message)
-            return result.data as any           
-        }
-
-        // // to get the follow request sent to the user
-        if (optionsSelected === 3) {
-            const result = await requestHandler(axiosPrivate, "/user/follow-requests" )
-            if(result.code === 400) throw new Error(result.error.message)
-            return result.data as any
-        }
-
-        // // to get group chats with last message and group name
-        if (optionsSelected === 4) {
-            const result = await requestHandler(axiosPrivate, "/user/group-chats" )
-            if(result.code === 400) throw new Error(result.error.message)
-            return result.data as any
-        }
-
-        // // to get all the users of the app
-        if (optionsSelected === 5) {
-            const result = await requestHandler(axiosPrivate, "/user/get-users" )
-            if(result.code === 400) throw new Error(result.error.message)
-            return result.data as any
-        }
-
+export async function getNormalChatList(axiosPrivate : AxiosInstance) {
+    try {
+        const response = await axiosPrivate.get( "/user/get-chatlist" )
+        return normalChatListSchema.parse(response.data) 
+    } catch (error) {
+        console.log("error occured while getting normal chatlist", error)
+        throw new Error("failed to get the normal Chat list") 
+    } 
 }
 
+export async function getFriendsList(axiosPrivate : AxiosInstance) {
+    try {
+        const response = await axiosPrivate.get( "/user/get-friends" )
+        return friendListSchema.parse(response.data)
+    } catch (error) {
+        console.log("error occured while getting friendlist", error)
+        throw new Error("failed to get the friends list") 
+    } 
+}
+
+export async function getFollowRequestsList(axiosPrivate : AxiosInstance) {
+    try {
+        const response = await axiosPrivate.get( "/user/follow-requests" )
+        return assessoryDataArraySchema.parse(response.data)
+    } catch (error) {
+        console.log("error occured while getting follow request", error)
+        throw new Error("failed to get the follow requests") 
+    } 
+}
+
+export async function getUsersList(axiosPrivate : AxiosInstance) {
+    try {
+        const response = await axiosPrivate.get( "/user/get-users" )
+        return assessoryDataArraySchema.parse(response.data)
+    } catch (error) {
+        console.log("error occured while getting the users list", error)
+        throw new Error("failed to get the users list") 
+    } 
+}
+
+export async function getGroupChatList(axiosPrivate : AxiosInstance) {
+    try {
+        const response = await axiosPrivate.get( "/user/group-chats" )
+        return groupChatListSchema.parse(response.data)
+    } catch (error) {
+        console.log("some error occured", error)
+        throw new Error("failed to get the users list") 
+    } 
+}
 
 export async function fetchUserData(axiosPrivate : AxiosInstance){
     try {
         const response = await axiosPrivate.get("/user/updated-data")
         console.log("the user data is now fetched", response.data);
-        
         return response.data
     } catch (error) {
-        throw new Error
+        console.log("some error occured", error)
+        throw new Error("failed tot fetch users")
     }
 }
 
@@ -73,8 +85,8 @@ interface deleteMessageFromChatArgs {
 }
 export async function deleteMessageFromChat({axiosPrivate, messageToDeleteInfo} : deleteMessageFromChatArgs ){
     try {
-        await axiosPrivate.delete(`/user/delete-message?collectionId=${messageToDeleteInfo.collectionId}&
-            type=${messageToDeleteInfo.type}&messageId=${messageToDeleteInfo.messageId}`);
+        await axiosPrivate.delete
+            (`/user/delete-message?collectionId=${messageToDeleteInfo.collectionId}&type=${messageToDeleteInfo.type}&messageId=${messageToDeleteInfo.messageId}`);
     } catch (error) {
         console.log("failed to delete the message")
         throw new Error
@@ -105,21 +117,11 @@ export async function userSignUp({ formData} : { formData : SignUpFormdata}){
 export async function loginUser({ formData} : { formData : FormDataLogin}){
    try {
         const response = await server.post("/auth-user/login", formData )
-        return response.data as UserSaved 
+        return loginUserSchema.parse(response.data)
    } catch (error) {
         console.log("failed to log the user in")
         throw new Error("failed to login the user")
    } 
-}
-
-export async function getUserFriends(axiosPrivate : AxiosInstance){
-    try {
-        const response = await axiosPrivate.get(`/user/get-friends-data`);
-        return response.data as AssessoryData[]
-    } catch (error) {
-        console.log("failed to get the friends data")
-        throw new Error("failed to get the friends data")
-    }
 }
 
 export async function createNewGroup({ axiosPrivate, groupName, rawImageFile, friendsIncluded } : createNewGroupProps){
@@ -148,7 +150,7 @@ export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageDa
                 "Content-Type": "multipart/form-data",
             },
         })
-        return response.data
+        return imageSaveSchema.parse(response.data)
     } catch (error) {
         console.log("failed to send the image")
         throw new Error("failed to send the image")
@@ -158,7 +160,8 @@ export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageDa
 export async function sendTextMessage({ axiosPrivate , endpoint, textMessageData } : textMessageDataProps){
     try {
         const response = await axiosPrivate.post(endpoint, textMessageData)
-        return response.data
+        console.log("the message received in dataservice is", normalId.parse(response.data))
+        return normalId.parse(response.data)
     } catch (error) {
         console.log("failed to send the message")
         throw new Error("failed to send the message")
@@ -172,7 +175,7 @@ export async function factor2AuthLogin(formData : { otp : string , refreshToken 
                 Authorization : `Bearer ${formData.factor2AuthToken}`
             }
         } )
-        return response.data
+        return factor2LoginSchema.parse(response.data)
     } catch (error) {
         console.log("failed to factor 2 authentication")
         throw new Error
@@ -186,7 +189,7 @@ export async function fetchQRCode(factor2AuthToken: string ){
                 Authorization : `Bearer ${factor2AuthToken}`
             }
         })
-        return response.data
+        return zodString.parse(response.data)
     } catch (error) {
         console.log("failed to get the get QR code")
         throw new Error
@@ -196,7 +199,7 @@ export async function fetchQRCode(factor2AuthToken: string ){
 export async function changefactor2AthSettings({ email } : {email : string }){
     try {
         const response = await server.post("/auth-user/enable-f2a", { email })
-        return response.data
+        return f2aEnableSchema.parse(response.data)
     } catch (error) {
         console.log((error as AxiosError).message);
         throw new Error
@@ -265,19 +268,24 @@ export async function filterChat({ axiosPrivate, chatType, date, groupMemberId, 
     }
 }
 
-export async function fetChatDataBasedOnType({axiosPrivate, chatType, chatId,docsSkipCount }: FetchChatData) {
+export async function getNormalChatData(axiosPrivate : AxiosInstance, chatId : string) {
     try {
-        if(chatType === "normal"){
-            const response = await axiosPrivate.get(`/user/get-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
-            return response.data 
-        }
-        if(chatType === "group"){
-            const response = await axiosPrivate.get(`/user/get-group-chat/${chatId}?docsSkipCount=${docsSkipCount}`)
-            return response.data
-        }
+        const response = await axiosPrivate.get(`/user/get-chat/${chatId}`)
+        return normalChatDataSchema.parse(response.data)
     } catch (error) {
-        console.log((error as AxiosError).message)
-        throw new Error
+        console.log("failed to get the normal chat data", error) 
+        throw new Error("failed to get the normal chat data")
+    } 
+}
+
+export async function getGroupChatData(axiosPrivate:AxiosInstance, chatId : string) {
+    try {
+        const response = await axiosPrivate.get(`/user/get-group-chat/${chatId}`)
+        console.log("getting chat data now", response.data)
+        return groupChatDataArraySchema.parse(response.data)
+    } catch (error) {
+        console.log("failed to get the group chat data", error) 
+        throw new Error("failed to get the group chat data")
     }
 }
 
@@ -317,9 +325,9 @@ export async function sendFriendRequest({ axiosPrivate, id }: RequestsWithIds) {
         throw new Error
     }
 }
-export async function removeAFriend({ axiosPrivate, id }: RequestsWithIds) {
+export async function removeAFriend({ axiosPrivate, id, collectionId }: RequestsWithIds) {
     try {
-        await axiosPrivate.delete(`/user/remove-friend/${id}`)
+        await axiosPrivate.delete(`/user/remove-friend/${id}?collectionId=${collectionId}`)
     } catch (error) {
         console.log((error as AxiosError).message)
         throw new Error

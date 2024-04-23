@@ -1,4 +1,6 @@
 import { Axios, AxiosInstance } from "axios"
+import { z } from "zod"
+import { assessoryData, friendDataSchema, groupChatSchema, normalChatSchema } from "../zodSchema/schema"
 
 interface UserDataIncomplete {
     bio: string
@@ -14,7 +16,7 @@ export interface CommonUserData {
     _id: string
     fullName: string
     type?: "normal"
-    profilePicture?: string
+    profilePicture?: string | null
     collectionId : string
 }
 
@@ -34,17 +36,9 @@ interface GroupChats {
 
 interface UserData extends CommonUserData, UserDataIncomplete {}
 
-export interface AssessoryData {
-    _id: string
-    fullName: string
-    profilePicture?: string
-}
+export type AssessoryData = z.infer<typeof assessoryData>
 
-export interface ChatList {
-    friendData: CommonUserData
-    lastMessage: Message
-    _id: string
-}
+type ChatList = z.infer<typeof normalChatSchema>
 
 interface Message {
     id: string
@@ -66,13 +60,8 @@ export interface GroupChatData {
     _id: string
 }
 
-export interface GeneralGroupList {
-    lastMessage: Message
-    senderName: string
-    _id: string
-    groupName: string
-    groupImage: null | string
-    type?: "group"
+export type GeneralGroupList = z.infer<typeof groupChatSchema> & {
+    type? : "group"
 }
 
 export interface MessageToDelete {
@@ -183,6 +172,6 @@ export interface FetchChatData extends AxiosCustom {
 export type GetChatData = (data : AcceptedDataOptions )=>void
 export type BoxSide = "right" | "left"
 export type OpenGroupManager = (groupId : string)=> void
-export type RequestsWithIds = AxiosCustom & Pick<Message, "id">
+export type RequestsWithIds = AxiosCustom & Pick<Message, "id"> & { collectionId? : string }
 export type RequestWithIdAndCollectionId = RequestsWithIds & Pick<NormalChats, "collectionId">
-export type FriendData = AssessoryData & Pick<NormalChats, "collectionId">
+export type FriendData = z.infer<typeof friendDataSchema> 

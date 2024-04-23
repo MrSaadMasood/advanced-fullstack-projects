@@ -47,9 +47,9 @@ export default function Chat({
 
   const realChat = useMemo(()=> completeChatData.chat, [ completeChatData ])
 
-  const deleteMessage = useCallback((id : string) => {
+  const deleteMessage = (id : string) => {
     handleMessageDelete(id, "normal");
-  }, [])
+  }
 
 
   return (

@@ -1,7 +1,5 @@
 import { Db, MongoClient } from "mongodb";
-import dotenv from "dotenv"
 import env from "./zodSchema/envSchema";
-dotenv.config()
 
 const { TEST_URI, MONGO_URL } = env
 let database : Db ;

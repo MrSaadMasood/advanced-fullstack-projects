@@ -17,6 +17,7 @@ import ErrorDiv from "../ReuseableFormComponents/ErrorDiv";
 import PasswordCheckBox from "../ReuseableFormComponents/PasswordCheckBox";
 import { useGoogleLogin } from "@react-oauth/google";
 import { UserSaved } from "../../Types/dataTypes";
+import { loginUserSchema } from "../../zodSchema/schema";
 
 export default function LoginForm() {
 
@@ -33,7 +34,7 @@ export default function LoginForm() {
         onSuccess : async (tokenResponse)=> {
             try {
                 const response = await server.post("/auth-user/google", { code : encodeURIComponent(tokenResponse.code)})
-                const data : UserSaved = response.data
+                const data = loginUserSchema.parse(response.data)
                 handleLoginDataFromServer(data)
             } catch (error) {
                 console.log("the rquest sent for google login has failed") 

@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { FaCamera } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import useInterceptor from "../hooks/useInterceptors";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createNewGroup, getUserFriends } from "../../api/dataService";
+import { useMutation } from "@tanstack/react-query";
+import { createNewGroup } from "../../api/dataService";
 import useImageFileHook from "../hooks/useCreateGroup";
 import AddRemoveGroupFriends from "../MiscComponents/AddRemoveGroupFriends";
+import useOptionsSelected from "../hooks/useOptionsSelected";
 
 export default function NewGroupForm() {
     const navigate = useNavigate();
@@ -28,11 +29,7 @@ export default function NewGroupForm() {
         onError : ()=> {setErrorMessage("Failed to create new Group! Try Again"); setIsErrorDivPresent(true)}
     })
 
-    const { data : friendList } = useQuery({
-        queryKey : ["friends"],
-        queryFn : ()=> getUserFriends(axiosPrivate),
-        
-    })
+    const { friendsArray : friendList } = useOptionsSelected(2)
     
     // timer to remove the error div
     useEffect(() => {

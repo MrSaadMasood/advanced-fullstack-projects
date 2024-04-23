@@ -1,11 +1,12 @@
 import { MdCancel } from "react-icons/md"
 import { AssessoryData, OpenGroupManager, UserData } from "../../Types/dataTypes"
 import UserManagingList from "../ListsComponets/UserManagingList"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { addFriendToGroup, fetchingBasedOnOptionSelected, makeMemberGroupAdmin, removeGroupAdmin, removeGroupMember } from "../../api/dataService"
+import { useMemo, useRef, useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { addFriendToGroup, makeMemberGroupAdmin, removeGroupAdmin, removeGroupMember } from "../../api/dataService"
 import useInterceptor from "../hooks/useInterceptors"
 import { groupManagerFilter } from "../../utils/filterArrayFunction"
+import useOptionsSelected from "../hooks/useOptionsSelected"
 
 interface GroupManagerProps {
     openGroupManager : OpenGroupManager,
@@ -24,7 +25,8 @@ function GroupManager({
     groupId,
     setGlobalError,
     handleAreGroupMembersChanged,
-    changeUserDataBasedOnGroupChanges
+    changeUserDataBasedOnGroupChanges,
+    isUserChangedSetter
 } : GroupManagerProps) {
 
     const axiosPrivate = useInterceptor() 
@@ -32,22 +34,16 @@ function GroupManager({
     const [ isSearchButtonClicked, setIsSearchButtonClicked] = useState(false)
     const [ searchInput , setSearchInput ] = useState("")
     const [ memberBeingOperatedId , setMemberBeingOperatedId ] = useState("")
+    const { friendsArray : friends } = useOptionsSelected(2)
     const chatSearchRef = useRef<HTMLInputElement>(null)
 
     const managerdGroup = useMemo(()=> userData.groupChats.find(group => group.collectionId === groupId),[groupId, userData ])
     const groupAdminsArray = managerdGroup ? managerdGroup.admins : []
 
-    const { data : friends = [] , error : fetchingFriendsError} = useQuery({
-        queryKey : [buttonTypeClicked],
-        queryFn : ()=> fetchingBasedOnOptionSelected(axiosPrivate, 2),
-        enabled : buttonTypeClicked === "Friends"
-    })
-    const friendsArray : AssessoryData[] = friends
-    const friendsOtherThanGroupMembers =  useMemo(()=> friendsArray.filter((friend, index) => 
+    const friendsOtherThanGroupMembers =  useMemo(()=> friends.filter((friend, index) => 
         friend._id !== userData._id && friend._id !== groupMembers[index]._id),
         [userData, groupMembers ])
         
-console.log('the group members are', groupMembers)
     const groupAdmins = useMemo(()=> groupMembers.filter(member => groupAdminsArray.includes(member._id)),[groupMembers, groupAdminsArray ])
     const membersOtherThanAdmins = useMemo(()=> groupMembers.filter(member => !groupAdminsArray.includes(member._id)),[groupMembers, groupAdmins])
     const noneElementIndex = useMemo(()=>membersOtherThanAdmins.findIndex(member => member.fullName === "None"),[membersOtherThanAdmins])
@@ -55,7 +51,6 @@ console.log('the group members are', groupMembers)
 
     const infoButtonsArray = [ "Members", "Admins", "Friends" ]
     const isUserAdmin = groupAdminsArray.includes(userData._id)
-    console.log("the user data is", userData)
     const filteredAdminsArray = searchInput !== "" ? groupManagerFilter(groupAdmins, searchInput) : groupAdmins
     const filteredOtherMembersArray = searchInput !== "" ? groupManagerFilter( membersOtherThanAdmins, searchInput) : membersOtherThanAdmins
     const filterdFriendsArray = searchInput !== "" ? groupManagerFilter(friendsOtherThanGroupMembers, searchInput) : friendsOtherThanGroupMembers
@@ -80,10 +75,11 @@ console.log('the group members are', groupMembers)
         onSuccess : (data)=> onSuccessGroupChanges(data, 4) 
     })
 
-    useEffect(()=>{
-        if(fetchingFriendsError) setGlobalError("Failed To get Your Friends")
-    },[fetchingFriendsError])
+    function handleMakeMemberAdmin(id : string){
+        setMemberBeingOperatedId(id)
+        makeMemberAdminMutation({ axiosPrivate, id, collectionId : groupId })
 
+    }
     function handleMemberRemoval(id : string ){
         if (groupMembers.length <= 2) return setGlobalError("A group must have 3 members")
         RemoveMemberFromGroupMutation({ axiosPrivate, id, collectionId : groupId })
@@ -100,6 +96,7 @@ console.log('the group members are', groupMembers)
         setMemberBeingOperatedId("")
         changeUserDataBasedOnGroupChanges(id, actionType)
         handleAreGroupMembersChanged(true)
+        isUserChangedSetter(true)
     }
   return (
         <div className="relative">
@@ -121,7 +118,6 @@ console.log('the group members are', groupMembers)
                                             {button}
                                         </button>
                                     )}
-                                console.log("the user is adming but this is still being rendered")
                                 if(button === "Friends") return 
                                 return (
                                         <button 
@@ -163,9 +159,9 @@ console.log('the group members are', groupMembers)
                                                 <button 
                                                     className=" p-1 rounded-md bg-green-500 hover:bg-green-600"
                                                     disabled={isMemberBeingRemoved || isMemberBeingMadeAdmin}
-                                                    onClick={()=> makeMemberAdminMutation({ axiosPrivate, id : member._id, collectionId : groupId })}
+                                                    onClick={()=> handleMakeMemberAdmin(member._id) }
                                                 >
-                                                        Admin
+                                                        {isMemberBeingMadeAdmin && memberBeingOperatedId === member._id ? "Upgrading" : "Admin"}
                                                 </button>   
                                                 <button 
                                                     className=" ml-2 p-1 rounded-md bg-red-500 hover:bg-red-600"

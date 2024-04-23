@@ -4,12 +4,12 @@ import useImageHook from "../hooks/useImageHook";
 import profilePictureUrlMaker from "../../utils/profilePictureUrlMaker";
 import { memo } from "react";
 
-const UserManagingList = memo(function UserManagingList({ children, member, key  } : 
-    {children : JSX.Element, member : AssessoryData, key : string}) {
+const UserManagingList = memo(function UserManagingList({ children, member   } : 
+    {children : JSX.Element, member : AssessoryData, }) {
     const url = profilePictureUrlMaker(member.profilePicture)
     const image = useImageHook(url)
     return (
-    <div key={key} className="w-full h-10 sm:h-16 lg:h-12 flex justify-between items-center border-b-2 border-white mt-3">
+    <div className="w-full h-10 sm:h-16 lg:h-12 flex justify-between items-center border-b-2 border-white mt-3">
         <div className=" flex justify-start items-center w-[55%] ">
             <LazyLoad className=" w-3 h-8 sm:w-12 sm:h-12 lg:h-10 lg:w-24 xl:h-10 xl:w-14 flex justify-center items-center
              rounded-full overflow-hidden mr-2 ">

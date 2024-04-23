@@ -11,7 +11,6 @@ import { randomUUID } from "node:crypto";
 import { googleTokensExtractor, refreshGoogleAccessToken } from "../../src/utils/googleTokenFuncs";
 import { logger } from "../logger/conf/loggerConfiguration";
 import { Response } from 'express' 
-import dotenv from "dotenv"
 import bcrypt from "bcrypt"
 import { BadRequest } from '../ErrorHandler/customError';
 import { incomingDataValidationHandler } from './controllerHelper';
@@ -19,8 +18,6 @@ import { CustomRequest } from '../../Types/customRequest';
 import env from '../../zodSchema/envSchema';
 import oAuth2Client from '../utils/oAuth2Client';
 import { userSchema, tokenSchema } from "../../zodSchema/zodSchemas";
-
-dotenv.config()
 
 const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, REFRESH_SECRET } = env
 
@@ -54,7 +51,10 @@ export const createUser  = async (req : CustomRequest, res : Response) => {
         isGoogleUser : isGoogleUser || false,
         is2FactorAuthEnabled : false,
         factor2AuthSecret : "",
+        normalChats : [],
+        groupChats : [],
     } 
+    userSchema.parse(user)
     const createdUser = await database.collection<DocumentInput>("users").insertOne(user);
 
     if (!createdUser.acknowledged) throw new BadRequest(generalErrorMessage("failed to create a new user"));
@@ -74,11 +74,9 @@ export const loginUser  = async (req : CustomRequest, res : Response) => {
     const { email, password } = req.body;
     // incomingDataValidationHandler(req)
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-    console.log('the request has now reached ', email,password)
     const userFromDatabase = await database.collection<CreateNewUser>("users").findOne({ email: email });
     const user = userSchema.parse(userFromDatabase)
-    console.log("passed th user schema");
-    
+    console.log("the user is", user)
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new BadRequest(generalErrorMessage("password do not match"));
     const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id.toString() }, database)

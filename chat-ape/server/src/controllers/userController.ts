@@ -43,9 +43,12 @@ export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
     // const database = await dataBaseConnectionMaker(TEST_URI)    
     const userFromDatabase = await database.collection<DocumentInput>("users").findOne(
-        { _id : id}, { projection : { password : 0}}
+        { _id : id} 
     )
     const user = userSchema.parse(userFromDatabase)
+    user.password = ""
+    user.factor2AuthSecret = ""
+    console.log("the user sent from the bacend is", user.groupChats)
     res.json( user )
 }
 
@@ -108,13 +111,14 @@ export const getFriends = async(req: CustomRequest, res: Response)=>{
             },
             {
                 $project: {
-                _id: 0,
+                _id: "$friendsData._id",
                 fullName: "$friendsData.fullName",
                 profilePicture: "$friendsData.profilePicture",
                 collectionId: "$normalChats.collectionId",
                 },
             },
         ]).toArray()
+        console.log('the friends from the getfriend endpint isEmpty', friends)
     const expirationTime = 86400 - (new Date().getTime()) % 86400
     const key =  `user:friendList:${id}`
     await redisClient.call("json.set", key , "$", JSON.stringify(friends))
@@ -144,10 +148,11 @@ export const addFriend = async(req: CustomRequest, res: Response)=>{
 // removes the friend from the friends array
 export const removeFriend = async(req: CustomRequest, res: Response)=>{
     const { id } = req.user!
+    const { collectionId } = req.query
     const friendId = req.params.id 
     incomingDataValidationHandler(req)
     const client = clientMaker(TEST_URI || MONGO_URL)
-    await removeFriendTransaction(client , id, friendId)
+    await removeFriendTransaction(client , id, friendId, collectionId as string)
     await redisClient.del(`user:friendList:${id}`)
     res.json({message : "successfully removed friend"})
 }
@@ -346,40 +351,6 @@ export const deletePrevProfilePicture = async (req: CustomRequest, res: Response
     await fs.unlink(`./uploads/proffile-images/${name}`)
     return res.json("picture succesfully deleted")
 } 
-
-// gets the data of all the friends.
-export const getFriendsData = async (req: CustomRequest, res: Response)=>{
-
-    const {id} = req.user!
-    // const database = await dataBaseConnectionMaker(TEST_URI)    
-    const friendsData = await database.collection<DocumentInput>("users").aggregate(
-        [
-            {
-            $match: {
-                _id: id,
-            },
-            },
-            {
-            $lookup: {
-                from: "users",
-                localField: "friends",
-                foreignField: "_id",
-                as: "data",
-            },
-            },
-            {
-            $unwind: "$data",
-            },
-            {
-            $project: {
-                _id: "$data._id",
-                fullName: "$data.fullName",
-            },
-            },
-        ] 
-    ).toArray()
-    res.json(friendsData)
-}
 
 // creates a new group form the given information
 export const createNewForm = async (req: CustomRequest, res: Response)=>{
@@ -696,6 +667,7 @@ export const updateGroupChatData = async(req: CustomRequest, res: Response)=>{
 // depending upon the chat type the collection<DocumentInput>name is decided and the message is deleted from the database
 export const deleteMessage = async(req: CustomRequest, res: Response)=>{
     const { collectionId, type, messageId } = req.query
+    console.log("the req qeury is", req.query)
     incomingDataValidationHandler(req)
     // const database = await dataBaseConnectionMaker(TEST_URI)    
     const collectionName = type === "normal" ? "normalChats" : "groupChats"

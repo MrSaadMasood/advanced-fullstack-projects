@@ -47,9 +47,14 @@ export default function Profile({
     const { mutate : factor2AuthMutation } = useMutation({
         mutationFn : changefactor2AthSettings,
         onSuccess : (data)=>{
-            data.isGoogleUser = isAuthenticated.isGoogleUser,
-            data.refreshToken = isAuthenticated.refreshToken
-            setItem("f2a", data)
+            console.log("the data on enabing the f2ais", data)
+            const dataToStore = { 
+                ...data,
+                isGoogleUser : isAuthenticated.isGoogleUser,
+                refreshToken : isAuthenticated.refreshToken,
+                accessToken : ""
+            }
+            setItem("f2a", dataToStore)
             removeItem("user")
             navigate("/factor-2-auth")
         }

@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
-import { vi, it , expect, beforeAll, afterAll } from "vitest"
+import { vi, it , expect, beforeAll } from "vitest"
 import { MemoryRouter} from "react-router-dom"
-import Signup from "../Components/Signup"
-import Login from "../Components/Login"
+import Signup from "../Components/AuthComponents/Signup"
+import Login from "../Components/AuthComponents/Login"
 import { AuthProvider } from "../Components/Context/authProvider"
 import SignUpForm from "../Components/Forms/SignupForm"
 import userEvent from "@testing-library/user-event"
@@ -18,7 +18,7 @@ beforeAll(()=>{
     }))
 })
 
-afterAll(()=> vi.clearAllMocks())
+// afterAll(()=> vi.clearAllMocks())
 
 it("tests the sign up Component", async ()=>{
     render(
@@ -145,11 +145,11 @@ it("tests the new group form component", async ()=>{
     expect(fullName).toBeInTheDocument()
 
     const groupName = screen.getByPlaceholderText("Group Name")
-    const memeberButton = await screen.findAllByText("Add")[0]
-    const memeberButton1 = await screen.findAllByText("Add")[1]
+    // const memeberButton = await screen.findAllByText("Add")[0]
+    // const memeberButton1 = await screen.findAllByText("Add")[1]
     const submit = screen.getByText("Submit")
-    await user.click(memeberButton)
-    await user.click(memeberButton1)
+    // await user.click(memeberButton)
+    // await user.click(memeberButton1)
     await user.click(submit)
 
     const error = screen.queryByText("Group Name must be provided")

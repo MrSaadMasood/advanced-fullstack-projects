@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    "vite-globals/env" : true
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
@@ -13,6 +14,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended', // Recommended rules for accessibility in JSX
     'prettier/@typescript-eslint', // Prettier plugin with ESLint for TypeScript
     'plugin:prettier/recommended', // Prettier recommended rules
+    "plugin:vitest-globals/recommended"
   ],
   parserOptions: {
     ecmaVersion: 2021,

@@ -79,24 +79,30 @@ async function addFriendTransaction( client : MongoClient, acceptorId : string, 
 }
 
 // removes the friend from the friends array from both the user and the other friend
-async function removeFriendTransaction(client : MongoClient, userId : string, idToRemove : string){
+async function removeFriendTransaction
+(   client : MongoClient, 
+    userId : string, 
+    idToRemove : string,
+    collectionId : string
+){
     const session = client.startSession()
     try {
         session.startTransaction()
         const database = client.db("chat-app")
-         
-        await database.collection<DocumentInput>("users").updateOne(
+        const modifiedUser = await database.collection<DocumentInput>("users").updateOne(
             { _id : userId}, 
-            { $pull : { friends : idToRemove}},
+            { $pull : { friends : idToRemove, normalChats : { friendId : idToRemove }}},
             transactionOptions
         )
 
-        await database.collection<DocumentInput>("users").updateOne(
+        const modifiedFriend = await database.collection<DocumentInput>("users").updateOne(
             { _id : idToRemove},
-            { $pull : { friends : userId} },
+            { $pull : { friends : userId, normalChats : { friendId : userId}} },
             transactionOptions
         )
         
+        const deletedDocument = await database.collection<DocumentInput>("normalChats").deleteOne({ _id : collectionId })
+        if( !deletedDocument.deletedCount || !modifiedFriend.modifiedCount || !modifiedUser.modifiedCount) throw new Error
         await session.commitTransaction()
         return true
     } catch (error) {
@@ -323,6 +329,7 @@ async function groupManager(
             [arrayToPerformOperation] : memberId
         }}
     )
+    console.log("the updated Group is", updatedGroup)
     if(!updatedGroup.modifiedCount) throw new Error
     return updatedGroup
 }
