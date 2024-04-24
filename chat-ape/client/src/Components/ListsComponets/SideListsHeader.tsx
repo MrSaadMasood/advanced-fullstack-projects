@@ -27,7 +27,7 @@ function SideListsHeader({
     }, [isSearchTriggered])
 
   return (
-    <div className="border-b-2 border-[#555555] h-24 lg:h-20 flex justify-start items-center">
+    <header className="border-b-2 border-[#555555] h-24 lg:h-20 flex justify-start items-center">
         <div className="flex justify-between items-center h-auto w-[90%] ml-5">
             {!isSearchTriggered &&
                 <div className="flex justify-center items-center">
@@ -69,7 +69,7 @@ function SideListsHeader({
 
         </div>
 
-    </div>
+    </header>
   )
 }
 

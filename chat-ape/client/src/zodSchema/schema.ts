@@ -10,7 +10,8 @@ const messageSchema = z.object({
     time : zodString, 
     id : zodString,
     path : zodString.optional(),
-    content : zodString.optional()
+    content : zodString.optional(),
+    error : zodBool.optional()
 })
 
 const assessoryData = idSchema.extend({
@@ -20,7 +21,8 @@ const assessoryData = idSchema.extend({
 const assessoryDataArraySchema = z.array(assessoryData).default([])
 
 const friendDataSchema = assessoryData.extend({
-    collectionId : zodString
+    collectionId : zodString,
+    type : z.literal("normal").optional()
 })
 
 const normalChatSchema = idSchema.extend({
@@ -34,7 +36,7 @@ const groupChatSchema = idSchema.extend({
     groupName : zodString,
     groupImage : zodString.nullable(),
     senderName : zodString,
-    lastMessage : messageSchema
+    lastMessage : messageSchema,
 })
 const groupChatListSchema = z.array(groupChatSchema).default([])
 
@@ -106,6 +108,10 @@ const groupChatData = idSchema.extend({
 const groupChatDataArraySchema = z.array( groupChatData )
 
 export {
+    groupChatData,
+    userNormalChat,
+    messageSchema,
+    userGroupChat,
     groupChatDataArraySchema,
     normalChatDataSchema,
     normalId,

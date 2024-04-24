@@ -34,7 +34,7 @@ export default function GroupMessagesList({
         >
             <div className="flex justify-center items-center">
                 <ImageDiv image={picture} />
-                <div className="h-16 lg:h-12 w-[17rem] lg:w-[13rem] sm:w-[26rem] flex flex-col justify-around items-start ml-2 sm:ml-3 md:ml-5">
+                <div className="h-16 lg:h-12 w-[17rem]  lg:w-[13rem] sm:w-[26rem] flex flex-col justify-around items-start ml-2 sm:ml-3 md:ml-5">
                     <p className="font-bold text-base sm:text-lg lg:text-xs">
                         {data.groupName}
                     </p>
@@ -46,8 +46,8 @@ export default function GroupMessagesList({
                     }
                     {data?.lastMessage?.content && 
                         <div className="text-sm sm:text-base lg:text-xs text-[#b2b2b2] w-[16rem] 
-                        sm:w-[22rem] lg:w-[14rem] text-left">
-                            <p className="w-[100%] h-4">
+                        sm:w-[22rem] lg:w-[14rem] text-left ">
+                            <p className="w-[100%] h-4 ">
                                 {data.lastMessage.userId === userData._id ? "You" : data.senderName}:
                                 <span> </span>
                                 {data.lastMessage.content}

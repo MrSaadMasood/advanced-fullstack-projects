@@ -27,7 +27,7 @@ const MessageBox = memo(function MessageBox({
     const boxCustomStyle = boxSide === "left" ? "left-box" : "right-box"
 
     return (
-        <div 
+        <li
             data-testid="main" 
             className={`text-white text-base w-[100%] h-auto mb-2 flex ${flexStylesBasedOnSide} items-center`}
             onDoubleClick={()=>{ if(boxSide === "right") deleteMessage(data.id)}}
@@ -55,7 +55,7 @@ const MessageBox = memo(function MessageBox({
                     </LazyLoad>
                 }
             </div>
-        </div>
+        </li>
     );
 })
 

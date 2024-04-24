@@ -121,13 +121,13 @@ function GroupManager({
         handleAreGroupMembersChanged(true)
     }
   return (
-        <div className="relative">
+        <section className="relative">
             <div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center">
                <div className=" w-[95%] h-[97%] lg:w-[50%] bg-[#303030] text-white flex flex-col justify-center items-center rounded-xl">
-                    <div className=" w-[60%] h-[10%] overflow-hidden flex justify-center items-center
+                    <h2 className=" w-[60%] h-[10%] overflow-hidden flex justify-center items-center
                      text-2xl sm:text-4xl font-bold mt-2">
                         {managedGroup?.groupName}
-                    </div>
+                    </h2>
                     <div className=" bg-black w-[90%] lg:w-[85%] h-[80%] mt-5 rounded-xl border-white border-2 overflow-hidden">
                         <div className=" w-full h-20 lg:h-16 bg-gray-600 flex jusctify-between items-center overflow-hidden">
                             {!isSearchButtonClicked && infoButtonsArray.map((button, index) => {
@@ -245,7 +245,7 @@ function GroupManager({
                     </div>
                 </div> 
             </div>
-        </div>
+        </section>
   )
 }
 

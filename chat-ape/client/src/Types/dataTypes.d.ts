@@ -1,6 +1,6 @@
 import { Axios, AxiosInstance } from "axios"
 import { z } from "zod"
-import { assessoryData, friendDataSchema, groupChatSchema, normalChatSchema } from "../zodSchema/schema"
+import { assessoryData, friendDataSchema, groupChatData, groupChatSchema, messageSchema, normalChatDataSchema, normalChatSchema, userGroupChat, userNormalChat } from "../zodSchema/schema"
 
 interface UserDataIncomplete {
     bio: string
@@ -11,58 +11,30 @@ interface UserDataIncomplete {
     normalChats: NormalChats[]
     groupChats: GroupChats[]
 }
+export type CommonUserData = z.infer<typeof friendDataSchema>
 
-export interface CommonUserData {
-    _id: string
-    fullName: string
-    type?: "normal"
-    profilePicture?: string | null
-    collectionId : string
-}
 
-interface NormalChats {
-    collectionId: string
-    friendId: string
-}
-
-interface GroupChats {
-    admins: string[]
-    collectionId: string
-    id: string
-    members: string[]
-    groupName: string
-    groupImage: null | string
-}
+type NormalChats = z.infer<typeof userNormalChat>
+type GroupChats = z.infer<typeof userGroupChat>
 
 interface UserData extends CommonUserData, UserDataIncomplete {}
 
-export type AssessoryData = z.infer<typeof assessoryData>
-
 type ChatList = z.infer<typeof normalChatSchema>
 
-interface Message {
-    id: string
-    userId: string
-    time: string
-    content?: string
-    path?: string
-    error?: boolean
+type Message = z.infer<typeof messageSchema> & {
+    error? : boolean
 }
-
-export interface ChatData {
-    _id: string
-    chat: Message[]
-}
-
-export interface GroupChatData {
-    chat: Message
-    senderName: string
-    _id: string
-}
-
 export type GeneralGroupList = z.infer<typeof groupChatSchema> & {
     type? : "group"
 }
+
+export type AssessoryData = z.infer<typeof assessoryData>
+
+export type ChatData = z.infer<typeof normalChatDataSchema>
+
+
+export type GroupChatData = z.infer<typeof groupChatData> 
+
 
 export interface MessageToDelete {
     collectionId: string

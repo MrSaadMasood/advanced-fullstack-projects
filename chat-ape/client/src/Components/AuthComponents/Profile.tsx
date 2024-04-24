@@ -139,8 +139,8 @@ export default function Profile({
     }
 
     return (
-        <div className="lg:ml-16 lg:w-full lg:h-screen">
-            <div className="w-full bg-black text-white border-b-2 border-[#555555] h-16 flex justify-between items-center p-3">
+        <section className="lg:ml-16 lg:w-full lg:h-screen">
+            <header className="w-full bg-black text-white border-b-2 border-[#555555] h-16 flex justify-between items-center p-3">
                 <h2>My Profile</h2>
                 <div className="w-[40%] sm:w-[30%] md:w-[25%] lg:w-[20%] xl:w-[15%] overflow-hidden
                 flex justify-between items-center">
@@ -149,8 +149,8 @@ export default function Profile({
                     </div>
                     <h2>{userData.fullName}</h2>
                 </div>
-            </div>
-            <div className="h-[95vh] lg:h-[100vh] text-white bg-black flex flex-col justify-center items-center">
+            </header>
+            <section className="h-[95vh] lg:h-[100vh] text-white bg-black flex flex-col justify-center items-center">
                 <div className="sm:h-[15rem] relative">
                     <div className=" h-44 w-44 sm:h-60 sm:w-60 rounded-full flex justify-center items-center relative overflow-hidden">
                         <img src={profilePicture} alt="" width={"1000px"} />
@@ -234,7 +234,7 @@ export default function Profile({
                             onChange={toggleButton}
                         />
                 </div>
-            </div>
-        </div>
+            </section>
+        </section>
     );
 }

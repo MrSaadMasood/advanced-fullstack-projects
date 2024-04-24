@@ -15,7 +15,6 @@ interface GroupChatProps extends ChatProps, CommonProp {
     handleChatSearchInputChange : (value : string)=>void
     chatSearchInput : string 
     handleIsFilterClicked : handleFilterClicked 
-    // handleIsMoreChatRequested : (value : boolean) => void
     setGlobalError : React.Dispatch<React.SetStateAction<string>>
     openGroupManager : OpenGroupManager
 }
@@ -32,7 +31,6 @@ export default function GroupChat({
     handleChatSearchInputChange,
     chatSearchInput,
     handleIsFilterClicked,
-    // handleIsMoreChatRequested,
     setGlobalError,
     openGroupManager
 }: GroupChatProps ) {
@@ -43,15 +41,13 @@ export default function GroupChat({
         onChange
     } = useSendMessages({chatDataSetter, setGlobalError, chatType : "group", sendMessageToWS , userData, generalGroupData})
     
-    const { chatDiv } = useConditionalChatFetch()
 
     const groupChatData = useMemo(()=> data, [ data ])
+    const { chatDiv } = useConditionalChatFetch(groupChatData)
 
     const deleteMessage = useCallback((id : string) => {
 
         const groupAdminsArray = userData.groupChats.find(group => group.collectionId === groupChatData[0]._id)?.admins
-        console.log("the userData is", userData)
-        console.log("the group admins array is", groupAdminsArray)
         if(groupAdminsArray?.includes(userData._id)) handleMessageDelete(id, "group")
         else setGlobalError("Only admins can delete a message")
 
@@ -69,7 +65,7 @@ export default function GroupChat({
                 openGroupManager={openGroupManager}
             />
 
-            <div
+            <ul
                 ref={chatDiv}
                 className="chatbox h-[90vh] md:h-[92vh] lg:h-[82vh] p-2 pb-20 md:pb-32 lg:pb-4 relative 
                 bg-black w-full lg:w-full overflow-y-scroll noScroll"
@@ -94,7 +90,7 @@ export default function GroupChat({
                         boxSide="left"
                     />
                 ))}
-            </div>
+            </ul>
             <div>
                 <ChatForm
                     handleFileChange={handleFileChange}

@@ -19,7 +19,7 @@ function FilterOptions({
     const [ filterMember , setFilterMember] = useState("")
 
     return (
-        <div className="relative">
+        <section className="relative">
             <div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center">
                 <form className="bg-[#4b4b4b] h-64 w-72 sm:w-[24rem] md:w-[27rem] p-2 md:p-3 text-white flex flex-col 
                 items-center shadowit justify-center rounded-lg"
@@ -69,7 +69,7 @@ function FilterOptions({
                     </div>
                 </form>
             </div>
-        </div>
+        </section>
     );
 
 }

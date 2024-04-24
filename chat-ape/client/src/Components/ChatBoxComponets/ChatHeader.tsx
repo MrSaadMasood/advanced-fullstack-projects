@@ -38,7 +38,7 @@ export default function ChatHeader({
     }
 
     return (
-        <div className="h-16 sm:h-20 md:h-24 lg:h-20 bg-black border-b-2 border-[#555555] text-white
+        <header className="h-16 sm:h-20 md:h-24 lg:h-20 bg-black border-b-2 border-[#555555] text-white
             flex justify-between items-center">
             <div className="w-auto h-14 ml-4 md:ml-8 lg:ml-3 flex justify-start items-center">
                 <button 
@@ -58,16 +58,16 @@ export default function ChatHeader({
                         <img src={friendChatImage} alt="" width={"300px"} />
                     </div>
                     {dataSent.type === "group" &&
-                    <p 
+                    <h2
                         className="ml-3 sm:text-lg md:text-xl">
                         {dataSent.groupName}
-                    </p>
+                    </h2>
                     } 
                     {dataSent.type === "normal" &&
-                    <p 
+                    <h2 
                         className="ml-3 sm:text-lg md:text-xl">
                         {dataSent.fullName}
-                    </p>
+                    </h2>
                     }
                 </button>
                 
@@ -108,7 +108,7 @@ export default function ChatHeader({
                         </div>
                     </div>
                 }
-        </div>
+        </header>
     );
 }
 

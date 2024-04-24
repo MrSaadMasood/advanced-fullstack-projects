@@ -65,7 +65,7 @@ export default function NewGroupForm() {
     };
 
     return (
-        <div>
+        <section>
             <div className="absolute bg-black flex flex-col justify-center items-center h-screen w-screen">
                 <div className=" relative">
                     <div className="relative w-44 h-44 rounded-full overflow-hidden">
@@ -114,7 +114,7 @@ export default function NewGroupForm() {
                         handleAddRemoveButtonClick={handleAddRemoveButtonClick}
                     />}
                 </div>
-                <div className="mt-4 flex w-44 justify-between items-center">
+                <section className="mt-4 flex w-44 justify-between items-center">
                     <button
                         className="bg-red-500 hover:bg-red-600 text-white p-2 w-20 rounded-md"
                         onClick={handleCancelClick}
@@ -128,9 +128,9 @@ export default function NewGroupForm() {
                     >
                         Submit
                     </button>
-                </div>
+                </section>
 
             </div>
-        </div>
+        </section>
     );
 }

@@ -69,9 +69,9 @@ function Factor2Auth() {
         })
     }
      return (
-        <div className=" w-screen h-screen bg-black flex flex-col justify-center items-center text-white">
-            <div className=" bg-gray-600 w-[85%] h-[40%] md:w-[40rem] md:h-[50%] rounded-lg  flex flex-col justify-start overflow-hidden">
-                <div className="h-[20%] w-full flex justify-around text-xl font-bold ">
+        <main className=" w-screen h-screen bg-black flex flex-col justify-center items-center text-white">
+            <header className=" bg-gray-600 w-[85%] h-[40%] md:w-[40rem] md:h-[50%] rounded-lg  flex flex-col justify-start overflow-hidden">
+                <h2 className="h-[20%] w-full flex justify-around text-xl font-bold ">
                     <button 
                         className={` bg-gray-800 w-[50%] ${!isPasskeyButtonClicked && "shadow-inner"} shadow-gray-500`}
                         onClick={()=>setIsPasskeyButtonClicked(false)}
@@ -84,7 +84,7 @@ function Factor2Auth() {
                     >
                         Passkey
                     </button>
-                </div>
+                </h2>
                 {!isPasskeyButtonClicked && 
                     <div className=" h-[80%] flex justify-center items-center">
                         {isLoading &&
@@ -109,7 +109,7 @@ function Factor2Auth() {
                 </div>
                 }
                 {isPasskeyButtonClicked &&
-                    <div className=" h-[80%] flex flex-col justify-center items-center text-white">
+                    <section className=" h-[80%] flex flex-col justify-center items-center text-white">
                         <form className=" w-full h-full flex flex-col justify-center items-center">
                             <div className="mb-4 font-bold text-lg sm:text-xl md:text-2xl">
                                 Enter The OTP Here:
@@ -136,21 +136,21 @@ function Factor2Auth() {
                                 onClick={handleSubmission}
                                 type="button"
                                 disabled={status === "pending"}
-                                className="bg-[#4E9F3D] mt-4 w-[4.5rem] h-10 p-2 sm:text-lg md:p-6 flex justify-center items-center
+                                className="bg-[#4E9F3D] mt-4 w-[5rem] h-10 p-2 sm:text-lg md:p-6 flex justify-center items-center
                                     rounded-md hover:bg-[#5ab747] cursor-pointer"
                             >
                                 {status === "pending" ? "Submitting" : "Submit"}
                             </button>
                         </form>
-                    </div> 
+                    </section> 
                 }
-            </div>
-            <div className=" mt-6 w-[75%] h-auto text-center sm:text-lg md:text-xl">
+            </header>
+            <footer className=" mt-6 w-[75%] h-auto text-center sm:text-lg md:text-xl">
                 <p>
                     Scan the Given QR Code with Google Authenticator App
                 </p>
-            </div>
-        </div>
+            </footer>
+        </main>
      )
 }
 

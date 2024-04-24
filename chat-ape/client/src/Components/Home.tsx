@@ -318,7 +318,7 @@ export default function Home() {
         setGroupManager(groupId)
     }
     return (
-        <div>
+        <main>
             {globalError && <GlobalError message={globalError} />} 
             <div>
                 
@@ -447,7 +447,6 @@ export default function Home() {
         
                     {optionsSelected !== 6 && selectedChat === "normal" && friendData && userData &&
                         <Chat
-                            // handleIsMoreChatRequested={handleIsMoreChatRequested}
                             selectedChatSetter={selectedChatSetter}
                             completeChatData={filteredNormalChats}
                             friendData={friendData}
@@ -464,7 +463,6 @@ export default function Home() {
                         />}
                     {optionsSelected !== 6 && selectedChat === "group" && generalGroupData && userData &&
                         <GroupChat
-                            // handleIsMoreChatRequested={handleIsMoreChatRequested}
                             userData={userData}
                             data={filteredGroupChat}
                             groupImage={friendChatImage}
@@ -488,5 +486,5 @@ export default function Home() {
                     }
                 </div>
             </div>
-        </div>
+        </main>
     )}

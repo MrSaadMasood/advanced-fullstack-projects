@@ -15,7 +15,6 @@ interface Props extends CommonProp, ChatProps {
   handleChatSearchInputChange : (value : string)=>void
   chatSearchInput : string 
   handleIsFilterClicked : handleFilterClicked
-  // handleIsMoreChatRequested : (value : boolean)=> void,
   setGlobalError : React.Dispatch<React.SetStateAction<string>>
   openGroupManager : OpenGroupManager
 }
@@ -31,7 +30,6 @@ export default function Chat({
   handleChatSearchInputChange,
   chatSearchInput,
   handleIsFilterClicked,
-  // handleIsMoreChatRequested,
   setGlobalError,
   openGroupManager 
 } : Props) {
@@ -43,7 +41,7 @@ export default function Chat({
     onChange
   } = useSendMessages({chatDataSetter, setGlobalError, chatType : "normal", sendMessageToWS, userData, friendData})
 
-  const { chatDiv } = useConditionalChatFetch()
+  const { chatDiv } = useConditionalChatFetch(completeChatData)
 
   const realChat = useMemo(()=> completeChatData.chat, [ completeChatData ])
 
@@ -53,7 +51,7 @@ export default function Chat({
 
 
   return (
-    <div className="lg:w-full">
+    <section className="lg:w-full">
         <ChatHeader
         selectedChatSetter={selectedChatSetter}
         dataSent={friendData}
@@ -64,7 +62,7 @@ export default function Chat({
         openGroupManager={openGroupManager}
         />
 
-        <div
+        <ul
         ref={chatDiv}
         className="chatbox h-[90vh] md:h-[92vh] lg:h-[82vh] p-2 pb-20 md:pb-32 lg:pb-4 relative
         bg-black w-full lg:w-full overflow-y-scroll noScroll"
@@ -76,7 +74,7 @@ export default function Chat({
             <MessageBox key={index} data={chat} chatType="normal" boxSide="left" deleteMessage={deleteMessage} />
 
         ))}
-        </div>
+        </ul>
         <div>
         <ChatForm
             handleFileChange={handleFileChange}
@@ -84,6 +82,6 @@ export default function Chat({
             onChange={onChange}
         />
         </div>
-    </div>
+    </section>
   );
 }

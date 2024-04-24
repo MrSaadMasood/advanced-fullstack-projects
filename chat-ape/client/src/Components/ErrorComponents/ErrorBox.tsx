@@ -6,7 +6,7 @@ export default function ErrorBox({ data } : { data : Message}){
     const dateObject = new Date(data.time)
 
     return(
-    <div className=" text-white text-base w-[100%] h-auto mb-2 
+    <li className=" text-white text-base w-[100%] h-auto mb-2 
     flex justify-end items-center">
         <div className="  w-[60%] mr-3 h-auto flex flex-col justify-betweeen items-end">
 
@@ -23,7 +23,7 @@ export default function ErrorBox({ data } : { data : Message}){
             </p>
 
         </div>
-    </div>
+    </li>
     )
 }
 

@@ -1,22 +1,10 @@
 import { useEffect, useRef } from "react";
+import { ChatData, GroupChatData } from "../../Types/dataTypes";
 
 function useConditionalChatFetch(
-    // handleIsMoreChatRequested: (value: boolean) => void,
+  chatData : ChatData | GroupChatData[],
 ) {
-    const chatDiv = useRef<HTMLDivElement>(null);
-
-    // useEffect(() => {
-    //     const div = chatDiv.current;
-    //     if (!div) return;
-
-    //     function handleCompletelyScrolled() {
-    //         if (div?.scrollTop === 0) handleIsMoreChatRequested(true);
-    //     }
-
-    //     div.addEventListener("scroll", handleCompletelyScrolled);
-
-    //     return () => div.removeEventListener("scroll", handleCompletelyScrolled);
-    // }, []);
+    const chatDiv = useRef<HTMLUListElement>(null);
 
     useEffect(() => {
         const div = chatDiv.current;
@@ -27,7 +15,7 @@ function useConditionalChatFetch(
         }
 
         scrollToBottom();
-    }, [chatDiv]);
+    }, [chatDiv, chatData]);
 
     return {
         chatDiv

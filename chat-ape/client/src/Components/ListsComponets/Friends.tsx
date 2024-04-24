@@ -51,7 +51,7 @@ export default function Friends({
         removeFriendMutation({ axiosPrivate, id, collectionId : data.collectionId})
     }
     return(
-        <div className=" p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">
+        <section className=" p-3 flex justify-between items-center border-b-2 border-[#555555] h-28 lg:h-20">
             <div className=" flex justify-center items-center">
                 <ImageDiv   image={image}  />
                 <div className=" h-16 lg:h-12 w-[75vw] lg:w-[16.75rem] sm:w-[80vw] md:w-[85vw] flex flex-col justify-between items-start
@@ -74,7 +74,7 @@ export default function Friends({
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 
