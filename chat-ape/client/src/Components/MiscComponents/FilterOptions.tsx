@@ -47,7 +47,7 @@ function FilterOptions({
                                 onChange={(e)=> setFilterMember(e.target.value)}    
                             >
                                 {groupMembers.map(member=>(
-                                    <option value={member._id}>{member.fullName}</option>
+                                    <option key={member._id} value={member._id}>{member.fullName}</option>
                                 ))}
                             </select>
                         </div>

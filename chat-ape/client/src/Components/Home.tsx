@@ -76,7 +76,7 @@ export default function Home() {
         groupChatData,
         friendData,
         generalGroupData,
-        groupMembers,
+        groupMembersData,
         chatDataSetter, 
         getFilteredChat,
         removeDeletedMessageFromChat, 
@@ -85,7 +85,6 @@ export default function Home() {
         handleAreGroupMembersChanged
     } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)
 
-    // console.log("the filterd chat list is", searchInput, filteredChatList)
     // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with 
     // some data and userData needs to be updated with that data
     const [isUserChanged, setIsUserChanged] = useState(false);
@@ -243,9 +242,8 @@ export default function Home() {
     }
     
     function changeUserDataBasedOnGroupChanges( id : string, actionType : number ){
-        console.log("the group manager is", groupManager)
         const groupToChange = userData?.groupChats.find(group => group.collectionId === groupManager)
-        console.log('the group to change is', groupToChange)
+        console.log('the group to change is', groupToChange, "the action typ", actionType)
         if(!groupToChange) return
 
         setUserData((prevData)=>{
@@ -255,7 +253,6 @@ export default function Home() {
             }
             if(actionType === 1 ){
                 const memberIndex = indexfinder(groupToChange.members, id)
-                console.log('the memberindex for action 1000px', memberIndex)
                 if(memberIndex) groupToChange.members.splice(memberIndex, 1)
             }
 
@@ -268,6 +265,7 @@ export default function Home() {
                 groupToChange.admins.push(id)
             }
             const groupChatsArrayModified = getModifiedArray(prevData.groupChats, groupToChange)
+                console.log('the changed group after admin',groupChatsArrayModified)
             return {
                 ...prevData,
                 groupChats : [...groupChatsArrayModified]
@@ -297,7 +295,6 @@ export default function Home() {
     // handles the deletion of message message stored the message to delete data in state
     function handleMessageDelete(messageId : string, type : ChatType) {
         
-            console.log("the normal chat data is", normalChatData)
         setMessageToDeleteInfo({
             collectionId: type === "normal" ? normalChatData._id : groupChatData[0]._id,
             type: type,
@@ -331,7 +328,7 @@ export default function Home() {
                 {filterOptions.filterClicked  && 
                     <FilterOptions 
                         filterOptions={filterOptions} 
-                        groupMembers={groupMembers}
+                        groupMembers={groupMembersData}
                         handleIsFilterClicked={handleIsFilterClicked}
                         getFilteredChat={getFilteredChat}
                     />
@@ -339,11 +336,10 @@ export default function Home() {
                 {true && userData && groupManager &&
                     <GroupManager
                         openGroupManager={openGroupManager}
-                        groupMembers={groupMembers}
+                        groupMembers={groupMembersData}
                         userData={userData}
                         groupId={groupManager}
                         setGlobalError={setGlobalError}
-                        isUserChangedSetter={isUserChangedSetter}
                         handleAreGroupMembersChanged={handleAreGroupMembersChanged}
                         changeUserDataBasedOnGroupChanges={changeUserDataBasedOnGroupChanges}
                     />

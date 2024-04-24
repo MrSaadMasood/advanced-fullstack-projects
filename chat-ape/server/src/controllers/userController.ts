@@ -48,7 +48,6 @@ export const getUpdatedData = async(req: CustomRequest, res: Response)=>{
     const user = userSchema.parse(userFromDatabase)
     user.password = ""
     user.factor2AuthSecret = ""
-    console.log("the user sent from the bacend is", user.groupChats)
     res.json( user )
 }
 
@@ -489,6 +488,7 @@ export const filterChat = async (req: CustomRequest, res: Response)=>{
         day : "2-digit",
         month : "2-digit"
     })
+    console.log('the request body in the filter chat is2FactorAuthEnabled', req.body)
     if(chatType === "group"){
         await database.collection<DocumentInput>("groupChats").find({_id : collectionId}).toArray()
         
@@ -585,6 +585,7 @@ export const filterChat = async (req: CustomRequest, res: Response)=>{
         ]
     ).toArray()
     logger.info("the normal chats have been filtered")
+    console.log('console.log', chatData)
     return res.json({ _id : collectionId, chat : chatData, chatType})
 }
 // gets all the messages of a specific group chat

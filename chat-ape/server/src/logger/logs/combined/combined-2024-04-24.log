@@ -120,3 +120,105 @@
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T20:31:49.498Z"}
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T20:33:15.825Z"}
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T20:43:55.626Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T20:55:56.045Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T20:57:49.730Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T21:01:29.398Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T21:02:43.654Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T21:04:20.289Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T21:05:08.311Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-23T21:14:01.158Z"}
+{"level":"error","message":"Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)","timestamp":"2024-04-24T06:03:17.272Z"}
+{"level":"error","message":"Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)","timestamp":"2024-04-24T06:03:18.025Z"}
+{"level":"error","message":"Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)","timestamp":"2024-04-24T06:03:18.747Z"}
+{"level":"error","message":"Error: read ECONNRESET\n    at TLSWrap.onStreamRead (node:internal/stream_base_commons:217:20)","timestamp":"2024-04-24T06:03:21.250Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:03:25.640Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:51:59.199Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:01.183Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:08.671Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:18.714Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:22.085Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:27.267Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:28.520Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:39.269Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:48.895Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:52:59.024Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:53:06.970Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:53:47.146Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:54:01.784Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:54:17.194Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:54:17.901Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:54:29.182Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:54:41.406Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:56:57.347Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:57:33.466Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:57:51.212Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T06:57:56.814Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:00:32.451Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:00:47.903Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:00:49.889Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:00:57.729Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:01:13.017Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:01:26.419Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:02:22.240Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:03:44.358Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:03:48.174Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:03:50.637Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:03:53.348Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:04:01.147Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:04:03.144Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:04:20.278Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:05:34.826Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:05:42.182Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:06:16.823Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:06:42.371Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:06:47.677Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:07:06.614Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:07:11.475Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:07:18.707Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:07:36.246Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:07:49.608Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:07:56.493Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:08:06.179Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:10.237Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:18.147Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:21.856Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:24.092Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:30.129Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:10:33.636Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:12:38.475Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:13:24.468Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:13:37.711Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:13:40.004Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:13:49.539Z"}
+{"level":"info","message":"the normal chats have been filtered","timestamp":"2024-04-24T07:13:59.007Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:15:51.871Z"}
+{"level":"info","message":"group chats have been filtered","timestamp":"2024-04-24T07:17:08.327Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:17:18.293Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:17:25.980Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:19:00.061Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:26:39.075Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:26:50.235Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:29:38.588Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:30:13.884Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:31:10.633Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:35:51.932Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:37:49.312Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:41:01.284Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:44:58.149Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:46:46.222Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:51:48.113Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:53:13.684Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T07:58:15.968Z"}
+{"level":"error","message":"Error\n    at groupManager (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/controllerHelper.ts:333:43)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at removeGroupAdmin (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/userController.ts:694:5)","timestamp":"2024-04-24T07:59:54.283Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:00:20.539Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:01:40.738Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:08:43.484Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:09:46.628Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:10:25.262Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:12:56.279Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:17:01.689Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:20:02.768Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:21:36.245Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:21:50.444Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:22:02.713Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-04-24T08:23:13.144Z"}

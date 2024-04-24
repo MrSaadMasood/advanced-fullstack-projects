@@ -19,29 +19,32 @@ function useWebSockets(
     // to stored the room id
     const [joinedRoom, setJoinedRoom] = useState<string | null>(null);
 
-    const [ groupMembers , setGroupMembers ] = useState<AssessoryData[]>([])
     const [ areGroupMembersChanged , setAreGroupMembersChanged ] = useState(false)
     // data of the selected friend whom the user is chatting
     const [friendData, setFriendData] = useState<CommonUserData>();
     // the data of the group the user is messaging in
     const [generalGroupData, setGeneralGroupData] = useState<GeneralGroupList>();
+    const [ groupMembersData , setGroupMembersData] = useState([])
     const axiosPrivate = useInterceptor()
     const [ chatId , setChatId] = useState("")
     const [ chatType , setChatType] = useState<ChatType>("normal")
+    const normalChatDataQueryKey = ["normalChatData", chatType, chatId]
+    const groupChatDataQueryKey = ["groupChatData", chatType, chatId]
 
     const { data : normalChatData = { _id : "", chat: [] }  } = useQuery({
-        queryKey : ["normalChatData"],
+        queryKey : normalChatDataQueryKey,
         queryFn : ()=> getNormalChatData(axiosPrivate, chatId),
         enabled : chatType === "normal" && !!chatId
     })
+
     const { data : groupChatData = [] } = useQuery({
-        queryKey : ["groupChatData", chatType, chatId ],
+        queryKey : groupChatDataQueryKey,
         queryFn : ()=> getGroupChatData(axiosPrivate, chatId),
-        enabled : chatType === "group" || !!chatId
+        enabled : chatType === "group" && !!chatId
     })
-    console.log("the chatid is", chatId, "the chattype", chatType)
-    const { data : groupMambersData } = useQuery({
-        queryKey : ["groupMembers", areGroupMembersChanged],
+
+    const { data : groupMembers} = useQuery({
+        queryKey : ["groupMembers", areGroupMembersChanged, groupChatData],
         queryFn : ()=> fetchGroupMembers({ axiosPrivate, id : chatId}),
         enabled :  groupChatData.length > 0 || areGroupMembersChanged
     })
@@ -50,22 +53,21 @@ function useWebSockets(
         mutationFn : filterChat,
         onSuccess : (data)=>{
             if(data.chatType === "normal"){
-                return queryClient.setQueryData(["normalChatData"],
-                    ()=> ({ _id : data._id, chat : data.chat})
+                return queryClient.setQueryData(normalChatDataQueryKey,
+                    { _id : data._id , chat : data.chat} 
                 )            
             }
-            return queryClient.setQueryData(["groupChatData"], ()=> [...data.groupChatData])
+            return queryClient.setQueryData(groupChatDataQueryKey, ()=> [...data.groupChatData])
         }
     })
+
+    useEffect(()=>{ 
+        if(groupMembers) setGroupMembersData(groupMembers)
+    },[groupMembers])
 
     useEffect(()=>{
         if(areGroupMembersChanged) setAreGroupMembersChanged(false)
     },[areGroupMembersChanged])
-
-    useEffect(()=>{
-        if(groupMambersData) setGroupMembers(groupMambersData)
-        console.log("group members are now fetched", groupMambersData)
-     },[groupMambersData])
 
     // create a socket instance when the component renders/ mounts
     useEffect(() => {
@@ -82,7 +84,6 @@ function useWebSockets(
         socket.on("received-message", (data : Message, chatType : ChatType, groupChatData : GeneralGroupList) => {
 
             if (chatType === "normal") {
-                console.log('nomral message received from sockers', data)
                 chatDataSetter(data, chatType);
                 chatListArraySetter(data.userId, data, chatType);
             }
@@ -110,7 +111,7 @@ function useWebSockets(
     // group chats array
     const chatDataSetter = useCallback((data : Message, type : ChatType, extraDataForGroupChat? : GeneralGroupList) => {
         if (type === "normal") {
-            queryClient.setQueryData(["normalChatData"],
+            queryClient.setQueryData(normalChatDataQueryKey,
                 (normalChatData : ChatData) => {
                     return { ...normalChatData,
                         chat : [...normalChatData.chat, data]
@@ -124,17 +125,17 @@ function useWebSockets(
                 senderName : extraDataForGroupChat!.senderName,
                 _id : extraDataForGroupChat!._id
             }
-            queryClient.setQueryData(["groupChatData", chatType, chatId], 
+            queryClient.setQueryData(groupChatDataQueryKey, 
                 (groupChatData : GroupChatData[]) => groupChatData.concat(dataToAdd)
             )
         }
-    },[])
+    },[chatType, chatId])
     
     // based on the type the speicific message is deleted form the chat array and the id is sent to the sockers 
     // when the same message is removed from the other users chat array
     const removeDeletedMessageFromChat = useCallback((messageId : string, type : ChatType) => {
         if (type === "normal") {
-            queryClient.setQueryData(["normalChatData"],
+            queryClient.setQueryData(normalChatDataQueryKey,
                 (normalChatData : ChatData) => {
                     const messageRemovedChatData = normalChatData.chat.filter(message => 
                         message.id !== messageId
@@ -144,13 +145,13 @@ function useWebSockets(
              )
         }
         if (type === "group") {
-            queryClient.setQueryData(["groupChatData"], 
+            queryClient.setQueryData(groupChatDataQueryKey, 
                 (groupChatData : GroupChatData[]) => groupChatData.filter(groupChat =>
                     groupChat.chat.id !== messageId
                 ) 
             )
         }
-    },[])
+    },[chatType, chatId])
     
     // gets the chat data based on the type and stores that data in tha appropriate state
     // also the room id is generated which is sent to the server so that other users can also connect to that same room id
@@ -158,7 +159,7 @@ function useWebSockets(
         if(!userData) return
         if(!data.type) return
         if(!socket) return console.log("the socket is not found and now returning")
-
+        
         if (data.type === "normal") {
             setChatType("normal")
             const roomId = generateRoomId(userData._id, data._id);
@@ -168,7 +169,6 @@ function useWebSockets(
         }
     
         if (data.type === "group") {
-    
             setChatType("group")
             const roomId = generateRoomId(data._id, data.groupName);
             socket.emit("join-room", joinedRoom, roomId);
@@ -185,7 +185,7 @@ function useWebSockets(
         getFilteredChatMutation({axiosPrivate , chatType, collectionId, date, groupMemberId : groupMember})
         handleIsFilterClicked(false, chatType)
 
-    },[])
+    },[chatType, chatId])
 
     function handleAreGroupMembersChanged(value : boolean){
         setAreGroupMembersChanged(value)
@@ -201,7 +201,7 @@ function useWebSockets(
         groupChatData,
         friendData,
         generalGroupData,
-        groupMembers,
+        groupMembersData,
         chatDataSetter,
         getFilteredChat,
         removeDeletedMessageFromChat,

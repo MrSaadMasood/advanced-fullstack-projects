@@ -14,7 +14,6 @@ interface GroupManagerProps {
     userData : UserData
     groupId : string,
     setGlobalError : React.Dispatch<React.SetStateAction<string>>
-    isUserChangedSetter : (value : boolean)=> void
     handleAreGroupMembersChanged : (value : boolean) => void
     changeUserDataBasedOnGroupChanges : ( id : string, actionType : number ) => void
 }
@@ -26,7 +25,6 @@ function GroupManager({
     setGlobalError,
     handleAreGroupMembersChanged,
     changeUserDataBasedOnGroupChanges,
-    isUserChangedSetter
 } : GroupManagerProps) {
 
     const axiosPrivate = useInterceptor() 
@@ -37,23 +35,43 @@ function GroupManager({
     const { friendsArray : friends } = useOptionsSelected(2)
     const chatSearchRef = useRef<HTMLInputElement>(null)
 
-    const managerdGroup = useMemo(()=> userData.groupChats.find(group => group.collectionId === groupId),[groupId, userData ])
-    const groupAdminsArray = managerdGroup ? managerdGroup.admins : []
+    const managedGroup = useMemo(()=> userData.groupChats.find(group => 
+        group.collectionId === groupId)
+    ,[groupId, userData ])
 
-    const friendsOtherThanGroupMembers =  useMemo(()=> friends.filter((friend, index) => 
-        friend._id !== userData._id && friend._id !== groupMembers[index]._id),
-        [userData, groupMembers ])
-        
-    const groupAdmins = useMemo(()=> groupMembers.filter(member => groupAdminsArray.includes(member._id)),[groupMembers, groupAdminsArray ])
-    const membersOtherThanAdmins = useMemo(()=> groupMembers.filter(member => !groupAdminsArray.includes(member._id)),[groupMembers, groupAdmins])
-    const noneElementIndex = useMemo(()=>membersOtherThanAdmins.findIndex(member => member.fullName === "None"),[membersOtherThanAdmins])
+    const groupAdminsArray = managedGroup ? managedGroup.admins : []
+
+    const friendsOtherThanGroupMembers = useMemo(() => {
+        if(!managedGroup) return []
+        return friends.filter(friend => !managedGroup.members.includes(friend._id))
+    },[ friends, groupMembers, userData]);
+
+    const groupAdmins = useMemo(()=> groupMembers.filter(member => 
+        groupAdminsArray.includes(member._id)),
+    [groupMembers, groupAdminsArray, userData ])
+
+    const membersOtherThanAdmins = useMemo(()=> 
+        groupMembers.filter(member => 
+            !groupAdminsArray.includes(member._id)),
+    [groupMembers, groupAdmins, userData])
+
+    const noneElementIndex = useMemo(()=> membersOtherThanAdmins.findIndex(member => 
+        member.fullName === "None"),
+    [membersOtherThanAdmins])
+
     if(noneElementIndex >= 0) membersOtherThanAdmins.splice(noneElementIndex, 1)
 
     const infoButtonsArray = [ "Members", "Admins", "Friends" ]
     const isUserAdmin = groupAdminsArray.includes(userData._id)
-    const filteredAdminsArray = searchInput !== "" ? groupManagerFilter(groupAdmins, searchInput) : groupAdmins
-    const filteredOtherMembersArray = searchInput !== "" ? groupManagerFilter( membersOtherThanAdmins, searchInput) : membersOtherThanAdmins
-    const filterdFriendsArray = searchInput !== "" ? groupManagerFilter(friendsOtherThanGroupMembers, searchInput) : friendsOtherThanGroupMembers
+
+    const filteredAdminsArray = searchInput !== "" ? 
+        groupManagerFilter(groupAdmins, searchInput) : groupAdmins
+
+    const filteredOtherMembersArray = searchInput !== "" ? 
+        groupManagerFilter( membersOtherThanAdmins, searchInput) : membersOtherThanAdmins
+
+    const filterdFriendsArray = searchInput !== "" ? 
+        groupManagerFilter(friendsOtherThanGroupMembers, searchInput) : friendsOtherThanGroupMembers
     
     const { mutate : RemoveMemberFromGroupMutation , isPending : isMemberBeingRemoved } = useMutation({
         mutationFn : removeGroupMember,
@@ -76,19 +94,24 @@ function GroupManager({
     })
 
     function handleMakeMemberAdmin(id : string){
-        setMemberBeingOperatedId(id)
+        memberBeingOperatedIdIdSetter(id)
         makeMemberAdminMutation({ axiosPrivate, id, collectionId : groupId })
 
     }
     function handleMemberRemoval(id : string ){
         if (groupMembers.length <= 2) return setGlobalError("A group must have 3 members")
         RemoveMemberFromGroupMutation({ axiosPrivate, id, collectionId : groupId })
-        setMemberBeingOperatedId(id)
+        memberBeingOperatedIdIdSetter(id)
     }
 
     function handleAdminRemoval(id : string ){
         if(groupAdminsArray.length === 1) return setGlobalError("Group must have an Admin")
+        memberBeingOperatedIdIdSetter(id)
         removeGroupAdminMutation({axiosPrivate, id, collectionId : groupId})
+    }
+
+    function memberBeingOperatedIdIdSetter(id : string){
+        setMemberBeingOperatedId(id)
     }
 
     function onSuccessGroupChanges(id : string, actionType : number){
@@ -96,7 +119,6 @@ function GroupManager({
         setMemberBeingOperatedId("")
         changeUserDataBasedOnGroupChanges(id, actionType)
         handleAreGroupMembersChanged(true)
-        isUserChangedSetter(true)
     }
   return (
         <div className="relative">
@@ -104,7 +126,7 @@ function GroupManager({
                <div className=" w-[95%] h-[97%] lg:w-[50%] bg-[#303030] text-white flex flex-col justify-center items-center rounded-xl">
                     <div className=" w-[60%] h-[10%] overflow-hidden flex justify-center items-center
                      text-2xl sm:text-4xl font-bold mt-2">
-                        Group Name
+                        {managedGroup?.groupName}
                     </div>
                     <div className=" bg-black w-[90%] lg:w-[85%] h-[80%] mt-5 rounded-xl border-white border-2 overflow-hidden">
                         <div className=" w-full h-20 lg:h-16 bg-gray-600 flex jusctify-between items-center overflow-hidden">

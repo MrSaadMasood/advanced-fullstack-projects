@@ -58,7 +58,6 @@ export async function getGroupChatList(axiosPrivate : AxiosInstance) {
 export async function fetchUserData(axiosPrivate : AxiosInstance){
     try {
         const response = await axiosPrivate.get("/user/updated-data")
-        console.log("the user data is now fetched", response.data);
         return response.data
     } catch (error) {
         console.log("some error occured", error)
@@ -144,7 +143,6 @@ export async function createNewGroup({ axiosPrivate, groupName, rawImageFile, fr
 
 export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageData } : sendImageMessageProps){
     try {
-        console.log('the image data sent to server is ', imageMessageData)
         const response = await axiosPrivate.post(endpoint, imageMessageData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -160,7 +158,6 @@ export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageDa
 export async function sendTextMessage({ axiosPrivate , endpoint, textMessageData } : textMessageDataProps){
     try {
         const response = await axiosPrivate.post(endpoint, textMessageData)
-        console.log("the message received in dataservice is", normalId.parse(response.data))
         return normalId.parse(response.data)
     } catch (error) {
         console.log("failed to send the message")
@@ -281,7 +278,6 @@ export async function getNormalChatData(axiosPrivate : AxiosInstance, chatId : s
 export async function getGroupChatData(axiosPrivate:AxiosInstance, chatId : string) {
     try {
         const response = await axiosPrivate.get(`/user/get-group-chat/${chatId}`)
-        console.log("getting chat data now", response.data)
         return groupChatDataArraySchema.parse(response.data)
     } catch (error) {
         console.log("failed to get the group chat data", error) 
@@ -293,6 +289,7 @@ export async function fetchGroupMembers({ axiosPrivate, id } : Omit<RequestsWith
     try {
         
         const response = await axiosPrivate.get(`/user/group-members/${id}`,)
+        console.log("fetching the grouop members")
         response.data.push({ _id : "", fullName : "None" })
         return response.data
     } catch (error) {
