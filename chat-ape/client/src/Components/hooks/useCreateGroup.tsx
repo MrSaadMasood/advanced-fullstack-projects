@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useState } from "react";
 
-function useImageFileHook() {
+function useCreateGroup() {
 
     const [imageUrl , setImageUrl] = useState("/placeholder.png");
     const [rawImageFile , setRawImageFile ] = useState<Blob>();
@@ -36,4 +36,4 @@ function useImageFileHook() {
     }
 }
 
-export default useImageFileHook
+export default useCreateGroup

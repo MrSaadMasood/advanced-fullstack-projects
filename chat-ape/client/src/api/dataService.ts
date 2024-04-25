@@ -1,13 +1,13 @@
 import { AxiosError, AxiosInstance } from "axios";
 import server from '../api/axios' 
-import { AddNewProfilePicture, AssessoryData, DeleteProfilePicture, FetchChatData, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId, UserSaved } from "../Types/dataTypes";
+import { AddNewProfilePicture, DeleteProfilePicture, FilterChat, MessageToDelete, RequestsWithIds, RequestWithIdAndCollectionId } from "../Types/dataTypes";
 import { FormDataLogin, SignUpFormdata, createNewGroupProps, sendImageMessageProps, textMessageDataProps } from "../Types/dataTypes";
 import { assessoryDataArraySchema, f2aEnableSchema, factor2LoginSchema, friendListSchema, groupChatDataArraySchema, groupChatListSchema, imageSaveSchema, loginUserSchema, normalChatDataSchema, normalChatListSchema, normalId } from "../zodSchema/schema";
 import { zodString } from "../zodSchema/zodUtils";
 
 export async function getNormalChatList(axiosPrivate : AxiosInstance) {
     try {
-        const response = await axiosPrivate.get( "/user/get-chatlist" )
+        const response = await axiosPrivate.get("/user/get-chatlist" )
         return normalChatListSchema.parse(response.data) 
     } catch (error) {
         console.log("error occured while getting normal chatlist", error)
@@ -20,7 +20,7 @@ export async function getFriendsList(axiosPrivate : AxiosInstance) {
         const response = await axiosPrivate.get( "/user/get-friends" )
         return friendListSchema.parse(response.data)
     } catch (error) {
-        console.log("error occured while getting friendlist", error)
+        // console.log("error occured while getting friendlist", error)
         throw new Error("failed to get the friends list") 
     } 
 }

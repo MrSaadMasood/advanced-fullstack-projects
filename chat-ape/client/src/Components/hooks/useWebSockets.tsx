@@ -185,14 +185,11 @@ function useWebSockets(
         getFilteredChatMutation({axiosPrivate , chatType, collectionId, date, groupMemberId : groupMember})
         handleIsFilterClicked(false, chatType)
 
-    },[chatType, chatId])
+    },[ chatId, normalChatData, groupChatData])
 
     function handleAreGroupMembersChanged(value : boolean){
         setAreGroupMembersChanged(value)
     }
-    // const handleIsMoreChatRequested = useCallback((value : boolean) =>{
-    //     setIsMoreChatRequested(value)
-    // },[])
 
     return {
         joinedRoom,
@@ -206,7 +203,6 @@ function useWebSockets(
         getFilteredChat,
         removeDeletedMessageFromChat,
         getChatData,
-        // handleIsMoreChatRequested,
         handleAreGroupMembersChanged,
     }
 }

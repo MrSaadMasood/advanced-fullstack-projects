@@ -5,7 +5,7 @@ import { ChatData, ChatProps, CommonProp, CommonUserData, OpenGroupManager, User
 import useSendMessages from "../hooks/useSendMessages";
 import useConditionalChatFetch from "../hooks/useConditionalChatFetch";
 import MessageBox from "./MessageBox";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 interface Props extends CommonProp, ChatProps {
   completeChatData : ChatData,

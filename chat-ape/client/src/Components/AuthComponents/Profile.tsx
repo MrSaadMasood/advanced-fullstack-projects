@@ -36,7 +36,6 @@ export default function Profile({
     const pictureRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate()
     const { removeItem, setItem } = useLocalStorage()
-
     const { mutate : disableFactor2AuthMutation } = useMutation({
         mutationFn : disableFactor2AuthSettings,
         onError : ()=> {
@@ -47,7 +46,6 @@ export default function Profile({
     const { mutate : factor2AuthMutation } = useMutation({
         mutationFn : changefactor2AthSettings,
         onSuccess : (data)=>{
-            console.log("the data on enabing the f2ais", data)
             const dataToStore = { 
                 ...data,
                 isGoogleUser : isAuthenticated.isGoogleUser,
@@ -57,9 +55,10 @@ export default function Profile({
             setItem("f2a", dataToStore)
             removeItem("user")
             navigate("/factor-2-auth")
+            isUserChangedSetter(false)
         }
     })
-
+    
     const { mutateAsync : deleteProfilePictureMutation } = useMutation({
         mutationFn : deletePreviousProfilePicture
     })
@@ -193,7 +192,7 @@ export default function Profile({
                             setIsBioButtonClicked(true);
                             // bioInput.current.focus()
                         }
-                    } data-testid="bioEdit" className="">
+                    } data-testid="editBio" >
                         <FaRegEdit size={30} />
                     </button>
                 </div>
@@ -232,6 +231,7 @@ export default function Profile({
                         <ReactSwitch
                             checked={isAuthenticated.is2FactorAuthEnabled}
                             onChange={toggleButton}
+                            data-testid="toggleButton"
                         />
                 </div>
             </section>

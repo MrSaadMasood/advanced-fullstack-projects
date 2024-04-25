@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { NormalUserAuthSaved } from "../../Types/dataTypes";
 
 
-interface AuthContext {
+export interface AuthContext {
     isAuthenticated : NormalUserAuthSaved
     setIsAuthenticated : React.Dispatch<React.SetStateAction<NormalUserAuthSaved>>
 }

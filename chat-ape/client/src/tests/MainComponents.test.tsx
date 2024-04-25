@@ -143,56 +143,6 @@
 
 // })
 
-// it("tests the profile component", async ()=>{
-//     const user = userEvent.setup()
-
-//     const isUserChangedSetter = vi.fn()
-//     const userData = {
-//         bio : "test bio",
-//         profilePicture : "picture.jpg",
-//         fullName : "greek"
-//     }
-//     global.URL.createObjectURL = vi.fn()
-
-//     render(
-//         <AuthProvider>
-//             <Profile
-//                 profilePictureUrl={"path"} 
-//                 isUserChangedSetter={isUserChangedSetter}
-//                 userData={userData}
-//             />
-//         </AuthProvider>
-//     )
-
-//     const fullNameElem = screen.getByText("greek")
-//     const bioEditButton = screen.getByTestId("bioEdit")
-//     const imageFile = new File(["hello"], "hello.jpg", { type : "image/jpg"})
-
-//     expect(fullNameElem).toBeInTheDocument()
-    
-//     await user.click(bioEditButton)
-
-//     const bioSubmit = screen.getByDisplayValue("Submit")
-//     const textInput = screen.queryByPlaceholderText("Enter Bio Here")
-    
-//     await user.type(textInput, " God of Thunder")
-//     await user.click(bioSubmit)
-    
-//     const bioElement = screen.getByText("test bio God of Thunder")
-//     expect(bioElement).toBeInTheDocument()
-
-//     // setting and send the profile picture
-//     const getProfilePictureButton = screen.getByTestId("getPicture")
-//     const imageInput = screen.getByTestId("profilePicture")
-
-//     await user.click(getProfilePictureButton)
-//     await user.upload(imageInput, imageFile)
-//     const handleImageSubmission = screen.getByTestId("setImage")
-//     await user.click(handleImageSubmission)
-
-//     expect(isUserChangedSetter).toHaveBeenCalled()
-// })
-
 // it("tests the messages component", async ()=>{
 //     const user = userEvent.setup()
 

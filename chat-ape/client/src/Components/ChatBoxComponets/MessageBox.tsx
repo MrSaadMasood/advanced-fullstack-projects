@@ -28,7 +28,7 @@ const MessageBox = memo(function MessageBox({
 
     return (
         <li
-            data-testid="main" 
+            data-testid="messageBox" 
             className={`text-white text-base w-[100%] h-auto mb-2 flex ${flexStylesBasedOnSide} items-center`}
             onDoubleClick={()=>{ if(boxSide === "right") deleteMessage(data.id)}}
         >

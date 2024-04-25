@@ -10,12 +10,12 @@ function useOptionsSelected(
 
     const axiosPrivate = useInterceptor()
     const queryClient = useQueryClient()
-    const { data : chatList = [] } = useQuery({
+    const { data : chatList = [], isLoading } = useQuery({
         queryKey : ["normalChatList", optionsSelected],
         queryFn : ()=> getNormalChatList(axiosPrivate),
         enabled : optionsSelected === 1
     })
-
+    console.log(chatList, 'inside the use options hook')
     const { data : friendsArray = [] } = useQuery({
         queryKey : ["friendsList", optionsSelected],
         queryFn : ()=> getFriendsList(axiosPrivate),
@@ -42,7 +42,7 @@ function useOptionsSelected(
     // depending on the type of chat the last message is updated in the list of chats / group chats.
     const chatListArraySetter = useCallback((id : string , data : Message, chatType : ChatType) => {
         if (chatType === "normal") {
-            queryClient.setQueryData(["normalChatList", 1], (oldNormalChatList : ChatList[])=>{
+            queryClient.setQueryData(["normalChatList", optionsSelected], (oldNormalChatList : ChatList[])=>{
                 return oldNormalChatList.map(normalChat => {
                     if(normalChat.friendData._id === id) normalChat.lastMessage = data
                     return normalChat
@@ -51,29 +51,30 @@ function useOptionsSelected(
         }
     
         if (chatType === "group") {
-            queryClient.setQueryData(["groupChatList", 4], (oldGroupChatList : GeneralGroupList[])=>{
+            queryClient.setQueryData(["groupChatList", optionsSelected], (oldGroupChatList : GeneralGroupList[])=>{
                 return oldGroupChatList.map(groupChat => {
                     if(groupChat._id === id) groupChat.lastMessage = data
                     return groupChat
                 })
             })
         }
-    },[])
+    },[optionsSelected])
     
     // when the friend is added the follow request of that friend is removed from the data
     const removeFollowRequestAndFriend = useCallback((id : string, type : string) => {
         if(type === "friends") {
-            const queryKey = ["friendsList", 2] 
+            const queryKey = ["friendsList", optionsSelected] 
             queryClient.setQueryData(queryKey, (oldFriendList : FriendData[]) => {
+                console.log("this is inside query setter ", oldFriendList.filter(item => item._id !== id))
                 return oldFriendList.filter(item => item._id !== id);
             })
         }
         if(type === "followRequests") {
-            queryClient.setQueryData(["followRequestsList", 3], (oldFollowRequests : AssessoryData[])=>{
+            queryClient.setQueryData(["followRequestsList", optionsSelected], (oldFollowRequests : AssessoryData[])=>{
                 return oldFollowRequests.filter(requests => requests._id !== id)
             })
         }
-    }, [])
+    }, [optionsSelected])
 
     return { 
         chatList, 

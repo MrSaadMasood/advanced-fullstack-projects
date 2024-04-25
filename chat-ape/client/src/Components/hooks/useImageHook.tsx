@@ -10,7 +10,7 @@ function useImageHook(url? : string) {
     const { data : image = defaultImageUrl } = useQuery({
         queryKey : [url],
         queryFn : async ()=> {
-            if(!url || url.startsWith("https")) return
+            if(! url || url.startsWith("https")) return url
             return fetchPictureFromServer(axiosPrivate, url)
         },
         enabled : !!url

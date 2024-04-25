@@ -1,12 +1,10 @@
 import { MdCancel } from "react-icons/md"
 import { AssessoryData, OpenGroupManager, UserData } from "../../Types/dataTypes"
 import UserManagingList from "../ListsComponets/UserManagingList"
-import { useMemo, useRef, useState } from "react"
-import { useMutation } from "@tanstack/react-query"
-import { addFriendToGroup, makeMemberGroupAdmin, removeGroupAdmin, removeGroupMember } from "../../api/dataService"
+import { useRef, useState } from "react"
 import useInterceptor from "../hooks/useInterceptors"
-import { groupManagerFilter } from "../../utils/filterArrayFunction"
 import useOptionsSelected from "../hooks/useOptionsSelected"
+import useGroupManager from "../hooks/useGroupManager"
 
 interface GroupManagerProps {
     openGroupManager : OpenGroupManager,
@@ -30,96 +28,37 @@ function GroupManager({
     const axiosPrivate = useInterceptor() 
     const [ buttonTypeClicked , setButtonTypeClicked] = useState("Members")
     const [ isSearchButtonClicked, setIsSearchButtonClicked] = useState(false)
-    const [ searchInput , setSearchInput ] = useState("")
-    const [ memberBeingOperatedId , setMemberBeingOperatedId ] = useState("")
     const { friendsArray : friends } = useOptionsSelected(2)
     const chatSearchRef = useRef<HTMLInputElement>(null)
-
-    const managedGroup = useMemo(()=> userData.groupChats.find(group => 
-        group.collectionId === groupId)
-    ,[groupId, userData ])
-
-    const groupAdminsArray = managedGroup ? managedGroup.admins : []
-
-    const friendsOtherThanGroupMembers = useMemo(() => {
-        if(!managedGroup) return []
-        return friends.filter(friend => !managedGroup.members.includes(friend._id))
-    },[ friends, groupMembers, userData]);
-
-    const groupAdmins = useMemo(()=> groupMembers.filter(member => 
-        groupAdminsArray.includes(member._id)),
-    [groupMembers, groupAdminsArray, userData ])
-
-    const membersOtherThanAdmins = useMemo(()=> 
-        groupMembers.filter(member => 
-            !groupAdminsArray.includes(member._id)),
-    [groupMembers, groupAdmins, userData])
-
-    const noneElementIndex = useMemo(()=> membersOtherThanAdmins.findIndex(member => 
-        member.fullName === "None"),
-    [membersOtherThanAdmins])
-
-    if(noneElementIndex >= 0) membersOtherThanAdmins.splice(noneElementIndex, 1)
-
-    const infoButtonsArray = [ "Members", "Admins", "Friends" ]
-    const isUserAdmin = groupAdminsArray.includes(userData._id)
-
-    const filteredAdminsArray = searchInput !== "" ? 
-        groupManagerFilter(groupAdmins, searchInput) : groupAdmins
-
-    const filteredOtherMembersArray = searchInput !== "" ? 
-        groupManagerFilter( membersOtherThanAdmins, searchInput) : membersOtherThanAdmins
-
-    const filterdFriendsArray = searchInput !== "" ? 
-        groupManagerFilter(friendsOtherThanGroupMembers, searchInput) : friendsOtherThanGroupMembers
-    
-    const { mutate : RemoveMemberFromGroupMutation , isPending : isMemberBeingRemoved } = useMutation({
-        mutationFn : removeGroupMember,
-        onSuccess : (data)=> onSuccessGroupChanges(data, 1) 
+    const {
+        addFriendToGroupMutation,
+        filterdFriendsArray,
+        filteredOtherMembersArray,
+        handleAdminRemoval,
+        handleMemberRemoval,
+        handleMakeMemberAdmin,
+        infoButtonsArray,
+        isAdminBeingRemoved,
+        isFriendBeingAdded,
+        isMemberBeingMadeAdmin,
+        isMemberBeingRemoved,
+        isUserAdmin,
+        memberBeingOperatedId,
+        setSearchInput,
+        filteredAdminsArray,
+        managedGroup,
+        searchInput,
+        setMemberBeingOperatedId
+     } = useGroupManager({ 
+        userData, 
+        groupMembers, 
+        setGlobalError, 
+        handleAreGroupMembersChanged, 
+        changeUserDataBasedOnGroupChanges,
+        friends,
+        groupId,
     })
 
-    const { mutate : makeMemberAdminMutation, isPending : isMemberBeingMadeAdmin } = useMutation({
-        mutationFn : makeMemberGroupAdmin,
-        onSuccess : (data)=> onSuccessGroupChanges(data, 2) 
-    })
-
-    const { mutate : removeGroupAdminMutation , isPending : isAdminBeingRemoved} = useMutation({
-        mutationFn : removeGroupAdmin,
-        onSuccess : (data)=> onSuccessGroupChanges(data, 3) 
-    })
-
-    const { mutate : addFriendToGroupMutation , isPending : isFriendBeingAdded } = useMutation({
-        mutationFn : addFriendToGroup,
-        onSuccess : (data)=> onSuccessGroupChanges(data, 4) 
-    })
-
-    function handleMakeMemberAdmin(id : string){
-        memberBeingOperatedIdIdSetter(id)
-        makeMemberAdminMutation({ axiosPrivate, id, collectionId : groupId })
-
-    }
-    function handleMemberRemoval(id : string ){
-        if (groupMembers.length <= 2) return setGlobalError("A group must have 3 members")
-        RemoveMemberFromGroupMutation({ axiosPrivate, id, collectionId : groupId })
-        memberBeingOperatedIdIdSetter(id)
-    }
-
-    function handleAdminRemoval(id : string ){
-        if(groupAdminsArray.length === 1) return setGlobalError("Group must have an Admin")
-        memberBeingOperatedIdIdSetter(id)
-        removeGroupAdminMutation({axiosPrivate, id, collectionId : groupId})
-    }
-
-    function memberBeingOperatedIdIdSetter(id : string){
-        setMemberBeingOperatedId(id)
-    }
-
-    function onSuccessGroupChanges(id : string, actionType : number){
-        
-        setMemberBeingOperatedId("")
-        changeUserDataBasedOnGroupChanges(id, actionType)
-        handleAreGroupMembersChanged(true)
-    }
   return (
         <section className="relative">
             <div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center">
@@ -158,6 +97,7 @@ function GroupManager({
                                         type="text" 
                                         ref={chatSearchRef}
                                         onChange={(e)=> setSearchInput(e.target.value) }
+                                        placeholder="Enter to Search"
                                         name="search" 
                                         id="search" 
                                         value={searchInput}

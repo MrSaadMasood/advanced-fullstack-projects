@@ -49,6 +49,7 @@ export default function ChatHeader({
                     <IoArrowBackCircleOutline size={25} />
                 </button>
                 <button 
+                    data-testid="groupManagerButton"
                     onClick={()=>{
                         if(dataSent.type === "group") openGroupManager(dataSent._id)
                     }}
@@ -79,10 +80,12 @@ export default function ChatHeader({
                 {!isChatSearchClicked && 
                 <div className=" mr-4 cursor-pointer flex justify-between items-center w-14 ">
                     <FaSearch 
+                        data-testid="searchButton"
                         size={20}
                         onClick={()=> setIsChatSearchClicked(true)}
                     />
                     <FaFilter
+                        data-testid="filterButton"
                         size={20}
                         onClick={()=> handleIsFilterClicked(true, filterType )}
                     />
@@ -96,11 +99,13 @@ export default function ChatHeader({
                             ref={chatSearchRef}
                             onChange={(e)=> handleChatSearchInputChange(e.target.value)}
                             name="search" 
+                            data-testid="chatHeaderSearchInput"
                             id="search" 
                             value={chatSearchInput}
                         />
                         <div>
                             <MdCancel
+                                data-testid="cancelSearch"
                                 size={24}
                                 className="cursor-pointer"
                                 onClick={()=>{ setIsChatSearchClicked(false); handleChatSearchInputChange("") }}

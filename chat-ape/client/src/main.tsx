@@ -15,20 +15,13 @@ import React from 'react'
 
 const queryClient = new QueryClient()
 
-async function deferRender(){
-  const { worker } = await import("./mocks/browser")
-  return worker.start()
-}
-if(process.env.NODE_ENV === "test"){
-  (async ()=> await deferRender())()
-}
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path='/' element={<PrivateRoute />} >
         <Route path='/' element={<Home />} index/>
         <Route path='/create-new-group' element={<NewGroupForm />} />
+        <Route path='*' element={<ErrorPage/>} />
       </Route>
       <Route path='/login' element={<Login />} />
       <Route path='/sign-up' element={<Signup />} />
@@ -38,16 +31,14 @@ const router = createBrowserRouter(
   )
 )
 
-
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-  <GoogleOAuthProvider clientId={import.meta.env.VITE_REACT_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_REACT_GOOGLE_CLIENT_ID}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <RouterProvider router={router} />
           </AuthProvider>
         </QueryClientProvider>
-  </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
   </React.StrictMode>
-  ,
   )

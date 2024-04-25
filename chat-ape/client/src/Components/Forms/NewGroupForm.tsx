@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import useInterceptor from "../hooks/useInterceptors";
 import { useMutation } from "@tanstack/react-query";
 import { createNewGroup } from "../../api/dataService";
-import useImageFileHook from "../hooks/useCreateGroup";
 import AddRemoveGroupFriends from "../MiscComponents/AddRemoveGroupFriends";
 import useOptionsSelected from "../hooks/useOptionsSelected";
+import useCreateGroup from "../hooks/useCreateGroup";
 
 export default function NewGroupForm() {
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function NewGroupForm() {
         friendsIncluded,
         rawImageFile,
         imageUrl 
-    } = useImageFileHook()
+    } = useCreateGroup()
 
     const { mutate : creatGroupFormMutation } = useMutation({
         mutationFn : createNewGroup,

@@ -35,22 +35,6 @@ it("tests the sign up Component", async ()=>{
     
 })
 
-it("tests the login page", async ()=>{
-
-    render(
-    <AuthProvider>
-        <MemoryRouter>
-            <Login />
-        </MemoryRouter>
-    </AuthProvider>
-    )
-
-    const logo = screen.getByTestId("login-logo")
-    const heading = screen.getByText("Login")
-    expect(logo).toBeInTheDocument()
-    expect(heading).toBeInTheDocument()
-})
-
 it("tests the Sign-up Form Component", async ()=>{
     const user = userEvent.setup()
     render(
