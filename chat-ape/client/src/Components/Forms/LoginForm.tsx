@@ -33,14 +33,15 @@ export default function LoginForm() {
     const login = useGoogleLogin({
         onSuccess : async (tokenResponse)=> {
             try {
-                const response = await server.post("/auth-user/google", { code : encodeURIComponent(tokenResponse.code)})
+                const response = await server.post("/auth-user/google", 
+                    { code : encodeURIComponent(tokenResponse.code)})
                 const data = loginUserSchema.parse(response.data)
                 handleLoginDataFromServer(data)
             } catch (error) {
-                console.log("the rquest sent for google login has failed") 
+                setIsFailed(true)
             }
         },
-        onError : ()=> console.log("some error occured"),
+        onError : ()=>  setIsFailed(true),
         flow : "auth-code"
     })
     const { mutate : loginUserMutation } = useMutation({
@@ -154,7 +155,7 @@ export default function LoginForm() {
                         OR
                     </p>
                 </div>
-                <div className=" flex flex-col justify-between items-center h-[10rem]">
+                <div className=" flex flex-col justify-between items-center h-[6rem]">
                     <button 
                         className="p-2 h-10 w-[23rem] rounded-lg flex justify-center items-center
                          bg-red-600 hover:bg-red-700 "

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { chat1, customHooksRender, TestProviderWrappers } from "../testUtils";
+import { chat1, customHooksRender } from "../testUtils";
 import useOptionsSelected from "../../Components/hooks/useOptionsSelected";
-import { renderHook, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 
 describe("tests the useOptionsSelected hook", ()=>{
@@ -18,9 +18,9 @@ describe("tests the useOptionsSelected hook", ()=>{
     it('should get the friend list', async () => { 
         
         const { result } = customHooksRender(()=> useOptionsSelected(2))
-        await waitFor(()=> expect(result.current.friendsArray).toHaveLength(1))
+        await waitFor(()=> expect(result.current.friendsArray).toHaveLength(3))
         await waitFor(()=> result.current.removeFollowRequestAndFriend("99", "friends"))   
-        expect(result.current.friendsArray).toHaveLength(0)
+        expect(result.current.friendsArray).toHaveLength(2)
      })
 
     it("should get the users list", async ()=>{

@@ -147,3 +147,10 @@ export type OpenGroupManager = (groupId : string)=> void
 export type RequestsWithIds = AxiosCustom & Pick<Message, "id"> & { collectionId? : string }
 export type RequestWithIdAndCollectionId = RequestsWithIds & Pick<NormalChats, "collectionId">
 export type FriendData = z.infer<typeof friendDataSchema> 
+export interface CustomFormEvent {
+    preventDefault : Function,
+    target : {
+        reset : Function
+    }
+
+}

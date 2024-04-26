@@ -59,7 +59,10 @@ export default function NewGroupForm() {
              setIsErrorDivPresent(true);
             return setErrorMessage("The Group must have at least 2 Members");
         }
-        if(!rawImageFile) return
+        if(!rawImageFile) {
+            setErrorMessage("Group Image Needed!")
+            return setIsErrorDivPresent(true)
+        }
 
         creatGroupFormMutation({ axiosPrivate, rawImageFile, groupName, friendsIncluded})
     };
@@ -75,6 +78,7 @@ export default function NewGroupForm() {
                             id="image"
                             name="image"
                             className="hidden"
+                            data-testid="groupImageInput"
                             accept=".jpg"
                             onChange={handleFileInputChange}
                             ref={imageRef}

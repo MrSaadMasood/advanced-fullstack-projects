@@ -1,4 +1,4 @@
-function SubmitButton({ value } : { value : string}) {
+function SubmitButton({ value = "submit" } : { value : string}) {
   return (
         <input
             type="submit"

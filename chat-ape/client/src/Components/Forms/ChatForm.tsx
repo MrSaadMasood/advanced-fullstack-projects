@@ -26,6 +26,7 @@ export default function ChatForm({
             className="lg:bg-black h-12 w-full flex justify-center items-center fixed bottom-14 sm:bottom-16 md:bottom-[4.5rem]
             lg:static"
             onSubmit={handleSubmit}
+            data-testid="chatForm"
             encType="multipart/form-data"
         >
             <div className="w-10"></div>
@@ -53,6 +54,7 @@ export default function ChatForm({
             </button>
             <button
                 type="button"
+                data-testid="triggerFileInput"
                 onClick={triggerFileInput}
                 className="flex justify-center items-center w-10 mr-1"
             >

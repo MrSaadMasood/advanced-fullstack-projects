@@ -19,6 +19,8 @@
 // import ChatHeader from "../Components/ChatBoxComponets/ChatHeader"
 // import Chat from "../Components/ChatBoxComponets/Chat"
 
+import { it } from "vitest";
+
 // it("tests the Users Component", async ()=>{
 
 //     const data = {
@@ -489,4 +491,4 @@
 //     expect(fullNameElem).toBeInTheDocument()
 // })
 
-// it("passes", ()=> console.log("passes"))
+it("passes", ()=> console.log("passes"))

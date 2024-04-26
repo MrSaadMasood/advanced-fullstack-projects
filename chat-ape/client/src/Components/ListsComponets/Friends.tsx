@@ -34,6 +34,7 @@ export default function Friends({
         mutationFn : removeAFriend,
         onSuccess : ()=>{
             removeFollowRequestAndFriend(removedFriendId, "friends")
+            console.log("the request to remove the friend was a success")
             isUserChangedSetter(true)
         },
         onError : ()=> setGlobalError("Failed to Remove Friend! Try Again")

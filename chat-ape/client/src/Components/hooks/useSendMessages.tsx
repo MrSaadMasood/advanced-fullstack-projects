@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { ChatProps, ChatType, CommonUserData, GeneralGroupList, UserData } from "../../Types/dataTypes";
+import { ChatProps, ChatType, CommonUserData, CustomFormEvent, GeneralGroupList, UserData } from "../../Types/dataTypes";
 import useInterceptor from "./useInterceptors";
 import { sendImageMessage, sendTextMessage } from "../../api/dataService";
 import { FormEvent, useCallback, useState } from "react";
@@ -42,12 +42,12 @@ function useSendMessages({
     const { mutate : sendTextMessageMutation } = useMutation({
         mutationFn : sendTextMessage,
         onSuccess : ({ id })=>{
+            console.log("the id received is", id)
             if(chatType === "normal"){
                 friendData!.type = "normal"
                 return sendMessageToWS(friendData!, input, id ,"content");
             }
             generalGroupData!.type = "group"
-            console.log("the group message is now sent successfully")
             return sendMessageToWS(generalGroupData!, input, id, "content");
 
         },
@@ -56,7 +56,8 @@ function useSendMessages({
   // handles the uploading of image if the image is greater than 1mb an error message is sent to the user
   // else the image is sent to the server to be stored after than the image path/address is sent to the user on the other side
   // connected to the same room
-    const handleFileChange = useCallback((e : React.ChangeEvent<HTMLInputElement>) => {
+const handleFileChange = useCallback((e : React.ChangeEvent<HTMLInputElement>  
+    ) => {
         if(!e.target.files) return
         const image = e.target.files[0];
         if (image.size > 1000000) {
@@ -82,7 +83,7 @@ function useSendMessages({
     },[])
 
     // if the message is stored successfully in the database the message is sent to the user/s who is/are connected to the same room
-    const handleSubmit = useCallback((e : FormEvent<HTMLFormElement>) => {
+    const handleSubmit = useCallback((e : FormEvent<HTMLFormElement> | CustomFormEvent ) => {
         console.log("the handle submit function is being rendered now");
         e.preventDefault();
         if(input === "") return
@@ -91,7 +92,7 @@ function useSendMessages({
         const textMessageData = chatType === "normal" ? 
             { content : input , collectionId : friendData!.collectionId, } : 
             { content : input, groupId : generalGroupData!._id}
-        console.log("the chattype is", chatType, "and the ata is being now sent", textMessageData)
+
         sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })
         ;(e.target as HTMLFormElement).reset();
       },[chatType, input]) 

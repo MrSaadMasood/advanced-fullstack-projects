@@ -22,7 +22,7 @@ export default function GroupMessagesList({
     
     return (
         <button
-            data-testid="main"
+            data-testid="groupMessageListItem"
             className={`hover:bg-[#343434] w-full p-3 flex lg:flex justify-between items-center 
             border-b-2 border-[#555555] h-28 lg:h-20`}
             onClick={() => {
@@ -38,13 +38,13 @@ export default function GroupMessagesList({
                     <p className="font-bold text-base sm:text-lg lg:text-xs">
                         {data.groupName}
                     </p>
-                    {data?.lastMessage?.path && 
+                    {data.lastMessage.path && 
                         <p className="text-sm sm:text-base lg:text-xs text-[#b2b2b2] h-5 w-[16rem] 
                         sm:w-[22rem] lg:w-[10rem] flex overflow-hidden">
                             Image
                         </p>
                     }
-                    {data?.lastMessage?.content && 
+                    {data.lastMessage.content && 
                         <div className="text-sm sm:text-base lg:text-xs text-[#b2b2b2] w-[16rem] 
                         sm:w-[22rem] lg:w-[14rem] text-left ">
                             <p className="w-[100%] h-4 ">

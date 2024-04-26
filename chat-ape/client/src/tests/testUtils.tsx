@@ -12,8 +12,20 @@ const handleChatSearchInputChange = vi.fn()
 const openGroupManager = vi.fn()
 const selectedChatSetter = vi.fn()
 const handleIsFilterClicked = vi.fn() 
+const chatDataSetter = vi.fn()
+const setGlobalError = vi.fn()
+const sendMessageToWS = vi.fn()
+const isUserChangedSetter = vi.fn()
+const chatFriendImageSetter = vi.fn()
+const getChatData = vi.fn()
 const user = userEvent.setup()
 
+const factor2AuthLogin = { 
+    is2FactorAuthEnabled: true,
+    factor2AuthToken : "authToken",
+    refreshToken : "refresh",
+    isGoogleUser : false
+}
 const groupMembers = [
     { _id : "1",
         fullName : "test member 1",
@@ -63,6 +75,15 @@ const friendData : FriendData = {
     fullName : "test member 1",
     type : "normal"
 }
+
+const friend2 = {...friendData, id : "2", fullName : "test member 2"}
+const friend3 = {...friendData, id : "3", fullName : "test member 3"}
+
+const friendDataArray = [
+    friendData,
+    friend2,
+    friend3
+]
 const chat1 = {
     time : new Date().toLocaleDateString(),
     userId : "69",
@@ -146,5 +167,13 @@ export {
     selectedChatSetter,
     handleIsFilterClicked,
     user,
-    chat1
+    chat1,
+    factor2AuthLogin,
+    friendDataArray,
+    chatDataSetter,
+    setGlobalError,
+    sendMessageToWS,
+    isUserChangedSetter,
+    chatFriendImageSetter,
+    getChatData
 } 

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>17/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>17/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -87,43 +87,43 @@
 <a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span>
-<span class="cline-any cline-yes">58x</span></td><td class="text"><pre class="prettyprint lang-js">import { UserSaved } from "../../Types/dataTypes"
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">70x</span></td><td class="text"><pre class="prettyprint lang-js">import { UserSaved } from "../../Types/dataTypes"
 &nbsp;
 // handles the tokens stored in the local storage
 export default function useLocalStorage(){
 &nbsp;
-    const setItem = (key : string, value : UserSaved)=&gt;{
-        localStorage.setItem(key, JSON.stringify(value))
-    }
+    const setItem = <span class="fstat-no" title="function not covered" >(key : string, value : UserSaved)=&gt;{</span>
+<span class="cstat-no" title="statement not covered" >        localStorage.setItem(key, JSON.stringify(value))</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     const getItem = (key : string)=&gt;{
         const item = localStorage.getItem(key)
-        if(!item) return
-        return JSON.parse(item)
+        if(!item) <span class="branch-0 cbranch-no" title="branch not covered" >return</span>
+<span class="cstat-no" title="statement not covered" >        return JSON.parse(item)</span>
 &nbsp;
     }
 &nbsp;
-    const removeItem = (key : string)=&gt;{
-        localStorage.removeItem(key)
-    }
+    const removeItem = <span class="fstat-no" title="function not covered" >(key : string)=&gt;{</span>
+<span class="cstat-no" title="statement not covered" >        localStorage.removeItem(key)</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     return { setItem, getItem , removeItem}
 }</pre></td></tr></table></pre>
@@ -133,7 +133,7 @@ export default function useLocalStorage(){
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-25T20:31:13.557Z
+                at 2024-04-26T19:52:09.068Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

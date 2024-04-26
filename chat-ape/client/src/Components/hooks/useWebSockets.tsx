@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client"
-import { AcceptedDataOptions, AssessoryData, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData} from "../../Types/dataTypes";
+import { AcceptedDataOptions, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData} from "../../Types/dataTypes";
 import { generateRoomId } from "../../utils/roomIdGenerator";
 import useInterceptor from "./useInterceptors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

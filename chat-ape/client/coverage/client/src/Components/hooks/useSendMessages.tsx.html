@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/108</span>
+                <span class='fraction'>0/109</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/108</span>
+                <span class='fraction'>0/109</span>
             </div>
         
             
@@ -170,7 +170,9 @@
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -278,7 +280,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { useMutation } from "@tanstack/react-query";<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >import { ChatProps, ChatType, CommonUserData, GeneralGroupList, UserData } from "../../Types/dataTypes";</span>
+<span class="cstat-no" title="statement not covered" >import { ChatProps, ChatType, CommonUserData, CustomFormEvent, GeneralGroupList, UserData } from "../../Types/dataTypes";</span>
 <span class="cstat-no" title="statement not covered" >import useInterceptor from "./useInterceptors";</span>
 <span class="cstat-no" title="statement not covered" >import { sendImageMessage, sendTextMessage } from "../../api/dataService";</span>
 <span class="cstat-no" title="statement not covered" >import { FormEvent, useCallback, useState } from "react";</span>
@@ -321,12 +323,12 @@
 <span class="cstat-no" title="statement not covered" >    const { mutate : sendTextMessageMutation } = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >        mutationFn : sendTextMessage,</span>
 <span class="cstat-no" title="statement not covered" >        onSuccess : ({ id })=&gt;{</span>
+<span class="cstat-no" title="statement not covered" >            console.log("the id received is", id)</span>
 <span class="cstat-no" title="statement not covered" >            if(chatType === "normal"){</span>
 <span class="cstat-no" title="statement not covered" >                friendData!.type = "normal"</span>
 <span class="cstat-no" title="statement not covered" >                return sendMessageToWS(friendData!, input, id ,"content");</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >            generalGroupData!.type = "group"</span>
-<span class="cstat-no" title="statement not covered" >            console.log("the group message is now sent successfully")</span>
 <span class="cstat-no" title="statement not covered" >            return sendMessageToWS(generalGroupData!, input, id, "content");</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        },</span>
@@ -335,7 +337,8 @@
 <span class="cstat-no" title="statement not covered" >  // handles the uploading of image if the image is greater than 1mb an error message is sent to the user</span>
 <span class="cstat-no" title="statement not covered" >  // else the image is sent to the server to be stored after than the image path/address is sent to the user on the other side</span>
 <span class="cstat-no" title="statement not covered" >  // connected to the same room</span>
-<span class="cstat-no" title="statement not covered" >    const handleFileChange = useCallback((e : React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >const handleFileChange = useCallback((e : React.ChangeEvent&lt;HTMLInputElement&gt;  </span>
+<span class="cstat-no" title="statement not covered" >    ) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if(!e.target.files) return</span>
 <span class="cstat-no" title="statement not covered" >        const image = e.target.files[0];</span>
 <span class="cstat-no" title="statement not covered" >        if (image.size &gt; 1000000) {</span>
@@ -361,7 +364,7 @@
 <span class="cstat-no" title="statement not covered" >    },[])</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    // if the message is stored successfully in the database the message is sent to the user/s who is/are connected to the same room</span>
-<span class="cstat-no" title="statement not covered" >    const handleSubmit = useCallback((e : FormEvent&lt;HTMLFormElement&gt;) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const handleSubmit = useCallback((e : FormEvent&lt;HTMLFormElement&gt; | CustomFormEvent ) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        console.log("the handle submit function is being rendered now");</span>
 <span class="cstat-no" title="statement not covered" >        e.preventDefault();</span>
 <span class="cstat-no" title="statement not covered" >        if(input === "") return</span>
@@ -370,7 +373,7 @@
 <span class="cstat-no" title="statement not covered" >        const textMessageData = chatType === "normal" ? </span>
 <span class="cstat-no" title="statement not covered" >            { content : input , collectionId : friendData!.collectionId, } : </span>
 <span class="cstat-no" title="statement not covered" >            { content : input, groupId : generalGroupData!._id}</span>
-<span class="cstat-no" title="statement not covered" >        console.log("the chattype is", chatType, "and the ata is being now sent", textMessageData)</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        sendTextMessageMutation({ axiosPrivate, endpoint , textMessageData })</span>
 <span class="cstat-no" title="statement not covered" >        ;(e.target as HTMLFormElement).reset();</span>
 <span class="cstat-no" title="statement not covered" >      },[chatType, input]) </span>
@@ -391,7 +394,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-25T20:31:13.557Z
+                at 2024-04-26T19:52:09.068Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

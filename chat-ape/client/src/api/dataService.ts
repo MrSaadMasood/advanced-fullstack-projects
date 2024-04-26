@@ -116,6 +116,7 @@ export async function userSignUp({ formData} : { formData : SignUpFormdata}){
 export async function loginUser({ formData} : { formData : FormDataLogin}){
    try {
         const response = await server.post("/auth-user/login", formData )
+        console.log("the reponse from the server", response.data)
         return loginUserSchema.parse(response.data)
    } catch (error) {
         console.log("failed to log the user in")
@@ -129,7 +130,6 @@ export async function createNewGroup({ axiosPrivate, groupName, rawImageFile, fr
         formData.append("image", rawImageFile);
         formData.append("groupName", groupName);
         formData.append("members", JSON.stringify(friendsIncluded));
-
         await axiosPrivate.post("/user/create-new-group", formData ,{
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -150,7 +150,7 @@ export async function sendImageMessage({ axiosPrivate , endpoint, imageMessageDa
         })
         return imageSaveSchema.parse(response.data)
     } catch (error) {
-        console.log("failed to send the image")
+        console.log("failed to send the image", error)
         throw new Error("failed to send the image")
     }
 }

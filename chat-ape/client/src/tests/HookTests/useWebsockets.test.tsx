@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { chat1, customHooksRender, friendData, generalGroupData, groupChatData, handleIsFilterClicked, TestProviderWrappers, userData } from "../testUtils";
+import { chat1, customHooksRender, friendData, generalGroupData, handleIsFilterClicked, TestProviderWrappers, userData } from "../testUtils";
 import useWebSockets from "../../Components/hooks/useWebSockets";
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 
 describe("tests the useWebSockets hook",()=>{
     const chatListArraySetter = vi.fn() 

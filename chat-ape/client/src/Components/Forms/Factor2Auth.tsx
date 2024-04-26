@@ -120,6 +120,7 @@ function Factor2Auth() {
                                         type="number"
                                         key={index}
                                         maxLength={1}
+                                        data-testid="PasskeyInput"
                                         ref= { element => inputRef.current[index] = element as HTMLInputElement}
                                         onChange={(e)=> handleInputChange( e.target.value, index)}
                                         className=" bg-gray-400 w-10 p-4 ml-2 flex justify-center items-center rounded-md"

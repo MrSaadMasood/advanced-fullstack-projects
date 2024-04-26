@@ -10,12 +10,12 @@ function useOptionsSelected(
 
     const axiosPrivate = useInterceptor()
     const queryClient = useQueryClient()
-    const { data : chatList = [], isLoading } = useQuery({
+    const { data : chatList = [] } = useQuery({
         queryKey : ["normalChatList", optionsSelected],
         queryFn : ()=> getNormalChatList(axiosPrivate),
         enabled : optionsSelected === 1
     })
-    console.log(chatList, 'inside the use options hook')
+    
     const { data : friendsArray = [] } = useQuery({
         queryKey : ["friendsList", optionsSelected],
         queryFn : ()=> getFriendsList(axiosPrivate),
@@ -65,7 +65,6 @@ function useOptionsSelected(
         if(type === "friends") {
             const queryKey = ["friendsList", optionsSelected] 
             queryClient.setQueryData(queryKey, (oldFriendList : FriendData[]) => {
-                console.log("this is inside query setter ", oldFriendList.filter(item => item._id !== id))
                 return oldFriendList.filter(item => item._id !== id);
             })
         }

@@ -43,6 +43,7 @@ function SideListsHeader({
                     type="text" 
                     ref={searchInputRef}
                     onChange={(e)=> handleSearchInputChange(e.target.value)}
+                    placeholder='Search Something'
                     name="search" 
                     id="search" 
                     value={searchInput}
@@ -60,6 +61,7 @@ function SideListsHeader({
             {isSearchTriggered && 
                 <div>
                     <MdCancel
+                        data-testid="closeSearch"
                         className=" cursor-pointer"
                         onClick={()=> setIsSearchTriggered(false)}
                         size={24}
