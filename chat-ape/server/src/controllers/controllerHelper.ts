@@ -4,7 +4,6 @@ import { BadRequest } from "../ErrorHandler/customError"
 import { generalErrorMessage, generalInputValidationError } from "../utils/utils"
 import { Request } from "express"
 import { validationResult } from "express-validator"
-import { userSchema } from "../../zodSchema/zodSchemas"
 
 const transactionOptions : UpdateOptions = {
     writeConcern : { w : "majority"},
@@ -237,10 +236,10 @@ async function updateNormalChatData
 async function getCustomData (database : Db, userId : string, type : FriendsNRequests) {
 
     const userFromDatabase= await database.collection<DocumentInput>("users").findOne({ _id : userId})
-    const user = userSchema.parse(userFromDatabase)
+    if(!userFromDatabase) throw new BadRequest(generalErrorMessage("failed to get the user data from database"))
     const data = await database.collection<DocumentInput>("users").find(
     {
-        _id : { $in : user[type]}
+        _id : { $in : userFromDatabase[type]}
     },
     {
         projection : {

@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client"
 import { AcceptedDataOptions, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData} from "../../Types/dataTypes";
 import { generateRoomId } from "../../utils/roomIdGenerator";
 import useInterceptor from "./useInterceptors";
-import { QueryCache, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  fetchGroupMembers, filterChat, getGroupChatData, getNormalChatData } from "../../api/dataService";
 
 

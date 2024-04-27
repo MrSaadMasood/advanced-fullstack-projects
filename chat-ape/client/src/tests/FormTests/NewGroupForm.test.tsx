@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import NewGroupForm from "../../Components/Forms/NewGroupForm";
 import "@testing-library/jest-dom"
-import { screen, waitFor } from "@testing-library/react";
+import { screen} from "@testing-library/react";
 import { customRender, user } from "../testUtils";
 
 describe("should test the new group form component", ()=>{

@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom"
 import { customRender, friendData, isUserChangedSetter, setGlobalError, user } from "../testUtils"
-import { screen, waitFor } from "@testing-library/react"
+import { screen } from "@testing-library/react"
 import { describe, beforeEach, it, expect, vi } from "vitest"
 import Friends from "../../Components/ListsComponets/Friends"
 

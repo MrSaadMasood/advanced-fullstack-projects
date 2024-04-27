@@ -1,7 +1,7 @@
 import { http, HttpResponse  } from 'msw' 
 import fs from "fs"
 import path from "path"
-import { chat1, completeChatData, factor2AuthLogin, friendData, friendDataArray, groupChatData, groupMembers } from '../tests/testUtils'
+import { chat1, completeChatData, factor2AuthLogin, friendData, groupChatData, groupMembers } from '../tests/testUtils'
 
 const baseUrl = import.meta.env.VITE_REACT_APP_SITE_URL
 const okStatus = { status : 200 }

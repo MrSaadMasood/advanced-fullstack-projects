@@ -15,6 +15,7 @@ const client = (promiseResult : boolean) => ({
                 insertOne : jest.fn(()=> Promise.resolve({ insertedCount: 1})),
                 findOne : jest.fn(()=> Promise.resolve({ fullName : "testFriend"})),
                 updateMany : jest.fn(()=> Promise.resolve()),
+                deleteOne : jest.fn(()=> Promise.resolve({ deletedCount : 1})),
                 find : jest.fn(()=> ({
                     toArray : jest.fn(()=> Promise.resolve([{ value : "random"}]))
                 })),
@@ -29,6 +30,7 @@ const client = (promiseResult : boolean) => ({
                 insertOne : jest.fn(()=> Promise.reject({ insertedCount: 1})),
                 findOne : jest.fn(()=> Promise.reject([])),
                 updateMany : jest.fn(()=> Promise.reject()),
+                deleteOne : jest.fn(()=> Promise.resolve({ deletedCount : 0})),
                 find : jest.fn(()=> ({
                     toArray : jest.fn(()=> Promise.reject([{ value : "random"}]))
                 })),
@@ -69,13 +71,13 @@ describe('tests the addFriendTransaction', () => {
 describe('tests the removeFriendTransaction', () => { 
     it('should remove the friend of the users', async () => { 
 
-        const result = await removeFriendTransaction(client(true) as any, "user", "friendtoRemove")
+        const result = await removeFriendTransaction(client(true) as any, "user", "friendtoRemove", "collection")
         expect(result).toBe(true)
 
      })
 
      it('negative : should fail to remove the friend of the user', () => { 
-        expect(()=> removeFriendTransaction(client(false) as any, "user", "friendtoRemove")).rejects
+        expect(()=> removeFriendTransaction(client(false) as any, "user", "friendtoRemove", "collection")).rejects
       })
  })
 
@@ -88,7 +90,7 @@ describe('tests the removeFollowRequestTransaction', () => {
 
     it('negative : should fail to remove the request of the user', () => { 
 
-        expect(()=> removeFriendTransaction(client(false) as any, "user", "friendtoRemove")).rejects
+        expect(()=> removeFriendTransaction(client(false) as any, "user", "friendtoRemove", "collection")).rejects
      })
 })
 
