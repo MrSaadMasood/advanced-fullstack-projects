@@ -329,7 +329,6 @@ async function groupManager(
             [arrayToPerformOperation] : memberId
         }}
     )
-    console.log("the updated Group is", updatedGroup)
     if(!updatedGroup.modifiedCount) throw new Error
     return updatedGroup
 }

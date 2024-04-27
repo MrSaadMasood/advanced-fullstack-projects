@@ -11,7 +11,6 @@ describe('filters the chat based on input', () => {
                 collectionId : "f7f29bde-6ffb-47f4-bdeb-2bd5019312cf",
             })      
 
-        console.log('the respone isDeleted', response.body)
         expect(response.status).toBe(200)
         expect(response.body).toHaveProperty("groupChatData")
         expect(response.body.groupChatData).toHaveLength(4)

@@ -14,10 +14,11 @@ import { googleLogout } from '@react-oauth/google'
 
 interface SideBarProps {
   setOptions : (option : number, text : string) => void,
-  profilePictureUrl : string 
+  profilePictureUrl : string ,
+  setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps) {
+export default function SideBar({ setOptions, profilePictureUrl,  setGlobalError } : SideBarProps) {
     
   const { isAuthenticated, setIsAuthenticated } = useContext(isAuth)
   const { removeItem} = useLocalStorage();
@@ -32,7 +33,7 @@ export default function SideBar({ setOptions, profilePictureUrl } : SideBarProps
       navigate("/login", { replace : true });
     },
     onError : ()=>{
-      console.log("cant logout the user some error occured")
+      setGlobalError("Failed to Logout!")
     }
   })
   

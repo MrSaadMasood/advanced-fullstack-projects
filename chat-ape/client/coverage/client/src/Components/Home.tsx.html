@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/490</span>
+                <span class='fraction'>0/474</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/490</span>
+                <span class='fraction'>0/474</span>
             </div>
         
             
@@ -536,39 +536,7 @@
 <a name='L471'></a><a href='#L471'>471</a>
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a>
-<a name='L476'></a><a href='#L476'>476</a>
-<a name='L477'></a><a href='#L477'>477</a>
-<a name='L478'></a><a href='#L478'>478</a>
-<a name='L479'></a><a href='#L479'>479</a>
-<a name='L480'></a><a href='#L480'>480</a>
-<a name='L481'></a><a href='#L481'>481</a>
-<a name='L482'></a><a href='#L482'>482</a>
-<a name='L483'></a><a href='#L483'>483</a>
-<a name='L484'></a><a href='#L484'>484</a>
-<a name='L485'></a><a href='#L485'>485</a>
-<a name='L486'></a><a href='#L486'>486</a>
-<a name='L487'></a><a href='#L487'>487</a>
-<a name='L488'></a><a href='#L488'>488</a>
-<a name='L489'></a><a href='#L489'>489</a>
-<a name='L490'></a><a href='#L490'>490</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L474'></a><a href='#L474'>474</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1067,7 +1035,6 @@
 <span class="cstat-no" title="statement not covered" >    FriendData,</span>
 <span class="cstat-no" title="statement not covered" >    GeneralGroupList,</span>
 <span class="cstat-no" title="statement not covered" >    GroupChatData,</span>
-<span class="cstat-no" title="statement not covered" >    GroupChats,</span>
 <span class="cstat-no" title="statement not covered" >    MessageToDelete, </span>
 <span class="cstat-no" title="statement not covered" >    UserData,</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1077,7 +1044,7 @@
 <span class="cstat-no" title="statement not covered" >import { useMutation, useQuery } from "@tanstack/react-query";</span>
 <span class="cstat-no" title="statement not covered" >import { deleteMessageFromChat, fetchPictureFromServer, fetchUserData } from "../api/dataService";</span>
 <span class="cstat-no" title="statement not covered" >import SideListsHeader from "./ListsComponets/SideListsHeader";</span>
-<span class="cstat-no" title="statement not covered" >import getFilteredData, { filterChatData } from "../utils/filterArrayFunction";</span>
+<span class="cstat-no" title="statement not covered" >import getFilteredData, { filterChatData, indexfinder, replaceArrayMemberWithModifiedOne } from "../utils/filterArrayFunction";</span>
 <span class="cstat-no" title="statement not covered" >import useSearch from "./hooks/useSearch";</span>
 <span class="cstat-no" title="statement not covered" >import FilterOptions from "./MiscComponents/FilterOptions";</span>
 <span class="cstat-no" title="statement not covered" >import GlobalError from "./ErrorComponents/GlobalError.tsx";</span>
@@ -1118,16 +1085,15 @@
 <span class="cstat-no" title="statement not covered" >        normalChatData, </span>
 <span class="cstat-no" title="statement not covered" >        groupChatData,</span>
 <span class="cstat-no" title="statement not covered" >        friendData,</span>
+<span class="cstat-no" title="statement not covered" >        chatId,</span>
 <span class="cstat-no" title="statement not covered" >        generalGroupData,</span>
 <span class="cstat-no" title="statement not covered" >        groupMembersData,</span>
 <span class="cstat-no" title="statement not covered" >        chatDataSetter, </span>
 <span class="cstat-no" title="statement not covered" >        getFilteredChat,</span>
 <span class="cstat-no" title="statement not covered" >        removeDeletedMessageFromChat, </span>
 <span class="cstat-no" title="statement not covered" >        getChatData,</span>
-<span class="cstat-no" title="statement not covered" >        // handleIsMoreChatRequested,</span>
 <span class="cstat-no" title="statement not covered" >        handleAreGroupMembersChanged</span>
 <span class="cstat-no" title="statement not covered" >    } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with </span>
 <span class="cstat-no" title="statement not covered" >    // some data and userData needs to be updated with that data</span>
 <span class="cstat-no" title="statement not covered" >    const [isUserChanged, setIsUserChanged] = useState(false);</span>
@@ -1152,7 +1118,7 @@
 <span class="cstat-no" title="statement not covered" >        onSuccess : ()=&gt;{</span>
 <span class="cstat-no" title="statement not covered" >            if(!messageToDeleteInfo) return</span>
 <span class="cstat-no" title="statement not covered" >            if(!socket) return</span>
-<span class="cstat-no" title="statement not covered" >            socket.emit("delete-message", joinedRoom, messageToDeleteInfo.messageId, messageToDeleteInfo.type);</span>
+<span class="cstat-no" title="statement not covered" >            socket.emit("delete-message", joinedRoom, messageToDeleteInfo.messageId, messageToDeleteInfo.type, chatId);</span>
 <span class="cstat-no" title="statement not covered" >            removeDeletedMessageFromChat(messageToDeleteInfo.messageId, messageToDeleteInfo.type);</span>
 <span class="cstat-no" title="statement not covered" >            setShowDeletMessageOption(false);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
@@ -1272,7 +1238,7 @@
 <span class="cstat-no" title="statement not covered" >        if (chatType === "normal") {</span>
 <span class="cstat-no" title="statement not covered" >            chatDataSetter(data, chatType);</span>
 <span class="cstat-no" title="statement not covered" >            chatListArraySetter(sentData._id, data, chatType);</span>
-<span class="cstat-no" title="statement not covered" >            socket.emit("send-message", joinedRoom, data, chatType, "useless");</span>
+<span class="cstat-no" title="statement not covered" >            socket.emit("send-message", joinedRoom, data, chatType, chatId, "useless");</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >    </span>
 <span class="cstat-no" title="statement not covered" >        if (chatType === "group") {</span>
@@ -1280,13 +1246,12 @@
 <span class="cstat-no" title="statement not covered" >            chatDataSetter(data, chatType, sentData);</span>
 <span class="cstat-no" title="statement not covered" >            sentData.lastMessage = data;</span>
 <span class="cstat-no" title="statement not covered" >            chatListArraySetter(sentData._id, data, chatType);</span>
-<span class="cstat-no" title="statement not covered" >            socket.emit("send-message", joinedRoom, data, chatType, sentData);</span>
+<span class="cstat-no" title="statement not covered" >            socket.emit("send-message", joinedRoom, data, chatType, chatId, sentData);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    </span>
 <span class="cstat-no" title="statement not covered" >    function changeUserDataBasedOnGroupChanges( id : string, actionType : number ){</span>
 <span class="cstat-no" title="statement not covered" >        const groupToChange = userData?.groupChats.find(group =&gt; group.collectionId === groupManager)</span>
-<span class="cstat-no" title="statement not covered" >        console.log('the group to change is', groupToChange, "the action typ", actionType)</span>
 <span class="cstat-no" title="statement not covered" >        if(!groupToChange) return</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        setUserData((prevData)=&gt;{</span>
@@ -1307,28 +1272,13 @@
 <span class="cstat-no" title="statement not covered" >            if(actionType === 2){</span>
 <span class="cstat-no" title="statement not covered" >                groupToChange.admins.push(id)</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
-<span class="cstat-no" title="statement not covered" >            const groupChatsArrayModified = getModifiedArray(prevData.groupChats, groupToChange)</span>
-<span class="cstat-no" title="statement not covered" >                console.log('the changed group after admin',groupChatsArrayModified)</span>
+<span class="cstat-no" title="statement not covered" >            const groupChatsArrayModified = replaceArrayMemberWithModifiedOne(prevData.groupChats, groupToChange)</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
 <span class="cstat-no" title="statement not covered" >                ...prevData,</span>
 <span class="cstat-no" title="statement not covered" >                groupChats : [...groupChatsArrayModified]</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >        })</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    function getModifiedArray&lt;T extends GroupChats&gt;(array : T[], arrayMember : T){</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        const modifiedArray = array.map(groupChat =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            if(groupChat.collectionId === arrayMember.collectionId) return arrayMember</span>
-<span class="cstat-no" title="statement not covered" >            return groupChat</span>
-<span class="cstat-no" title="statement not covered" >        })</span>
-<span class="cstat-no" title="statement not covered" >        return modifiedArray</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    function indexfinder&lt;T&gt;(array : T[], elementToMatch : string ){</span>
-<span class="cstat-no" title="statement not covered" >        const foundIndex = array.findIndex((member) =&gt; member === elementToMatch)</span>
-<span class="cstat-no" title="statement not covered" >        return foundIndex</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    // to set the image of the selected friend to chat</span>
@@ -1391,6 +1341,7 @@
 <span class="cstat-no" title="statement not covered" >                    &lt;SideBar</span>
 <span class="cstat-no" title="statement not covered" >                        setOptions={selectedOptionSetter}</span>
 <span class="cstat-no" title="statement not covered" >                        profilePictureUrl={profilePictureUrl}</span>
+<span class="cstat-no" title="statement not covered" >                        setGlobalError={setGlobalError}</span>
 <span class="cstat-no" title="statement not covered" >                    /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        </span>
 <span class="cstat-no" title="statement not covered" >                    {optionsSelected === 6 &amp;&amp; userData &amp;&amp;</span>
@@ -1400,6 +1351,7 @@
 <span class="cstat-no" title="statement not covered" >                                userData={userData}</span>
 <span class="cstat-no" title="statement not covered" >                                profilePictureUrl={profilePictureUrl}</span>
 <span class="cstat-no" title="statement not covered" >                                isUserChangedSetter={isUserChangedSetter}</span>
+<span class="cstat-no" title="statement not covered" >                                setGlobalError={setGlobalError}</span>
 <span class="cstat-no" title="statement not covered" >                            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >                        &lt;/Suspense&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    }</span>
@@ -1537,7 +1489,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-26T19:52:09.068Z
+                at 2024-04-27T14:50:53.067Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

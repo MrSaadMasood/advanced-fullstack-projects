@@ -35,7 +35,6 @@ describe("tests the verification of otp", ()=>{
     })
 
     it("otp is verified for the google user", async ()=>{
-        console.log("the intermediary tokens have been initialized", googleUserIntermediaryToken)
         const response = await api.post("/factor2/verify-otp").set("Authorization", googleUserIntermediaryToken).send({
             otp : "1212",
             refreshToken : googleUserIntermediaryToken,

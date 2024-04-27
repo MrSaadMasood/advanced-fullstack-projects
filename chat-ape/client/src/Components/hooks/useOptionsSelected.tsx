@@ -51,7 +51,7 @@ function useOptionsSelected(
         }
     
         if (chatType === "group") {
-            queryClient.setQueryData(["groupChatList", optionsSelected], (oldGroupChatList : GeneralGroupList[])=>{
+            queryClient.setQueryData(["groupChatList", 4], (oldGroupChatList : GeneralGroupList[])=>{
                 return oldGroupChatList.map(groupChat => {
                     if(groupChat._id === id) groupChat.lastMessage = data
                     return groupChat
@@ -69,7 +69,8 @@ function useOptionsSelected(
             })
         }
         if(type === "followRequests") {
-            queryClient.setQueryData(["followRequestsList", optionsSelected], (oldFollowRequests : AssessoryData[])=>{
+            queryClient.setQueryData(["followRequestsList", optionsSelected], 
+                (oldFollowRequests : AssessoryData[])=>{
                 return oldFollowRequests.filter(requests => requests._id !== id)
             })
         }

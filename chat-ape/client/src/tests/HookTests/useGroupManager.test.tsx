@@ -20,7 +20,6 @@ describe("tests the useGroupManager hook", ()=>{
             handleAreGroupMembersChanged    
         }), { wrapper : TestProviderWrappers })
 
-        console.log("the reuslt of the use Groupmamanger is", result.current)
         const { infoButtonsArray, searchInput, setSearchInput, isFriendBeingAdded } = result.current
 
         expect(infoButtonsArray).toHaveLength(3)

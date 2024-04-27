@@ -44,6 +44,7 @@ function FilterOptions({
                                 name="groupMembers" 
                                 id="groupMembers" 
                                 className="bg-[#878787] p-1 rounded-md w-[10rem] mt-2"
+                                data-testid="selectGroupMembers"
                                 onChange={(e)=> setFilterMember(e.target.value)}    
                             >
                                 {groupMembers.map(member=>(

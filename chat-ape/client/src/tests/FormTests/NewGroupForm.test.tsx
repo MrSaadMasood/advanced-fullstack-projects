@@ -15,7 +15,7 @@ describe("should test the new group form component", ()=>{
         expect(screen.getByRole("button", { name : "Submit"})).toBeInTheDocument()
     })
 
-    it("should successfully create a new group form and the failure of group creation", async ()=>{
+    it("should successfully create a new group form", async ()=>{
 
         global.URL.createObjectURL = vi.fn()
         global.URL.revokeObjectURL = vi.fn()
@@ -26,8 +26,6 @@ describe("should test the new group form component", ()=>{
 
         const groupNameInput = screen.getByPlaceholderText("Group Name")
         await user.type(groupNameInput, "new test group")
-        await waitFor(()=> screen.debug())
-        await waitFor(async ()=> {
             const addButtons = screen.getAllByRole("button", { name : "Add"})
             for (let button of addButtons) {
                 await user.click(button)
@@ -46,8 +44,6 @@ describe("should test the new group form component", ()=>{
 
             const submitButton = screen.getByRole("button", { name : "Submit"})
             await user.click(submitButton)
-
-        })
 
     })
 })

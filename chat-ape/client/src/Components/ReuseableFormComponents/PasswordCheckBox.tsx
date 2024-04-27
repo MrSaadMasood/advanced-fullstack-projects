@@ -1,4 +1,3 @@
-
 interface Props { checked : boolean, setChecked : React.Dispatch<React.SetStateAction<boolean>>}
 
 function PasswordCheckBox({ checked, setChecked } : Props) {
@@ -9,6 +8,7 @@ function PasswordCheckBox({ checked, setChecked } : Props) {
             type="checkbox"
             name="showPassword"
             id="showPassword"
+            data-testid="showPassword"
             className="ml-2"
             checked={checked}
             onChange={()=> setChecked(!checked)}

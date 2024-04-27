@@ -25,7 +25,7 @@ export const handlers = [
             is2FactorAuthEnabled: true
         }, okStatus)
     }),
-    http.delete(urlMaker(`user/delete-previous-profile-picture/:name`), ()=>{
+    http.delete(urlMaker("auth-user/logout"), ()=>{
         return HttpResponse.json({}, okStatus)
     }),
     http.post(urlMaker("auth-user/login"), async ({ request })=>{
@@ -39,6 +39,10 @@ export const handlers = [
         return HttpResponse.json( factor2AuthLogin , okStatus)
     }),
 
+
+    http.delete(urlMaker(`user/delete-previous-profile-picture/:name`), ()=>{
+        return HttpResponse.json({}, okStatus)
+    }),
     http.get(urlMaker("user/get-friends"), ()=>{
         return HttpResponse.json([
             {   _id : "99",
@@ -117,9 +121,6 @@ export const handlers = [
             }
         ], okStatus)
     }),
-    http.get(urlMaker("user/get-friends"), ()=>{
-        return HttpResponse.json([friendDataArray], okStatus)
-    }), 
     http.get(urlMaker("user/get-users"), ()=> {
         return HttpResponse.json([{ _id : "1000", fullName : "user1", profilePicture : null}], okStatus)
     }),
@@ -142,15 +143,6 @@ export const handlers = [
         return HttpResponse.json(completeChatData, okStatus)
     }),
     http.get(urlMaker("socket.io/"), ()=>{
-        return HttpResponse.json({}, okStatus)
-    }),
-    http.put(urlMaker("user/make-member-admin"), ()=>{
-        return HttpResponse.json({} , okStatus)
-    }),
-    http.delete(urlMaker(`user/remove-group-member`), ()=>{
-        return HttpResponse.json({}, okStatus)
-    }),
-    http.delete(urlMaker(`user/add-group-member`), ()=>{
         return HttpResponse.json({}, okStatus)
     }),
     http.post(urlMaker("user/add-chat-image"), ()=>{
@@ -200,7 +192,7 @@ export const handlers = [
         })
     }),
 
-    http.get(urlMaker("user/group-picture/:iamge"), ()=>{
+    http.get(urlMaker("user/group-picture/:image"), ()=>{
         const imagePath = path.join(process.cwd(), "public/pattern.jpg")
         const buffer = fs.readFileSync(imagePath)
         

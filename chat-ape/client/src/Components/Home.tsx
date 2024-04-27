@@ -24,7 +24,6 @@ import {
     FriendData,
     GeneralGroupList,
     GroupChatData,
-    GroupChats,
     MessageToDelete, 
     UserData,
 
@@ -34,7 +33,7 @@ import useWebSockets from "./hooks/useWebSockets";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteMessageFromChat, fetchPictureFromServer, fetchUserData } from "../api/dataService";
 import SideListsHeader from "./ListsComponets/SideListsHeader";
-import getFilteredData, { filterChatData } from "../utils/filterArrayFunction";
+import getFilteredData, { filterChatData, indexfinder, replaceArrayMemberWithModifiedOne } from "../utils/filterArrayFunction";
 import useSearch from "./hooks/useSearch";
 import FilterOptions from "./MiscComponents/FilterOptions";
 import GlobalError from "./ErrorComponents/GlobalError.tsx";
@@ -75,16 +74,15 @@ export default function Home() {
         normalChatData, 
         groupChatData,
         friendData,
+        chatId,
         generalGroupData,
         groupMembersData,
         chatDataSetter, 
         getFilteredChat,
         removeDeletedMessageFromChat, 
         getChatData,
-        // handleIsMoreChatRequested,
         handleAreGroupMembersChanged
     } = useWebSockets(chatListArraySetter,handleIsFilterClicked, userData)
-
     // basically used if the auth tokens are refershed then the user data is fetched again. Also when the database is updated with 
     // some data and userData needs to be updated with that data
     const [isUserChanged, setIsUserChanged] = useState(false);
@@ -109,7 +107,7 @@ export default function Home() {
         onSuccess : ()=>{
             if(!messageToDeleteInfo) return
             if(!socket) return
-            socket.emit("delete-message", joinedRoom, messageToDeleteInfo.messageId, messageToDeleteInfo.type);
+            socket.emit("delete-message", joinedRoom, messageToDeleteInfo.messageId, messageToDeleteInfo.type, chatId);
             removeDeletedMessageFromChat(messageToDeleteInfo.messageId, messageToDeleteInfo.type);
             setShowDeletMessageOption(false);
         }
@@ -229,7 +227,7 @@ export default function Home() {
         if (chatType === "normal") {
             chatDataSetter(data, chatType);
             chatListArraySetter(sentData._id, data, chatType);
-            socket.emit("send-message", joinedRoom, data, chatType, "useless");
+            socket.emit("send-message", joinedRoom, data, chatType, chatId, "useless");
         }
     
         if (chatType === "group") {
@@ -237,13 +235,12 @@ export default function Home() {
             chatDataSetter(data, chatType, sentData);
             sentData.lastMessage = data;
             chatListArraySetter(sentData._id, data, chatType);
-            socket.emit("send-message", joinedRoom, data, chatType, sentData);
+            socket.emit("send-message", joinedRoom, data, chatType, chatId, sentData);
         }
     }
     
     function changeUserDataBasedOnGroupChanges( id : string, actionType : number ){
         const groupToChange = userData?.groupChats.find(group => group.collectionId === groupManager)
-        console.log('the group to change is', groupToChange, "the action typ", actionType)
         if(!groupToChange) return
 
         setUserData((prevData)=>{
@@ -264,28 +261,13 @@ export default function Home() {
             if(actionType === 2){
                 groupToChange.admins.push(id)
             }
-            const groupChatsArrayModified = getModifiedArray(prevData.groupChats, groupToChange)
-                console.log('the changed group after admin',groupChatsArrayModified)
+            const groupChatsArrayModified = replaceArrayMemberWithModifiedOne(prevData.groupChats, groupToChange)
             return {
                 ...prevData,
                 groupChats : [...groupChatsArrayModified]
             }
         })
 
-    }
-
-    function getModifiedArray<T extends GroupChats>(array : T[], arrayMember : T){
-
-        const modifiedArray = array.map(groupChat => {
-            if(groupChat.collectionId === arrayMember.collectionId) return arrayMember
-            return groupChat
-        })
-        return modifiedArray
-    }
-
-    function indexfinder<T>(array : T[], elementToMatch : string ){
-        const foundIndex = array.findIndex((member) => member === elementToMatch)
-        return foundIndex
     }
 
     // to set the image of the selected friend to chat
@@ -348,6 +330,7 @@ export default function Home() {
                     <SideBar
                         setOptions={selectedOptionSetter}
                         profilePictureUrl={profilePictureUrl}
+                        setGlobalError={setGlobalError}
                     />
         
                     {optionsSelected === 6 && userData &&
@@ -357,6 +340,7 @@ export default function Home() {
                                 userData={userData}
                                 profilePictureUrl={profilePictureUrl}
                                 isUserChangedSetter={isUserChangedSetter}
+                                setGlobalError={setGlobalError}
                             />
                         </Suspense>
                     }

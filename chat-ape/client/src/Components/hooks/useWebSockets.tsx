@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client"
 import { AcceptedDataOptions, ChatData, ChatType, CommonUserData, GeneralGroupList, GroupChatData, Message, UserData} from "../../Types/dataTypes";
 import { generateRoomId } from "../../utils/roomIdGenerator";
 import useInterceptor from "./useInterceptors";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryCache, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  fetchGroupMembers, filterChat, getGroupChatData, getNormalChatData } from "../../api/dataService";
 
 
@@ -81,24 +81,18 @@ function useWebSockets(
         });
 
         // to add the message received from the user in the chat / group chat data simultaneously
-        socket.on("received-message", (data : Message, chatType : ChatType, groupChatData : GeneralGroupList) => {
+        socket.on("received-message", 
+            (data : Message, chatType : ChatType, chatId : string, groupChatData : GeneralGroupList) => {
 
-            if (chatType === "normal") {
-                chatDataSetter(data, chatType);
-                chatListArraySetter(data.userId, data, chatType);
-            }
-
-            if (chatType === "group") {
-                
-                chatDataSetter(data, chatType, groupChatData);
-                chatListArraySetter(groupChatData._id, data, chatType);
-            }
+            chatDataSetter(data, chatType, groupChatData, chatId);
+            if (chatType === "normal") return chatListArraySetter(data.userId, data, chatType);
+            return chatListArraySetter(groupChatData._id, data, chatType);
         });
         
         // to delete the message that other user deleted from this users chat/ group chat
-        socket.on("delete-message", (id : string, type : ChatType) => {
+        socket.on("delete-message", (id : string, type : ChatType, chatId : string) => {
             
-            removeDeletedMessageFromChat(id, type);
+            removeDeletedMessageFromChat(id, type, chatId);
         });
 
         return () => {
@@ -109,9 +103,15 @@ function useWebSockets(
     
     // depending upon the type the if the user sends the message to other user the message is updated in the users chat
     // group chats array
-    const chatDataSetter = useCallback((data : Message, type : ChatType, extraDataForGroupChat? : GeneralGroupList) => {
+    const chatDataSetter = useCallback((
+        data : Message, 
+        type : ChatType, 
+        extraDataForGroupChat? : GeneralGroupList, 
+        chatIdFromSocket? : string
+    ) => {
+        const chatIdToUse = chatIdFromSocket || chatId
         if (type === "normal") {
-            queryClient.setQueryData(normalChatDataQueryKey,
+            queryClient.setQueryData(["normalChatData", type, chatIdToUse],
                 (normalChatData : ChatData) => {
                     return { ...normalChatData,
                         chat : [...normalChatData.chat, data]
@@ -125,17 +125,23 @@ function useWebSockets(
                 senderName : extraDataForGroupChat!.senderName,
                 _id : extraDataForGroupChat!._id
             }
-            queryClient.setQueryData(groupChatDataQueryKey, 
+            queryClient.setQueryData(["groupChatData", type, chatIdToUse], 
                 (groupChatData : GroupChatData[]) => groupChatData.concat(dataToAdd)
+                
             )
         }
-    },[chatType, chatId])
+    }, [chatType, chatId])
     
     // based on the type the speicific message is deleted form the chat array and the id is sent to the sockers 
     // when the same message is removed from the other users chat array
-    const removeDeletedMessageFromChat = useCallback((messageId : string, type : ChatType) => {
+    const removeDeletedMessageFromChat = useCallback((
+        messageId : string, 
+        type : ChatType, 
+        chatIdFromSocket? : string
+    ) => {
+        const chatIdToUse = chatIdFromSocket || chatId
         if (type === "normal") {
-            queryClient.setQueryData(normalChatDataQueryKey,
+            queryClient.setQueryData(["normalChatData", type, chatIdToUse],
                 (normalChatData : ChatData) => {
                     const messageRemovedChatData = normalChatData.chat.filter(message => 
                         message.id !== messageId
@@ -145,13 +151,13 @@ function useWebSockets(
              )
         }
         if (type === "group") {
-            queryClient.setQueryData(groupChatDataQueryKey, 
+            queryClient.setQueryData(["groupChatData", type, chatIdToUse], 
                 (groupChatData : GroupChatData[]) => groupChatData.filter(groupChat =>
                     groupChat.chat.id !== messageId
                 ) 
             )
         }
-    },[chatType, chatId])
+    },[chatType, chatId, normalChatData, groupChatData])
     
     // gets the chat data based on the type and stores that data in tha appropriate state
     // also the room id is generated which is sent to the server so that other users can also connect to that same room id
@@ -176,7 +182,7 @@ function useWebSockets(
             setGeneralGroupData(data);
         }
 
-    },[socket, userData, chatId, joinedRoom])
+    },[socket, userData, chatId, chatType, joinedRoom])
     
     const getFilteredChat = useCallback((date : Date, groupMember : string, chatType : ChatType)=> {
 
@@ -199,6 +205,7 @@ function useWebSockets(
         friendData,
         generalGroupData,
         groupMembersData,
+        chatId,
         chatDataSetter,
         getFilteredChat,
         removeDeletedMessageFromChat,

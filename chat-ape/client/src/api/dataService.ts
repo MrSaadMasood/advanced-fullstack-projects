@@ -20,7 +20,7 @@ export async function getFriendsList(axiosPrivate : AxiosInstance) {
         const response = await axiosPrivate.get( "/user/get-friends" )
         return friendListSchema.parse(response.data)
     } catch (error) {
-        // console.log("error occured while getting friendlist", error)
+        console.log("error occured while getting friendlist", error)
         throw new Error("failed to get the friends list") 
     } 
 }
@@ -116,7 +116,6 @@ export async function userSignUp({ formData} : { formData : SignUpFormdata}){
 export async function loginUser({ formData} : { formData : FormDataLogin}){
    try {
         const response = await server.post("/auth-user/login", formData )
-        console.log("the reponse from the server", response.data)
         return loginUserSchema.parse(response.data)
    } catch (error) {
         console.log("failed to log the user in")
@@ -289,7 +288,6 @@ export async function fetchGroupMembers({ axiosPrivate, id } : Omit<RequestsWith
     try {
         
         const response = await axiosPrivate.get(`/user/group-members/${id}`,)
-        console.log("fetching the grouop members")
         response.data.push({ _id : "", fullName : "None" })
         return response.data
     } catch (error) {
@@ -326,7 +324,7 @@ export async function removeAFriend({ axiosPrivate, id, collectionId }: Requests
     try {
         await axiosPrivate.delete(`/user/remove-friend/${id}?collectionId=${collectionId}`)
     } catch (error) {
-        console.log((error as AxiosError).message)
+        console.log(error)
         throw new Error
     }
 }

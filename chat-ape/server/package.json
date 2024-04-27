@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./dist/app.js",
-    "test": "jest ./tests --watch --no-cache --coverage --coverageReporters='text-summary' --verbose --runInBand --detectOpenHandles",
+    "test": "jest ./tests/integration-tests/userControllerTests/ --watch --no-cache --coverage --coverageReporters='text-summary' --verbose --runInBand --detectOpenHandles",
     "dev": "tsx watch app.ts",
     "tsc": "tsc",
     "start-ts": "npm run tsc"

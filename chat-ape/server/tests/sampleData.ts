@@ -302,6 +302,10 @@ const users = [{
 
 
 const normalChats = [
+{ _id : "cecc24b3-878e-41ca-815f-5fb84e5f68b2",
+  chat : []
+
+},
 {
   "_id": "51362baf-72bd-4c98-a7df-c4dd640797b1",
   "chat": [
@@ -422,9 +426,6 @@ const groupChats = [{
   ]
 }]
 
-// const tokens = [
-//   {token : "refreshToken"}
-// ]
       
 export {
     groupChats,
@@ -432,15 +433,4 @@ export {
     normalChats,
 };
 
-// let i = 0
-// for ( let data of normalChats ) {
-//   const empty = []
-//   for ( let inner of data.chat){
-//     if ( i === 0) continue
-//     inner.time = JSON.stringify(new Date() )
-//     empty.push(inner)
-//   }
-//   console.log(empty);
-//   i++
-// }
 

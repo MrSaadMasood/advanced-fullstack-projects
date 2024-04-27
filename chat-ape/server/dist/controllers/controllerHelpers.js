@@ -102,7 +102,6 @@ function removeFollowRequestTransaction(client, userId, idToRemove) {
             return true;
         }
         catch (error) {
-            console.log("error occured while removing the follow request");
             yield session.abortTransaction();
             return false;
         }
@@ -219,7 +218,6 @@ function getCustomData(database, userId, type) {
             return data;
         }
         catch (error) {
-            console.log("cannot get the custom data");
             return;
         }
     });
@@ -289,7 +287,6 @@ function chatArraySizeFinder(database, collectionId, collectionName) {
             return chatArrayCount[0];
         }
         catch (error) {
-            console.log("failed to get the size of the chat Array");
             throw new Error;
         }
     });
@@ -298,11 +295,9 @@ function groupManager(database, operationType, arrayType, memberId, collectionId
     return __awaiter(this, void 0, void 0, function* () {
         const arrayToPerformOperation = `groupChats.$.${arrayType}`;
         try {
-            console.log(operationType, arrayToPerformOperation, memberId, collectionId, userId);
             const updatedGroup = yield database.collection("users").updateOne({ _id: userId, "groupChats.collectionId": collectionId }, { [operationType]: {
                     [arrayToPerformOperation]: memberId
                 } });
-            console.log("the updated group is", updatedGroup);
             if (!updatedGroup.modifiedCount)
                 throw new Error;
             return updatedGroup;

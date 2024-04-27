@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/32</span>
+                <span class='fraction'>32/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/32</span>
+                <span class='fraction'>32/32</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -95,70 +95,70 @@
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >interface Props {</span></span></span>
-<span class="cstat-no" title="statement not covered" >    deleteMessage : ()=&gt; undefined | void,</span>
-<span class="cstat-no" title="statement not covered" >    handleMessageDeleteCancellation : ()=&gt;void</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" >// div shown the user want to delete his message</span>
-<span class="cstat-no" title="statement not covered" >export default function DeleteMessage({ deleteMessage, handleMessageDeleteCancellation } : Props) {</span>
-<span class="cstat-no" title="statement not covered" >    return (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;section className="relative"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;div className="bg-[#4b4b4b] h-64 w-72 sm:w-[24rem] md:w-[27rem] p-2 md:p-3 text-white flex flex-col </span>
-<span class="cstat-no" title="statement not covered" >                items-center shadowit justify-center rounded-lg"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;p className=" w-[90%] text-center sm:text-lg"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        Are You Sure You Want To Delete This Message</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;/p&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;div className=" flex justify-between items-center mt-4 lg:mt-5 w-[70%] sm:w-[55%] md:w-[50%]"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                            onClick={deleteMessage}</span>
-<span class="cstat-no" title="statement not covered" >                            className="bg-red-600 hover:bg-red-700 ease-in duration-100 rounded-md text-white px-4 py-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                                Delete</span>
-<span class="cstat-no" title="statement not covered" >                                &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                            className="bg-gray-400 hover:bg-gray-500 ease-in duration-100 rounded-md text-white px-4 py-2"</span>
-<span class="cstat-no" title="statement not covered" >                            onClick={handleMessageDeleteCancellation}</span>
-<span class="cstat-no" title="statement not covered" >                            &gt;</span>
-<span class="cstat-no" title="statement not covered" >                                Cancel</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/section&gt;</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">interface Props {
+    deleteMessage : ()=&gt; undefined | void,
+    handleMessageDeleteCancellation : ()=&gt;void
+}
+// div shown the user want to delete his message
+export default function DeleteMessage({ deleteMessage, handleMessageDeleteCancellation } : Props) {
+    return (
+        &lt;section className="relative"&gt;
+            &lt;div className="absolute top-0 left-0 text-black w-screen h-screen z-20 flex justify-center items-center"&gt;
+                &lt;div className="bg-[#4b4b4b] h-64 w-72 sm:w-[24rem] md:w-[27rem] p-2 md:p-3 text-white flex flex-col 
+                items-center shadowit justify-center rounded-lg"&gt;
+                    &lt;p className=" w-[90%] text-center sm:text-lg"&gt;
+                        Are You Sure You Want To Delete This Message
+                    &lt;/p&gt;
+                    &lt;div className=" flex justify-between items-center mt-4 lg:mt-5 w-[70%] sm:w-[55%] md:w-[50%]"&gt;
+                        &lt;button
+                            onClick={deleteMessage}
+                            className="bg-red-600 hover:bg-red-700 ease-in duration-100 rounded-md text-white px-4 py-2"&gt;
+                                Delete
+                                &lt;/button&gt;
+                        &lt;button
+                            className="bg-gray-400 hover:bg-gray-500 ease-in duration-100 rounded-md text-white px-4 py-2"
+                            onClick={handleMessageDeleteCancellation}
+                            &gt;
+                                Cancel
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+    );
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -166,7 +166,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-26T19:52:09.068Z
+                at 2024-04-27T14:50:53.067Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

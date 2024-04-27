@@ -76,7 +76,6 @@ export const loginUser  = async (req : CustomRequest, res : Response) => {
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const userFromDatabase = await database.collection<CreateNewUser>("users").findOne({ email: email });
     const user = userSchema.parse(userFromDatabase)
-    console.log("the user is", user)
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new BadRequest(generalErrorMessage("password do not match"));
     const { accessToken , refreshToken } = await generateAccessRefreshTokens({ id : user._id.toString() }, database)

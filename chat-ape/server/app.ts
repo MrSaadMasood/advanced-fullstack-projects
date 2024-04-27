@@ -65,7 +65,6 @@ else {
     app.use(express.static("src/uploads"))
 
     // if database connection is successfull then configuring the server to listen to the port
-    // server.listen(PORT , ()=> console.log("the server is connected at port", PORT))
     connectData((err)=>{
         if(!err){
             server.listen(PORT , ()=> serverLogger.info("the server is running successfully"))
@@ -99,12 +98,12 @@ else {
             socket.emit("joined-chat", newRoomId)
         })
 
-        socket.on("send-message", (roomId, data, chatType, groupChatData)=>{
-            socket.to(roomId).emit("received-message", data, chatType, groupChatData )
+        socket.on("send-message", (roomId, data, chatType, chatId, groupChatData)=>{
+            socket.to(roomId).emit("received-message", data, chatType, chatId, groupChatData )
         })
 
-        socket.on("delete-message", (roomId, messageId, type)=>{
-            socket.to(roomId).emit("delete-message", messageId, type)
+        socket.on("delete-message", (roomId, messageId, type, chatId)=>{
+            socket.to(roomId).emit("delete-message", messageId, type, chatId)
         })
 
     })

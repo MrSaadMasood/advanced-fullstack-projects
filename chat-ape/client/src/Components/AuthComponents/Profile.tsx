@@ -15,12 +15,14 @@ interface profileProps {
     userData : UserData,
     profilePictureUrl : string,
     isUserChangedSetter : (value : boolean)=> void
+    setGlobalError : React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Profile({
     userData,
     profilePictureUrl,
     isUserChangedSetter,
+    setGlobalError
 } : profileProps) {
     
     const { isAuthenticated, setIsAuthenticated } = useContext(isAuth)
@@ -56,7 +58,8 @@ export default function Profile({
             removeItem("user")
             navigate("/factor-2-auth")
             isUserChangedSetter(false)
-        }
+        },
+        onError : ()=> setGlobalError("Failed to change the Auth Mode")
     })
     
     const { mutateAsync : deleteProfilePictureMutation } = useMutation({
@@ -90,7 +93,7 @@ export default function Profile({
     // if an image is uploaded it shown a preview and then if confirm saves the image to the server
     // if the user already has a profile picture the previous picture is deletd and is replaced with new picture
     async function handleImageSubmission() {
-        if(!image) return console.log("the iamge is not submitted");
+        if(!image) return setGlobalError("No Image Provided! Try Providing Again!");
         
         try {
             if (userData.profilePicture && userData.profilePicture.startsWith("image")) {
@@ -102,7 +105,7 @@ export default function Profile({
             setSubmitProfilePictureButton(false);
             isUserChangedSetter(true);
         } catch (error) {
-            console.log("Error while saving the profile picture", error);
+            setGlobalError("Failed to Update the Image")
         }
     }
 

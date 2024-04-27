@@ -1,4 +1,4 @@
-import { ChatList, GeneralGroupList, AssessoryData, ChatData, GroupChatData, ChatType } from "../Types/dataTypes"
+import { ChatList, GeneralGroupList, AssessoryData, ChatData, GroupChatData, ChatType, GroupChats } from "../Types/dataTypes"
 
 
 export default function getFilteredData<T extends ChatList | GeneralGroupList | AssessoryData >
@@ -41,4 +41,18 @@ export function filterChatData<T extends ChatData | GroupChatData>
 export function groupManagerFilter<T extends AssessoryData >(array : T[], searchInput : string ){
     if(array.length === 0) return array
     return array.filter(data => data.fullName.toLowerCase().includes(searchInput.toLowerCase()))
+}
+
+export function replaceArrayMemberWithModifiedOne<T extends GroupChats>(array : T[], arrayMember : T){
+
+    const modifiedArray = array.map(groupChat => {
+        if(groupChat.collectionId === arrayMember.collectionId) return arrayMember
+        return groupChat
+    })
+    return modifiedArray
+}
+
+export function indexfinder<T>(array : T[], elementToMatch : string ){
+    const foundIndex = array.findIndex((member) => member === elementToMatch)
+    return foundIndex
 }

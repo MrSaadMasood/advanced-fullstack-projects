@@ -56,7 +56,6 @@ function useGroupManager({
 
     const infoButtonsArray = [ "Members", "Admins", "Friends" ]
     const isUserAdmin = groupAdminsArray.includes(userData._id)
-
     const filteredAdminsArray = searchInput !== "" ? 
         groupManagerFilter(groupAdmins, searchInput) : groupAdmins
 

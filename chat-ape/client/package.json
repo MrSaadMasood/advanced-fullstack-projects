@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": " NODE_ENV=test vitest run ./src/tests/ListComponentTests --watch --coverage",
+    "test": " NODE_ENV=test vitest run ./src/tests/ --watch --coverage",
     "dev": "NODE_ENV=dev vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

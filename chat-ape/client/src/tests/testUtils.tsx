@@ -76,8 +76,8 @@ const friendData : FriendData = {
     type : "normal"
 }
 
-const friend2 = {...friendData, id : "2", fullName : "test member 2"}
-const friend3 = {...friendData, id : "3", fullName : "test member 3"}
+const friend2 = {...friendData, _id : "2", fullName : "test member 2"}
+const friend3 = {...friendData, _id : "3", fullName : "test member 3"}
 
 const friendDataArray = [
     friendData,

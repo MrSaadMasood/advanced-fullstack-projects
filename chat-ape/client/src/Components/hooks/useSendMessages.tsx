@@ -42,7 +42,6 @@ function useSendMessages({
     const { mutate : sendTextMessageMutation } = useMutation({
         mutationFn : sendTextMessage,
         onSuccess : ({ id })=>{
-            console.log("the id received is", id)
             if(chatType === "normal"){
                 friendData!.type = "normal"
                 return sendMessageToWS(friendData!, input, id ,"content");
@@ -84,7 +83,6 @@ const handleFileChange = useCallback((e : React.ChangeEvent<HTMLInputElement>
 
     // if the message is stored successfully in the database the message is sent to the user/s who is/are connected to the same room
     const handleSubmit = useCallback((e : FormEvent<HTMLFormElement> | CustomFormEvent ) => {
-        console.log("the handle submit function is being rendered now");
         e.preventDefault();
         if(input === "") return
 

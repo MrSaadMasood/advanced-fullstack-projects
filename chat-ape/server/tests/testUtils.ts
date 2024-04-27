@@ -118,7 +118,6 @@ async function dbConnection(){
     const uri = mongoServer.getUri()
     connection = await MongoClient.connect(uri)
     process.env.TEST_URI = uri
-    console.log("the connection function is running");
      
     const database = connection.db("chat-app")
     await database.createCollection("users", usersCollectionSchema)

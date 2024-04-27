@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import {  beforeEach, describe, expect, it, vi } from 'vitest' 
-import { customRender, userData } from '../testUtils'
+import { customRender, setGlobalError, userData } from '../testUtils'
 import Profile from '../../Components/AuthComponents/Profile'
 import { screen } from '@testing-library/react'
 import "@testing-library/jest-dom"
@@ -18,6 +18,7 @@ describe('tests the Profile compoent', () => {
                     profilePictureUrl={"path"} 
                     isUserChangedSetter={isUserChangedSetter}
                     userData={userData}
+                    setGlobalError={setGlobalError}
                 />
         )
 
@@ -26,7 +27,6 @@ describe('tests the Profile compoent', () => {
         
         const fullNameElem = screen.getByText("test user")
         const bioElement = screen.getByText("i am a test user")
-        screen.debug()
         expect(bioElement).toBeInTheDocument()
         expect(fullNameElem).toBeInTheDocument()
 

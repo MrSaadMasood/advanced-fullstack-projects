@@ -30,14 +30,15 @@ export default function Friends({
     const image = useImageHook(url)
     const [ removedFriendId , setRemovedFriendId ]= useState("")
 
-    const { mutate : removeFriendMutation, isPending : isRemoveFriendPending } = useMutation({
+    const { mutate : removeFriendMutation, isPending : isRemoveFriendPending} = useMutation({
         mutationFn : removeAFriend,
         onSuccess : ()=>{
             removeFollowRequestAndFriend(removedFriendId, "friends")
-            console.log("the request to remove the friend was a success")
             isUserChangedSetter(true)
         },
-        onError : ()=> setGlobalError("Failed to Remove Friend! Try Again")
+        onError : ()=>  {
+            setGlobalError("Failed to Remove Friend! Try Again")
+        }
     })
 
     function sendMessage(data : FriendData){

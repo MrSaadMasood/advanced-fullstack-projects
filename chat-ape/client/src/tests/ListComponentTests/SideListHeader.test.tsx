@@ -34,7 +34,6 @@ describe('tests the SideListHeader component', () => {
             />
         )
         expect(screen.queryByText("test header")).not.toBeInTheDocument()
-        screen.debug()
         
         const inputSearch = screen.getByPlaceholderText("Search Something")
         await user.type(inputSearch, "other")
