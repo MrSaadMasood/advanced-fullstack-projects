@@ -1,6 +1,6 @@
 import express, { NextFunction, Response } from "express"
 import supertest from "supertest"
-import { googleTokens, googleUserIntermediaryToken, sampleRefreshToken, signUpWithGoogleCode } from "./testUtils"
+import { dbConnection, dbDisconnect, googleTokens, googleUserIntermediaryToken, sampleRefreshToken, signUpWithGoogleCode } from "./testUtils"
 import indexRouter from "../src/routes/authRouter";
 import factor2AuthRouter from '../src/routes/factor2Router'
 import { authenticateUser, factor2RouteTokenAuthenticator } from "../src/middlewares/AuthMiddlewares";
@@ -61,18 +61,18 @@ jest.mock('../src/middlewares/multer', () =>{
     }
 } )
 
-// beforeAll( async ()=>{
-//     await dbConnection()
-//     const response = await api.post("/auth-user/login").type("form").send({
-//         email : "saad@gmail.com",
-//         password : "Saad.Masood1122"
-//     })
-//     loggedInUserAccessToken = `Bearer ${response.body.accessToken}`
-// })
+beforeAll( async ()=>{
+    await dbConnection()
+    const response = await api.post("/auth-user/login").type("form").send({
+        email : "saad@gmail.com",
+        password : "Saad.Masood1122"
+    })
+    loggedInUserAccessToken = `Bearer ${response.body.accessToken}`
+})
 
-// afterAll(async ()=>{
-//     await dbDisconnect()
-// })
+afterAll(async ()=>{
+    await dbDisconnect()
+})
 
 export default api
 export {

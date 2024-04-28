@@ -19,7 +19,7 @@ import env from '../../zodSchema/envSchema';
 import oAuth2Client from '../utils/oAuth2Client';
 import { userSchema, tokenSchema } from "../../zodSchema/zodSchemas";
 
-const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, REFRESH_SECRET } = env
+const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, REFRESH_SECRET, BASE_URL } = env
 
 const { sign, verify } = jwt
 
@@ -156,7 +156,7 @@ export const googleAuthenticator  = async (req : CustomRequest, res : Response) 
             isGoogleUser : true
         }
         
-        await post.post(`${process.env.BASE_URL}/auth-user/sign-up`, userData)
+        await post.post(`${BASE_URL}/auth-user/sign-up`, userData)
         logger.info("new account for the google user created")
         await database.collection("tokens").insertOne({ token : tokens.refresh_token })
         return res.json(tokens)

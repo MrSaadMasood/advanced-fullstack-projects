@@ -5,17 +5,14 @@ dotenv.config()
 
 const envSchema = z.object({
     MONGO_URL : zodUrl,
-    TEST_URI : zodString.optional(),
+    REDIS_PORT : z.coerce.number().optional(),
     PORT : z.coerce.number(),
     BASE_URL : zodUrl,
     ACCESS_SECRET : zodString,
     REFRESH_SECRET : zodString,
     CROSS_ORIGIN : zodUrl,
-    TEST_ACCESS_TOKEN : zodString,
-    TEST_REFRESH_TOKEN : zodString,
     GOOGLE_CLIENT_SECRET : zodString,
     GOOGLE_CLIENT_ID : zodString,
-    GOOGLE_PUBLIC_KEY : zodString,
     F2A_SECRET : zodString,
     LOGGER_LEVEL  : zodString.optional()
 })
