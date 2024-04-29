@@ -30,7 +30,7 @@ const MessageBox = memo(function MessageBox({
         <li
             data-testid="messageBox" 
             className={`text-white text-base w-[100%] h-auto mb-2 flex ${flexStylesBasedOnSide} items-center`}
-            onDoubleClick={()=>{ if(boxSide === "right") deleteMessage(data.id)}}
+            onDoubleClick={()=>{ if(boxSide === "right" || chatType === "group") deleteMessage(data.id)}}
         >
             <div className={`w-[60%] ml-3 h-auto flex flex-col justify-between ${secondDivStyle}`}>
                 <div className={`text-[.5rem] h-4 w-auto flex ${thirdDivStyle} items-center`}>
