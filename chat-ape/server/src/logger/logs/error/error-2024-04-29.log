@@ -1,0 +1,1 @@
+{"level":"error","message":"Error: password do not match\n    at loginUser (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:80:23)","timestamp":"2024-04-29T18:51:11.642Z"}
