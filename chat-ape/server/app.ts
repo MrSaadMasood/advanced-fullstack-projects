@@ -79,8 +79,8 @@ else {
     app.use("/factor2", factor2RouteTokenAuthenticator , factor2Router)
 
     app.use("/user", authenticateUser, userRouter)
-    app.get("/random", (_req, res)=>{
-        res.json("this is running with htps server")
+    app.get("/ping", (_req, res)=>{
+        res.json("pong")
     })
 
     app.use(errorMiddleware)
