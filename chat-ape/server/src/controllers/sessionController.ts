@@ -72,7 +72,7 @@ export const createUser  = async (req : CustomRequest, res : Response) => {
 // based on the validation result the user is verified and the specific information is projected and sent back
 export const loginUser  = async (req : CustomRequest, res : Response) => {
     const { email, password } = req.body;
-    // incomingDataValidationHandler(req)
+    incomingDataValidationHandler(req)
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const userFromDatabase = await database.collection<CreateNewUser>("users").findOne({ email: email });
     const user = userSchema.parse(userFromDatabase)

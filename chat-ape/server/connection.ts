@@ -10,7 +10,7 @@ export async function connectData( callback: ConnectDataCallback) {
     try {
         if(!mongourl) return callback(new Error("mongourl not provided"))
         const connection = await MongoClient.connect(mongourl)
-        database = connection.db("chat")
+        database = connection.db("chat-app")
         const collectionList = await database.listCollections().toArray()
         if(collectionList.length < 4) {
             await database.createCollection("tokens", {
