@@ -6,8 +6,8 @@ import { createUser,
     logoutUser, 
     googleAuthenticator, 
     enableF2a, 
-    disableFactor2Auth } from "../controllers/sessionController"
-import { stringValidation, booleanValidation } from "../middlewares/AuthMiddlewares"
+    disableFactor2Auth } from "../controllers/sessionController.js"
+import { stringValidation, booleanValidation } from "../middlewares/AuthMiddlewares.js"
 
 // sign-up route
 router.post(

@@ -1,7 +1,7 @@
 import { Db, MongoClient, UpdateOptions } from "mongodb"
 import { randomUUID } from "node:crypto"
-import { BadRequest } from "../ErrorHandler/customError"
-import { generalErrorMessage, generalInputValidationError } from "../utils/utils"
+import { BadRequest } from "../ErrorHandler/customError.js"
+import { generalErrorMessage, generalInputValidationError } from "../utils/utils.js"
 import { Request } from "express"
 import { validationResult } from "express-validator"
 

@@ -1,6 +1,6 @@
 import { Db } from "mongodb";
 import jwt from "jsonwebtoken";
-import env from "../../zodSchema/envSchema";
+import env from "../zodSchema/envSchema.js";
 
 const { ACCESS_SECRET, REFRESH_SECRET } = env
 

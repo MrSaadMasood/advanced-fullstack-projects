@@ -1,7 +1,7 @@
 import winston from "winston"
 import path from "path"
 import "winston-daily-rotate-file"
-import env from "../../../zodSchema/envSchema"
+import env from "../../zodSchema/envSchema.js"
 
 const { LOGGER_LEVEL = "info" } = env
 const currentWorkingDirectory = process.cwd()

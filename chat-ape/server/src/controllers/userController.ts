@@ -1,6 +1,6 @@
 import { Db } from "mongodb";
-import { connectData, getData } from "../../connection";
-import redisClient from '../redisClient/redisClient' 
+import { connectData, getData } from "../../connection.js";
+import redisClient from '../redisClient/redisClient.js' 
 import path from "path";
 import fs from "fs/promises";
 import { 
@@ -17,14 +17,14 @@ import {
     groupManager, 
     updateNormalChatData,
     incomingDataValidationHandler
- } from "./controllerHelper";
-import { logger } from "../logger/conf/loggerConfiguration";
+ } from "./controllerHelper.js";
+import { logger } from "../logger/conf/loggerConfiguration.js";
 import { Response } from 'express' 
-import { fileValidator, generalErrorMessage } from "../utils/utils";
-import { BadRequest } from "../ErrorHandler/customError";
-import { CustomRequest } from "../../Types/customRequest";
-import env from "../../zodSchema/envSchema";
-import { userSchema } from "../../zodSchema/zodSchemas";
+import { fileValidator, generalErrorMessage } from "../utils/utils.js";
+import { BadRequest } from "../ErrorHandler/customError.js";
+import { CustomRequest } from "../Types/customRequest.js";
+import env from "../zodSchema/envSchema.js";
+import { userSchema } from "../zodSchema/zodSchemas.js";
 import dotenv from "dotenv"
 dotenv.config()
 const currentWorkingDirectory = process.cwd()

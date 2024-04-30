@@ -31,12 +31,12 @@ import {
     sendFollowRequest,
     updateChatData,
     updateGroupChatData, 
-} from "../controllers/userController";
+} from "../controllers/userController.js";
 
-import { stringValidation, queryValidation, paramValidation } from "../middlewares/AuthMiddlewares"
-import { allUsersCache, cachedFriendList } from '../controllers/redisController';
-import { imageHandlerMiddleware } from '../middlewares/imageHandler';
-import { upload } from '../middlewares/multer' 
+import { stringValidation, queryValidation, paramValidation } from "../middlewares/AuthMiddlewares.js"
+import { allUsersCache, cachedFriendList } from '../controllers/redisController.js';
+import { imageHandlerMiddleware } from '../middlewares/imageHandler.js';
+import { upload } from '../middlewares/multer.js' 
 
 
 // to get the user data

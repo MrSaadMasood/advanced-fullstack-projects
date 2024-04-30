@@ -5,7 +5,7 @@ import indexRouter from "../src/routes/authRouter";
 import factor2AuthRouter from '../src/routes/factor2Router'
 import { authenticateUser, factor2RouteTokenAuthenticator } from "../src/middlewares/AuthMiddlewares";
 import userRouter from './../src/routes/userRouter'     
-import { CustomRequest } from "../Types/customRequest";
+import { CustomRequest } from "../src/Types/customRequest";
 import { errorMiddleware } from "../src/middlewares/errorMiddleware";
 import "express-async-errors"
 const app = express()

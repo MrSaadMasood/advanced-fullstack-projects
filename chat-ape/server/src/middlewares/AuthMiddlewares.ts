@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken"
 import { body, query, param } from "express-validator"
-import { logger } from '../logger/conf/loggerConfiguration' 
-import { Response, NextFunction } from 'express' 
-import { CustomRequest } from "../../Types/customRequest"
-import oAuth2Client from "../utils/oAuth2Client"
-import env from "../../zodSchema/envSchema"
-import { BadRequest } from "../ErrorHandler/customError"
+import { logger } from '../logger/conf/loggerConfiguration.js' 
+import { Response, NextFunction } from 'express'
+import { CustomRequest } from "../Types/customRequest"
+import oAuth2Client from "../utils/oAuth2Client.js"
+import env from "../zodSchema/envSchema.js"
+import { BadRequest } from "../ErrorHandler/customError.js"
 
 const { ACCESS_SECRET, F2A_SECRET } = env
 

@@ -1,7 +1,7 @@
 import express from "express"
 const router = express.Router()
-import { verifyOTP, generateOTP } from "../controllers/sessionController"
-import { stringValidation } from "../middlewares/AuthMiddlewares"
+import { verifyOTP, generateOTP } from "../controllers/sessionController.js"
+import { stringValidation } from "../middlewares/AuthMiddlewares.js"
 
 router.get("/generate-otp", generateOTP )
 

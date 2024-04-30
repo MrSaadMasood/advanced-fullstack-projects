@@ -1,23 +1,23 @@
-import { connectData, getData } from "../../connection";
+import { connectData, getData } from "../../connection.js";
 import { Db } from "mongodb";
 // import { dataBaseConnectionMaker } from "./controllerHelper";
 import post from 'axios' 
-import redisClient from '../redisClient/redisClient' 
+import redisClient from '../redisClient/redisClient.js' 
 import { authenticator } from "otplib";
 import { toDataURL } from "qrcode";
 import jwt from "jsonwebtoken";
-import { generalErrorMessage, generateAccessRefreshTokens } from "../utils/utils";
+import { generalErrorMessage, generateAccessRefreshTokens } from "../utils/utils.js";
 import { randomUUID } from "node:crypto";
-import { googleTokensExtractor, refreshGoogleAccessToken } from "../../src/utils/googleTokenFuncs";
-import { logger } from "../logger/conf/loggerConfiguration";
+import { googleTokensExtractor, refreshGoogleAccessToken } from "../../src/utils/googleTokenFuncs.js";
+import { logger } from "../logger/conf/loggerConfiguration.js";
 import { Response } from 'express' 
 import bcrypt from "bcrypt"
-import { BadRequest } from '../ErrorHandler/customError';
-import { incomingDataValidationHandler } from './controllerHelper';
-import { CustomRequest } from '../../Types/customRequest';
-import env from '../../zodSchema/envSchema';
-import oAuth2Client from '../utils/oAuth2Client';
-import { userSchema, tokenSchema } from "../../zodSchema/zodSchemas";
+import { BadRequest } from '../ErrorHandler/customError.js';
+import { incomingDataValidationHandler } from './controllerHelper.js';
+import { CustomRequest } from '../Types/customRequest.js';
+import env from '../zodSchema/envSchema.js';
+import oAuth2Client from '../utils/oAuth2Client.js';
+import { userSchema, tokenSchema } from "../zodSchema/zodSchemas.js";
 
 const { ACCESS_SECRET, F2A_SECRET, GOOGLE_CLIENT_ID, REFRESH_SECRET, BASE_URL } = env
 

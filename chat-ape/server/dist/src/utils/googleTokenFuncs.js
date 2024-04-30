@@ -7,24 +7,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { MongoClient } from "mongodb";
-import env from "./src/zodSchema/envSchema.js";
-const { MONGO_URL } = env;
-let database;
-const mongourl = MONGO_URL;
-// connecting to the database based on the url. and the database we want to connect to
-export function connectData(callback) {
+import { UserRefreshClient } from "google-auth-library";
+import oAuth2Client from "./oAuth2Client.js";
+import env from "../zodSchema/envSchema.js";
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = env;
+function googleTokensExtractor(code) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            if (!mongourl)
-                return callback(new Error("mongourl not provided"));
-            const connection = yield MongoClient.connect(mongourl);
-            database = connection.db("chat-app");
-            return callback();
-        }
-        catch (error) {
-            return callback(error);
-        }
+        const { tokens } = yield oAuth2Client.getToken(code);
+        return tokens;
     });
 }
-export const getData = () => database;
+function refreshGoogleAccessToken(refreshToken) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userRefresh = new UserRefreshClient(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, refreshToken);
+        const { credentials } = yield userRefresh.refreshAccessToken();
+        return credentials;
+    });
+}
+export { googleTokensExtractor, refreshGoogleAccessToken };

@@ -12,16 +12,16 @@ import cluster from "node:cluster"
 import os from "os"
 import { setupPrimary, createAdapter } from "@socket.io/cluster-adapter"
 import morgan from "morgan"
-import { serverLogger } from "./src/logger/conf/loggerConfiguration"
+import { serverLogger } from "./src/logger/conf/loggerConfiguration.js"
 
-import authIndex from "./src/routes/authRouter"
-import userRouter from "./src/routes/userRouter"
-import factor2Router from "./src/routes/factor2Router"
+import authIndex from "./src/routes/authRouter.js"
+import userRouter from "./src/routes/userRouter.js"
+import factor2Router from "./src/routes/factor2Router.js"
 
-import { connectData } from "./connection"
-import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/AuthMiddlewares"
-import { errorMiddleware } from "./src/middlewares/errorMiddleware"
-import env from "./zodSchema/envSchema"
+import { connectData } from "./connection.js"
+import { authenticateUser, factor2RouteTokenAuthenticator } from "./src/middlewares/AuthMiddlewares.js"
+import { errorMiddleware } from "./src/middlewares/errorMiddleware.js"
+import env from "./src/zodSchema/envSchema.js"
 
 const numCPUs = os.availableParallelism()
 const { PORT, CROSS_ORIGIN } = env 

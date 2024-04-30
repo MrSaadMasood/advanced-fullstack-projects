@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
-import redisClient from "../redisClient/redisClient";  
-import { CustomRequest } from "../../Types/customRequest";
+import redisClient from "../redisClient/redisClient.js";  
+import { CustomRequest } from "../Types/customRequest";
 
 export const allUsersCache = async (_req : CustomRequest, res : Response, next : NextFunction ) => {
 

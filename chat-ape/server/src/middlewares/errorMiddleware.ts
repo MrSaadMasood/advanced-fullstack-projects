@@ -1,6 +1,6 @@
 import { ErrorRequestHandler } from "express";
-import { BadRequest } from "../ErrorHandler/customError";
-import { logger } from "../logger/conf/loggerConfiguration";
+import { BadRequest } from "../ErrorHandler/customError.js";
+import { logger } from "../logger/conf/loggerConfiguration.js";
 
 export const errorMiddleware : ErrorRequestHandler = (err, _req, res, _next) => {
 

@@ -53,7 +53,7 @@ Following technologies are used for the backend
 For instial installation you need to clone the repo in you local machine.
 
 ```
-github code here ####
+git clone https://github.com/MrSaadMasood/advanced-fullstack-projects.git
 ```
 then navigate to the directories for client and server as **/chat-ape/client** and **/chat-ape/server** and run 
 ```
