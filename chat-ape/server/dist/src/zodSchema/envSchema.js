@@ -13,7 +13,9 @@ const envSchema = z.object({
     GOOGLE_CLIENT_SECRET: zodString,
     GOOGLE_CLIENT_ID: zodString,
     F2A_SECRET: zodString,
-    LOGGER_LEVEL: zodString.optional()
+    LOGGER_LEVEL: zodString.optional(),
+    REDIS_HOST: zodString.optional(),
+    REDIS_PASSWORD: zodString.optional()
 });
 const env = envSchema.parse(process.env);
 export default env;

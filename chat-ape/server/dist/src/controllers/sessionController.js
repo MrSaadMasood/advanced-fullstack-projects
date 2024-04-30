@@ -70,7 +70,7 @@ export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
 // based on the validation result the user is verified and the specific information is projected and sent back
 export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    // incomingDataValidationHandler(req)
+    incomingDataValidationHandler(req);
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
     const userFromDatabase = yield database.collection("users").findOne({ email: email });
     const user = userSchema.parse(userFromDatabase);

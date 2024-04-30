@@ -16,7 +16,7 @@ Chat-Ape is a real-time chat app made with React, and Node js backend.
 - Edit Your Bio 
 
 ## Pre-requisites
-**Nodejs** and **Redis** must be installed on you machine.
+**Nodejs** and **Redis** (optional) must be installed on you machine.
 
 ## Technologies Used
 
@@ -71,14 +71,17 @@ MONGO_URL
 PORT
 BASE_URL // server url with port like "https://localhost:3000"
 ACCESS_SECRET // a random hex string
-REDIS_PORT // defaults to 6379
 REFRESH_SECRET // a random hex string
 CROSS_ORIGIN // client url like "http://localhost:5173"
 GOOGLE_CLIENT_SECRET
 GOOGLE_CLIENT_ID
 F2A_SECRET // a random hex string
 LOGGER_LEVEL // log level for winston
+REDIS_PORT // redis cloud connection port --defaults to 6379
+REDIS_HOST // redis cloud connection string --defaults to "localhost" 
+REDIS_PASSWORD // redis cloud password --defaults to empty string
 ```
+If you dont want to use the Redis Cloud you need to start redis server locally and expose the port 6379
 
 The **LOGGER_LEVEL** here will have a default value of **info** . You can provide custom level for loggin and then add the logging statements in the code to get customized logs
 After providing these env either through an .evn file or using the command line you can use.

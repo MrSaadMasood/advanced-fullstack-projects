@@ -23,8 +23,8 @@ const numCPUs = os.availableParallelism();
 const { PORT, CROSS_ORIGIN } = env;
 const dirPath = import.meta.dirname;
 const httpsServerOptions = {
-    key: fs.readFileSync(path.join(dirPath, "../cert/private-key.pem")),
-    cert: fs.readFileSync(path.join(dirPath, "../cert/public-key.pem"))
+    key: fs.readFileSync(path.join(dirPath, "./cert/private-key.pem")),
+    cert: fs.readFileSync(path.join(dirPath, "./cert/public-key.pem"))
 };
 morgan.token("authoken", (req, _res) => {
     return req.headers["authorization"];
