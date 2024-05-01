@@ -116,10 +116,11 @@ export async function userSignUp({ formData} : { formData : SignUpFormdata}){
 export async function loginUser({ formData} : { formData : FormDataLogin}){
    try {
         const response = await server.post("/auth-user/login", formData )
-        return loginUserSchema.parse(response.data)
+        const loginData = response.data
+        return loginUserSchema.parse(loginData)
    } catch (error) {
-        console.log("failed to log the user in")
-        throw new Error("failed to login the user")
+        console.log("failed to log the user in", error)
+        throw new Error("failed to log the user in")
    } 
 }
 

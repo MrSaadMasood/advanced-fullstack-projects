@@ -85,7 +85,7 @@ const factor2LoginSchema = authSchema.extend({
     is2FactorAuthEnabled : zodBool,
 })
 
-const loginUserSchema = authSchema.merge(factor2LoginSchema).extend({
+const loginUserSchema = factor2LoginSchema.extend({
         factor2AuthToken : zodString.optional(), 
 })
 

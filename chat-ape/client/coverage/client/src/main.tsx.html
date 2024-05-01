@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/44</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/44</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -105,8 +105,7 @@
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -148,35 +147,33 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import ReactDOM from 'react-dom/client'<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import ReactDOM from 'react-dom/client'</span></span></span>
 <span class="cstat-no" title="statement not covered" >import './index.css'</span>
 <span class="cstat-no" title="statement not covered" >import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'</span>
-<span class="cstat-no" title="statement not covered" >import Home from './Components/Home.jsx'</span>
-<span class="cstat-no" title="statement not covered" >import Login from './Components/AuthComponents/Login.js'</span>
-<span class="cstat-no" title="statement not covered" >import Signup from './Components/AuthComponents/Signup.js'</span>
 <span class="cstat-no" title="statement not covered" >import PrivateRoute from './Components/PrivateRoute.jsx'</span>
 <span class="cstat-no" title="statement not covered" >import NewGroupForm from './Components/Forms/NewGroupForm.jsx'</span>
 <span class="cstat-no" title="statement not covered" >import ErrorPage from './Components/ErrorComponents/ErrorPage.js'</span>
 <span class="cstat-no" title="statement not covered" >import { AuthProvider } from './Components/Context/authProvider.jsx'</span>
 <span class="cstat-no" title="statement not covered" >import { QueryClient, QueryClientProvider  } from '@tanstack/react-query' </span>
 <span class="cstat-no" title="statement not covered" >import { GoogleOAuthProvider } from '@react-oauth/google' </span>
-<span class="cstat-no" title="statement not covered" >import Factor2Auth from './Components/Forms/Factor2Auth.js'</span>
-<span class="cstat-no" title="statement not covered" >import React from 'react'</span>
+<span class="cstat-no" title="statement not covered" >import React, { lazy, Suspense } from 'react'</span>
+<span class="cstat-no" title="statement not covered" >import Loader from './Components/ReuseableFormComponents/Loader.js'</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >const Home = lazy(()=&gt; import("./Components/Home.js"))</span>
+<span class="cstat-no" title="statement not covered" >const Signup = lazy(()=&gt; import("./Components/AuthComponents/Signup.js"))</span>
+<span class="cstat-no" title="statement not covered" >const Factor2Auth = lazy(()=&gt; import("./Components/Forms/Factor2Auth.js"))</span>
 <span class="cstat-no" title="statement not covered" >const queryClient = new QueryClient()</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >const router = createBrowserRouter(</span>
 <span class="cstat-no" title="statement not covered" >  createRoutesFromElements(</span>
 <span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;Route path='/' element={&lt;PrivateRoute /&gt;} &gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Route path='/' element={&lt;Home /&gt;} index/&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;Route path='/' element={&lt;Suspense fallback={&lt;Loader /&gt;}&gt;&lt;Home/&gt;&lt;/Suspense&gt;} index/&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;Route path='/create-new-group' element={&lt;NewGroupForm /&gt;} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;Route path='*' element={&lt;ErrorPage/&gt;} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Route&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Route path='/login' element={&lt;Login /&gt;} /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Route path='/sign-up' element={&lt;Signup /&gt;} /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Route path='/factor-2-auth' element={&lt;Factor2Auth /&gt;} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Route path='/sign-up' element={&lt;Suspense fallback={&lt;Loader /&gt;}&gt; &lt;Signup /&gt; &lt;/Suspense&gt;} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Route path='/factor-2-auth' element={&lt;Suspense fallback={&lt;Loader /&gt;}&gt; &lt;Factor2Auth /&gt; &lt;/Suspense&gt;} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;Route path='*' element={&lt;ErrorPage/&gt;} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >  )</span>
@@ -199,7 +196,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-27T14:50:53.067Z
+                at 2024-05-01T10:06:32.916Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

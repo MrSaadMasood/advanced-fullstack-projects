@@ -62,9 +62,10 @@ function Factor2Auth() {
         if(!factor2AuthData) return
         const passKey = code.join("")
         if(passKey.length < 6 || passKey.length > 6) return setErrorMessage("Please fill all th fields")
+        const encodedRefreshToken = encodeURIComponent(factor2AuthData.refreshToken)
         factor2AuthMutation({ 
             otp : passKey , 
-            refreshToken : factor2AuthData.refreshToken, 
+            refreshToken : encodedRefreshToken, 
             factor2AuthToken : factor2AuthData.factor2AuthToken
         })
     }
@@ -137,7 +138,7 @@ function Factor2Auth() {
                                 onClick={handleSubmission}
                                 type="button"
                                 disabled={status === "pending"}
-                                className="bg-[#4E9F3D] mt-4 w-[5rem] h-10 p-2 sm:text-lg md:p-6 flex justify-center items-center
+                                className="bg-[#4E9F3D] mt-4 w-auto h-10 p-2 sm:text-lg md:p-6 flex justify-center items-center
                                     rounded-md hover:bg-[#5ab747] cursor-pointer"
                             >
                                 {status === "pending" ? "Submitting" : "Submit"}

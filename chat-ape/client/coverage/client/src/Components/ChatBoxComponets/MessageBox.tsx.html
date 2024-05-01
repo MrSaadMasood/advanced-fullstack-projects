@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">88.23% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/16</span>
+                <span class='fraction'>15/17</span>
             </div>
         
             
@@ -125,7 +125,8 @@
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -187,76 +188,78 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { memo } from "react";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { memo } from "react";
 import { BoxSide, ChatType, Message } from "../../Types/dataTypes";
 import useImageHook from "../hooks/useImageHook";
-import LazyLoad from 'react-lazy-load' 
+import LazyLoad from 'react-lazy-load'
 &nbsp;
 interface MessageBoxProps {
-    data : Message,
-    sender? : string,
-    chatType : ChatType
-    boxSide : BoxSide
-    deleteMessage : (id: string)=&gt; void
+  data: Message,
+  sender?: string,
+  chatType: ChatType
+  boxSide: BoxSide
+  deleteMessage: (id: string) =&gt; void
 }
-const MessageBox = memo(function MessageBox({ 
-    data, 
-    sender, 
-    chatType,
-    boxSide,
-    deleteMessage
+const MessageBox = memo(function MessageBox({
+  data,
+  sender,
+  chatType,
+  boxSide,
+  deleteMessage
 }: MessageBoxProps) {
-    const url = data.<span class="branch-0 cbranch-no" title="branch not covered" >path ? chatType === "normal" ? `/user/get-chat-image/${data.path}` : `/user/group-picture/${data.path}` : u</span>ndefined
-    const picture = useImageHook(url)
-    const dateObject = new Date(data.time);
-    const flexStylesBasedOnSide = boxSide === "left" ? "justify-start" : "justify-end"
-    const secondDivStyle = boxSide === "left" ? "items-start" : "items-end"
-    const thirdDivStyle = boxSide === "left" ? "justify-between" : "justify-around"
-    const margin = boxSide === "left" ? "ml-2" : "mr-2"
-    const boxCustomStyle = boxSide === "left" ? "left-box" : "right-box"
+  const url = data.<span class="branch-0 cbranch-no" title="branch not covered" >path ? chatType === "normal" ? `/user/get-chat-image/${data.path}` : `/user/group-picture/${data.path}` : u</span>ndefined
+  const picture = useImageHook(url)
+  const dateObject = new Date(data.time);
+  const flexStylesBasedOnSide = boxSide === "left" ? "justify-start" : "justify-end"
+  const secondDivStyle = boxSide === "left" ? "items-start" : "items-end"
+  const thirdDivStyle = boxSide === "left" ? "justify-between" : "justify-around"
+  const margin = boxSide === "left" ? "ml-2" : "mr-2"
+  const boxCustomStyle = boxSide === "left" ? "left-box" : "right-box"
 &nbsp;
-    return (
-        &lt;li
-            data-testid="messageBox" 
-            className={`text-white text-base w-[100%] h-auto mb-2 flex ${flexStylesBasedOnSide} items-center`}
-            onDoubleClick={()=&gt;{ if(boxSide === "right") deleteMessage(data.id)}}
-        &gt;
-            &lt;div className={`w-[60%] ml-3 h-auto flex flex-col justify-between ${secondDivStyle}`}&gt;
-                &lt;div className={`text-[.5rem] h-4 w-auto flex ${thirdDivStyle} items-center`}&gt;
-                    &lt;p&gt;
-                        {dateObject.toDateString()}
-                    &lt;/p&gt;
-                    {sender &amp;&amp;
-                        &lt;p className={margin}&gt;
-                            {sender}
-                        &lt;/p&gt;
-                    }
-                &lt;/div&gt;
-                {data.content &amp;&amp;
-                    &lt;p className={`pt-1 pb-1 pl-2 pr-2 bg-orange-600 h-auto w-auto break-all 
+  return (
+    &lt;li
+      data-testid="messageBox"
+      className={`text-white text-base w-[100%] h-auto mb-2 flex ${flexStylesBasedOnSide} items-center`}
+      onDoubleClick={() =&gt; { if (boxSide === "right" || chatType === "group") deleteMessage(data.id) }}
+    &gt;
+      &lt;div className={`w-[60%] ml-3 h-auto flex flex-col justify-between ${secondDivStyle}`}&gt;
+        &lt;div className={`text-[.5rem] h-4 w-auto flex ${thirdDivStyle} items-center`}&gt;
+          &lt;p&gt;
+            {dateObject.toDateString()}
+          &lt;/p&gt;
+          {sender &amp;&amp;
+            &lt;p className={margin}&gt;
+              {sender}
+            &lt;/p&gt;
+          }
+        &lt;/div&gt;
+        {data.content &amp;&amp;
+          &lt;p className={`pt-1 pb-1 pl-2 pr-2 bg-orange-600 h-auto w-auto break-all 
                          ${boxCustomStyle} flex justify-center items-center`}&gt;
-                        {data.content}
-                    &lt;/p&gt;
-                }
-                {data.<span class="branch-0 cbranch-no" title="branch not covered" >path &amp;&amp;</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;LazyLoad&gt;</span>
-<span class="cstat-no" title="statement not covered" >                        &lt;img src={picture} alt="" width={"300px"} /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;/LazyLoad&gt;</span>
-                }
-            &lt;/div&gt;
-        &lt;/li&gt;
-    );
+            {data.content}
+          &lt;/p&gt;
+        }
+        {data.<span class="branch-0 cbranch-no" title="branch not covered" >path &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;LazyLoad&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;img src={picture} alt="" width={"300px"} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/LazyLoad&gt;</span>
+        }
+      &lt;/div&gt;
+    &lt;/li&gt;
+  );
 })
 &nbsp;
 // export default React.memo(MessageBox)
-export default MessageBox</pre></td></tr></table></pre>
+export default MessageBox
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-27T14:50:53.067Z
+                at 2024-05-01T10:06:32.916Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

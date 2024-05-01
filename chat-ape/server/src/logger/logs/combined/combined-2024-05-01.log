@@ -32,3 +32,20 @@
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T09:28:02.361Z"}
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T09:37:28.652Z"}
 {"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T09:37:40.095Z"}
+{"level":"info","message":"password successfully hashed","timestamp":"2024-05-01T18:47:35.641Z"}
+{"level":"info","message":"new account for the google user created","timestamp":"2024-05-01T18:47:36.633Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-05-01T18:56:43.653Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-05-01T18:57:08.310Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T18:57:09.888Z"}
+{"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/uploads/profile-images/image-171455848327845867697.jpg'","timestamp":"2024-05-01T18:57:10.038Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-05-01T18:57:18.650Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-05-01T18:57:41.947Z"}
+{"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/uploads/profile-images/image-171455848327845867697.jpg'","timestamp":"2024-05-01T18:57:42.186Z"}
+{"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/uploads/profile-images/image-171455848327845867697.jpg'","timestamp":"2024-05-01T18:57:42.203Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T18:57:42.463Z"}
+{"level":"info","message":"qr code successfully generated","timestamp":"2024-05-01T18:57:54.884Z"}
+{"level":"error","message":"Error: failed to verify the given otp\n    at verifyOTP (/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/controllers/sessionController.ts:212:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2024-05-01T18:58:42.524Z"}
+{"level":"info","message":"credentials for the normal user successfully created","timestamp":"2024-05-01T18:59:16.951Z"}
+{"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/uploads/profile-images/image-171455848327845867697.jpg'","timestamp":"2024-05-01T18:59:17.116Z"}
+{"level":"error","message":"Error: ENOENT: no such file or directory, stat '/home/saadingo/FullStack/advanced-fullstack-projects/chat-ape/server/src/uploads/profile-images/image-171455848327845867697.jpg'","timestamp":"2024-05-01T18:59:17.165Z"}
+{"level":"info","message":"chat list successfully collected","timestamp":"2024-05-01T18:59:17.483Z"}

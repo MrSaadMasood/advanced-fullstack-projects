@@ -85,7 +85,8 @@ export const loginUser  = async (req : CustomRequest, res : Response) => {
             factor2AuthToken, 
             refreshToken, 
             is2FactorAuthEnabled : user.is2FactorAuthEnabled,
-            isGoogleUser : user.isGoogleUser
+            isGoogleUser : user.isGoogleUser,
+            accessToken : ""
         })
     }
     return res.json({ 
@@ -159,7 +160,14 @@ export const googleAuthenticator  = async (req : CustomRequest, res : Response) 
         await post.post(`${BASE_URL}/auth-user/sign-up`, userData)
         logger.info("new account for the google user created")
         await database.collection("tokens").insertOne({ token : tokens.refresh_token })
-        return res.json(tokens)
+        
+        const googleTokens = {
+            accessToken : tokens.access_token,
+            refreshToken : tokens.refresh_token,
+            is2FactorAuthEnabled : false,
+            isGoogleUser : true 
+        }
+        return res.json(googleTokens)
     }
     await database.collection("tokens").insertOne({ token : tokens.refresh_token })
     if(ifUserExists.is2FactorAuthEnabled){
@@ -168,14 +176,15 @@ export const googleAuthenticator  = async (req : CustomRequest, res : Response) 
             factor2AuthToken, 
             refreshToken : tokens.refresh_token, 
             is2FactorAuthEnabled : true,
-            isGoogleUser : ifUserExists.isGoogleUser
+            isGoogleUser : ifUserExists.isGoogleUser,
+            accessToken : ""
         })
     }
     const googleTokens = {
         accessToken : tokens.access_token,
         refreshToken : tokens.refresh_token,
         is2FactorAuthEnabled : ifUserExists.is2FactorAuthEnabled,
-        isGoogleUser : ifUserExists.isGoogleUser
+        isGoogleUser : ifUserExists.isGoogleUser,
     }
     return res.json(googleTokens)
 }
@@ -202,7 +211,8 @@ export const generateOTP  = async (req : CustomRequest, res : Response) => {
 export const verifyOTP = async (req : CustomRequest, res : Response) => {
     const { email } = req.user!
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
-    const {otp, refreshToken : refrshTokenBody } = req.body
+    const {otp, refreshToken : refToken } = req.body
+    const refrshTokenBody = decodeURIComponent(refToken)
     incomingDataValidationHandler(req)
     const userFromDatabase = await database.collection("users").findOne<CreateNewUser>({ email })
     const user = userSchema.parse(userFromDatabase) 
