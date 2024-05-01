@@ -69,7 +69,7 @@ Before running the backend you **must** first start the Redis server either dire
 ```
 MONGO_URL
 PORT
-BASE_URL // server url with port like "https://localhost:3000"
+BASE_URL // server url with port like "http://localhost:3000"
 ACCESS_SECRET // a random hex string
 REFRESH_SECRET // a random hex string
 CROSS_ORIGIN // client url like "http://localhost:5173"
@@ -130,7 +130,6 @@ npm run test
 ### File Structure
 
 - **Entrypoint:** The entry point is **app.ts**
-- **/cert:** contains self signed SSL certifiace and private key
 - **/src:** contains all the application code
 - **/src/controllers/:** controllers for the application routes
 - **/src/routes:** routes for the application
@@ -142,7 +141,7 @@ npm run test
 You also need to provide the environmental variables before running the front end.
 
 ```
-VITE_REACT_APP_SITE_URL // backend url like "https://localhost:3000"
+VITE_REACT_APP_SITE_URL // backend url like "http://localhost:3000"
 
 VITE_REACT_GOOGLE_CLIENT_ID
 ```
