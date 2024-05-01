@@ -2,10 +2,8 @@ import { Socket} from "socket.io"
 import "express-async-errors"
 import express from "express"
 import compression from 'compression' 
-import fs from 'fs' 
-import path from 'path' 
 import { Server } from "socket.io"
-import https from 'https' 
+import http from "http"
 import cors from "cors"
 import helmet from "helmet"
 import cluster from "node:cluster"
@@ -25,11 +23,6 @@ import env from "./src/zodSchema/envSchema.js"
 
 const numCPUs = os.availableParallelism()
 const { PORT, CROSS_ORIGIN } = env 
-const dirPath = import.meta.dirname
-const httpsServerOptions = {
-    key : fs.readFileSync(path.join(dirPath, "./cert/private-key.pem")),
-    cert : fs.readFileSync(path.join(dirPath, "./cert/public-key.pem"))
-}
 
 morgan.token("authoken", (req, _res)=>{
     return req.headers["authorization"]
@@ -45,7 +38,7 @@ if(cluster.isPrimary){
 }
 else { 
     const app = express()
-    const server = https.createServer(httpsServerOptions, app)
+    const server = http.createServer(app)
     // creating a new server instance form the above server made with http. this server instance will be used for websock
     const io = new Server(server , {
         cors : {
