@@ -1,31 +1,30 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
-import Home from './Components/Home.jsx'
-import Login from './Components/AuthComponents/Login.js'
-import Signup from './Components/AuthComponents/Signup.js'
 import PrivateRoute from './Components/PrivateRoute.jsx'
 import NewGroupForm from './Components/Forms/NewGroupForm.jsx'
 import ErrorPage from './Components/ErrorComponents/ErrorPage.js'
 import { AuthProvider } from './Components/Context/authProvider.jsx'
 import { QueryClient, QueryClientProvider  } from '@tanstack/react-query' 
 import { GoogleOAuthProvider } from '@react-oauth/google' 
-import Factor2Auth from './Components/Forms/Factor2Auth.js'
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
+import Loader from './Components/ReuseableFormComponents/Loader.js'
 
+const Home = lazy(()=> import("./Components/Home.js"))
+const Signup = lazy(()=> import("./Components/AuthComponents/Signup.js"))
+const Factor2Auth = lazy(()=> import("./Components/Forms/Factor2Auth.js"))
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path='/' element={<PrivateRoute />} >
-        <Route path='/' element={<Home />} index/>
+        <Route path='/' element={<Suspense fallback={<Loader />}><Home/></Suspense>} index/>
         <Route path='/create-new-group' element={<NewGroupForm />} />
         <Route path='*' element={<ErrorPage/>} />
       </Route>
-      <Route path='/login' element={<Login />} />
-      <Route path='/sign-up' element={<Signup />} />
-      <Route path='/factor-2-auth' element={<Factor2Auth />} />
+      <Route path='/sign-up' element={<Suspense fallback={<Loader />}> <Signup /> </Suspense>} />
+      <Route path='/factor-2-auth' element={<Suspense fallback={<Loader />}> <Factor2Auth /> </Suspense>} />
       <Route path='*' element={<ErrorPage/>} />
     </>
   )
