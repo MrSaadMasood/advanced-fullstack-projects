@@ -100,16 +100,17 @@ export const loginUser  = async (req : CustomRequest, res : Response) => {
 // is present in the database of the user
 export const refreshUser  = async (req : CustomRequest, res : Response) => {
     const { refreshToken, isGoogleUser } = req.body;
+    const decodedRefreshToken = decodeURIComponent(refreshToken)
     incomingDataValidationHandler(req)
     // const database = await dataBaseConnectionMaker(process.env.TEST_URI || "")
 
-    const tokenCheck = await database.collection("tokens").findOne({ token: refreshToken });
+    const tokenCheck = await database.collection("tokens").findOne({ token: decodedRefreshToken});
     tokenSchema.parse(tokenCheck) 
     if(isGoogleUser){
-        const credentials = await refreshGoogleAccessToken(refreshToken)
+        const credentials = await refreshGoogleAccessToken(decodedRefreshToken)
         return res.json({ newAccessToken : credentials.access_token })
     }
-    const data = verify(refreshToken, REFRESH_SECRET ) as JWTTokenPayload
+    const data = verify(decodedRefreshToken, REFRESH_SECRET ) as JWTTokenPayload
     if(!data) throw new BadRequest(generalErrorMessage("failed to refresh the user"))
     const newAccessToken = sign({ id: data.id }, ACCESS_SECRET, { expiresIn : "5m"});
     if (!newAccessToken) throw new BadRequest({ message : "Bad Request", statusCode : 399});

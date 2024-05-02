@@ -35,8 +35,9 @@ export default function useInterceptor() {
                 if (error.response?.status === 401 && !previousRequest.firstTry) {
                     previousRequest.firstTry = true;
                     try {
+                        const encodedRefreshToken = encodeURIComponent(isAuthenticated.refreshToken)
                         const response = await server.post("/auth-user/refresh", { 
-                            refreshToken: isAuthenticated.refreshToken,
+                            refreshToken: encodedRefreshToken, 
                             isGoogleUser : isAuthenticated.isGoogleUser
                          });
                         const accessToken = response.data.newAccessToken as string;
