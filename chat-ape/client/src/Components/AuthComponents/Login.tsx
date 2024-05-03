@@ -1,7 +1,6 @@
 import LoginForm from "../Forms/LoginForm";
 
 export default function Login() {
-
     return (
         <div className="flex">
             <div className="h-screen w-[33%] hidden lg:block overflow-hidden" >

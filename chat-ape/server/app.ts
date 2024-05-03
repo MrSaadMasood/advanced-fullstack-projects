@@ -23,7 +23,6 @@ import env from "./src/zodSchema/envSchema.js"
 
 const numCPUs = os.availableParallelism()
 const { PORT, CROSS_ORIGIN } = env 
-
 morgan.token("authoken", (req, _res)=>{
     return req.headers["authorization"]
 })
