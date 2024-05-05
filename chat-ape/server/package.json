@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./dist/app.js",
+    "start": "NODE_ENV=production node ./dist/app.js",
     "test": "jest ./tests/unit-tests/ --watch --no-cache --coverage --coverageReporters='text-summary' --verbose --runInBand --detectOpenHandles",
     "dev": "tsx watch app.ts",
     "tsc": "tsc",

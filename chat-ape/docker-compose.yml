@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - backend_url=http://localhost:3000
+        - google_client_id=438104327875-6fjrgntgq4ud5pl71qbhlhf95pmf02j3.apps.googleusercontent.com
+    container_name: chat-ape-client-prod
+    ports:
+      - 4173:80
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: chat-ape-server-prod
+    env_file:
+      - ./server/.env
+    ports:
+      - 3000:3000
+    depends_on:
+      redis-stack:
+        condition: service_started
+  redis-stack:
+    image: redis:7.2.4-alpine3.19
+    container_name: redis
+      
