@@ -1,11 +1,8 @@
-import Redis from 'ioredis' 
-import env from '../zodSchema/envSchema.js'
-const { REDIS_PORT } = env
+import Redis from "ioredis";
 
 const redis = new Redis({
-    port : REDIS_PORT || 6379,
-    host : "redis",
+    port: 6379,
+    host: "redis",
+});
 
-})
-
-export default redis
+export default redis;
