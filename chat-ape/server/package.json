@@ -10,7 +10,7 @@
         "dev": "tsx watch app.ts",
         "tsc": "tsc",
         "start-ts": "npm run tsc",
-        "db-schema": "node ./Db/schemaPopulator.ts"
+        "db-schema": "tsx ./Db/schemaPopulator.ts"
     },
     "keywords": [],
     "author": "",

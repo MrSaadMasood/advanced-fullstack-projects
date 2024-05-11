@@ -65,6 +65,17 @@ git clone https://github.com/MrSaadMasood/advanced-fullstack-projects.git
 
 ## Running the Application
 
+## Database Schema Population
+
+Before running the application for the first time, it is better to populate the database with schema defined in the **/server/Db/validation.ts**.
+To do this just **uncomment** the code in the **/server/Db/schemaPopulator.ts** and then run
+
+```js
+npm run db-schema
+```
+
+Once you see the success log in the terminal. Stop the Process and comment those lines again.
+
 ## Development Mode
 
 To Run the application in the development mode you need to provide these envs in the
