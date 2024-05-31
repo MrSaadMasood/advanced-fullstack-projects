@@ -26,4 +26,3 @@ services:
   redis-stack:
     image: redis:7.2.4-alpine3.19
     container_name: redis
-
