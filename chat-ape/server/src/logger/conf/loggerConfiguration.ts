@@ -18,7 +18,9 @@ const configBasedOnFileType = (type : string) => {
         datePattern : "YYYY-MM-DD",
         filename : `${type}-%DATE%.log`,
         dirname : path.join(logsDirectoryPath, type),
-        level : type.includes("error") ? "error" : LOGGER_LEVEL
+        level : type.includes("error") ? "error" : LOGGER_LEVEL,
+        maxFiles : '7d',
+        maxSize: '20m'
     }
 }
 
