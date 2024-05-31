@@ -11,11 +11,12 @@ const UserManagingList = memo(function UserManagingList({ children, member   } :
     return (
     <section className="w-full h-10 sm:h-16 lg:h-12 flex justify-between items-center border-b-2 border-white mt-3">
         <div className=" flex justify-start items-center w-[55%] ">
-            <LazyLoad className=" w-3 h-8 sm:w-12 sm:h-12 lg:h-10 lg:w-24 xl:h-10 xl:w-14 flex justify-center items-center
+            <LazyLoad className=" w-8 h-8 sm:w-12 sm:h-12 lg:h-10 lg:w-24 xl:h-10 xl:w-14 flex justify-center items-center
              rounded-full overflow-hidden mr-2 ">
                 <img src={image} alt="" />
             </LazyLoad>
-            <div className=" h-8 w-24 sm:w-44 lg:w-96 sm:text-lg flex justify-start items-center ml-2 overflow-hidden">
+            <div className=" h-8 w-24 text-ellipsis whitespace-nowrap
+             sm:w-44 lg:w-96 sm:text-lg flex justify-start items-center ml-2 overflow-hidden">
                 { member.fullName }
             </div>
         </div>

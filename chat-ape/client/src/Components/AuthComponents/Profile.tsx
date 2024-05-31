@@ -62,12 +62,15 @@ export default function Profile({
         onError : ()=> setGlobalError("Failed to change the Auth Mode")
     })
     
-    const { mutateAsync : deleteProfilePictureMutation } = useMutation({
-        mutationFn : deletePreviousProfilePicture
+    const { mutate : deleteProfilePictureMutation } = useMutation({
+        mutationFn : deletePreviousProfilePicture,
+        onError: ()=> setGlobalError("Previous Profile Picture Deletion Failed")
     })
 
-    const { mutateAsync : addNewPictureMutation } = useMutation({
-        mutationFn : addNewProfilePicture
+    const { mutate: addNewPictureMutation } = useMutation({
+        mutationFn : addNewProfilePicture,
+        onError: ()=> setGlobalError("Failed to Change Profile Picture"),
+        onSuccess: ()=> setGlobalError("Profile Picture Changed Successfully")
     })
 
     const { mutate : changeBioMutation } = useMutation({
@@ -94,19 +97,14 @@ export default function Profile({
     // if the user already has a profile picture the previous picture is deletd and is replaced with new picture
     async function handleImageSubmission() {
         if(!image) return setGlobalError("No Image Provided! Try Providing Again!");
-        
-        try {
-            if (userData.profilePicture && userData.profilePicture.startsWith("image")) {
-                await deleteProfilePictureMutation({ axiosPrivate, profilePicture : userData.profilePicture})
-            }
-            const formData = new FormData();
-            formData.append("image", image);
-            await addNewPictureMutation({ axiosPrivate , formData })
-            setSubmitProfilePictureButton(false);
-            isUserChangedSetter(true);
-        } catch (error) {
-            setGlobalError("Failed to Update the Image")
+        if (userData.profilePicture && userData.profilePicture.startsWith("image")) {
+            deleteProfilePictureMutation({ axiosPrivate, profilePicture : userData.profilePicture})
         }
+        const formData = new FormData();
+        formData.append("image", image);
+        addNewPictureMutation({ axiosPrivate , formData })
+        setSubmitProfilePictureButton(false);
+        isUserChangedSetter(true);
     }
 
     // handles the uploading of image and image preview
@@ -145,11 +143,11 @@ export default function Profile({
             <header className="w-full bg-black text-white border-b-2 border-[#555555] h-16 flex justify-between items-center p-3">
                 <h2>My Profile</h2>
                 <div className="w-[40%] sm:w-[30%] md:w-[25%] lg:w-[20%] xl:w-[15%] overflow-hidden
-                flex justify-between items-center">
+                flex justify-between items-center whitespace-nowrap">
                     <div className="h-10 w-10 rounded-full overflow-hidden">
                         <img src={profilePicture} alt="" width={"400px"} />
                     </div>
-                    <h2>{userData.fullName}</h2>
+                    <h2 className="w-40 flex justify-center items-center">{userData.fullName}</h2>
                 </div>
             </header>
             <section className="h-[95vh] lg:h-[100vh] text-white bg-black flex flex-col justify-center items-center">
