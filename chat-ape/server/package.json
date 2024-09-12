@@ -10,8 +10,7 @@
     "dev": "tsx watch app.ts",
     "tsc": "tsc",
     "start-ts": "npm run tsc",
-    "build": "echo hello",
-    "vercel-build": "echo hello"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
