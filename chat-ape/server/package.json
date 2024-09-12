@@ -9,7 +9,8 @@
     "test": "jest ./tests/unit-tests/ --watch --no-cache --coverage --coverageReporters='text-summary' --verbose --runInBand --detectOpenHandles",
     "dev": "tsx watch app.ts",
     "tsc": "tsc",
-    "start-ts": "npm run tsc"
+    "start-ts": "npm run tsc",
+    "build": "echo hello"
   },
   "keywords": [],
   "author": "",
