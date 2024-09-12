@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./api/index.js",
   "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./dist/app.js",
@@ -10,7 +10,8 @@
     "dev": "tsx watch app.ts",
     "tsc": "tsc",
     "start-ts": "npm run tsc",
-    "build": "echo hello"
+    "build": "echo hello",
+    "vercel-build": "echo hello"
   },
   "keywords": [],
   "author": "",
