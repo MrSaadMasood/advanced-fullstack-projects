@@ -72,7 +72,7 @@ function useWebSockets(
     // create a socket instance when the component renders/ mounts
     useEffect(() => {
 
-        const socket = io(import.meta.env.VITE_REACT_APP_SITE_URL, { transports : ["websocket"]})
+        const socket = io(import.meta.env.VITE_REACT_APP_WS_URL, { transports : ["websocket"]})
         setSocket(socket)
         
         // to set the room id so that the other user can connect to the same room
