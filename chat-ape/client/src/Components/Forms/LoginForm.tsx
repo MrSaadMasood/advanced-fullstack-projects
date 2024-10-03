@@ -167,6 +167,7 @@ export default function LoginForm() {
                     <button 
                         className="p-2 h-10 w-[23rem] rounded-lg bg-white text-black" 
                         type="button"
+                        disabled={(process.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")}
                         onClick={()=>login()}
                     >
                         Sign in with Google 
@@ -174,6 +175,8 @@ export default function LoginForm() {
                 </div>
                 
                 <ErrorDiv width={width} isFailed={isFailed} errorMessage={errorMessage} />
+                <ErrorDiv width={width} isFailed={(process.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")} 
+                    errorMessage={"OAuth Not Working! Server do not have domain"} />
             </Form>
         </Formik>
     );
