@@ -29,7 +29,6 @@ export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState("Failed to Log the User in! Try Again");
   const navigate = useNavigate();
   const doesServerHasDomain = !(import.meta.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")
-  console.log(doesServerHasDomain, import.meta.env.VITE_REACT_APP_SITE_URL)
   const { setItem } = useLocalStorage();
 
   const login = useGoogleLogin({
@@ -157,7 +156,7 @@ export default function LoginForm() {
             OR
           </p>
         </div>
-        <div className=" flex flex-col justify-between items-center h-[8rem]">
+        <div className=" flex flex-col justify-between items-center h-[6rem]">
           <button
             className="p-2 h-10 w-[23rem] rounded-lg flex justify-center items-center
                          bg-red-600 hover:bg-red-700 "
@@ -174,12 +173,12 @@ export default function LoginForm() {
           >
             Sign in with Google
           </button>
-          {!doesServerHasDomain && (
-            <div
-              className=""
-            >OAuth Not Working! Server doesn't have domain</div>
-          )}
         </div>
+        {!doesServerHasDomain && (
+          <div
+            className=" mt-2"
+          >OAuth Not Working! Server doesn't have domain</div>
+        )}
 
         <ErrorDiv width={width} isFailed={isFailed} errorMessage={errorMessage} />
       </Form>
