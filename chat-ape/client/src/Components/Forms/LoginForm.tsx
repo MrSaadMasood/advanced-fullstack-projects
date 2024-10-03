@@ -1,7 +1,7 @@
 import { IoPersonCircleSharp } from "react-icons/io5";
 
-import {  useContext, useEffect, useState } from "react";
-import * as Yup from 'yup' 
+import { useContext, useEffect, useState } from "react";
+import * as Yup from 'yup'
 import { Link, useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import server from "../../api/axios";
@@ -21,163 +21,168 @@ import { loginUserSchema } from "../../zodSchema/schema";
 
 export default function LoginForm() {
 
-    const { isAuthenticated, setIsAuthenticated } = useContext(isAuth);
-    // is input checked
-    const [checked, setChecked] = useState(false);
-    // if login failed its set to true
-    const [isFailed, setIsFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("Failed to Log the User in! Try Again");
-    const navigate = useNavigate();
-    const { setItem } = useLocalStorage();
+  const { isAuthenticated, setIsAuthenticated } = useContext(isAuth);
+  // is input checked
+  const [checked, setChecked] = useState(false);
+  // if login failed its set to true
+  const [isFailed, setIsFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Failed to Log the User in! Try Again");
+  const navigate = useNavigate();
+  const doesServerHasDomain = !(import.meta.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")
+  console.log(doesServerHasDomain, import.meta.env.VITE_REACT_APP_SITE_URL)
+  const { setItem } = useLocalStorage();
 
-    const login = useGoogleLogin({
-        onSuccess : async (tokenResponse)=> {
-            try {
-                const response = await server.post("/auth-user/google", 
-                    { code : encodeURIComponent(tokenResponse.code)})
-                const data = loginUserSchema.parse(response.data)
-                handleLoginDataFromServer(data)
-            } catch (error) {
-                setIsFailed(true)
-            }
-        },
-        onError : ()=>  setIsFailed(true),
-        flow : "auth-code"
-    })
-    const { mutate : loginUserMutation } = useMutation({
-        mutationFn : loginUser,
-        onSuccess : (data)=>{
-            handleLoginDataFromServer(data)
-        },
-        onError : ()=> setIsFailed(true)
-    })
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await server.post("/auth-user/google",
+          { code: encodeURIComponent(tokenResponse.code) })
+        const data = loginUserSchema.parse(response.data)
+        handleLoginDataFromServer(data)
+      } catch (error) {
+        setIsFailed(true)
+      }
+    },
+    onError: () => setIsFailed(true),
+    flow: "auth-code"
+  })
+  const { mutate: loginUserMutation } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      handleLoginDataFromServer(data)
+    },
+    onError: () => setIsFailed(true)
+  })
 
-    const initialValues = {
-        email : "",
-        password : ""
-    }
-    const width = isFailed ? "w-[23rem] h-auto" : "w-0 h-0";
+  const initialValues = {
+    email: "",
+    password: ""
+  }
+  const width = isFailed ? "w-[23rem] h-auto" : "w-0 h-0";
 
-    useEffect(() => {
-      
-        if(isAuthenticated.accessToken !== "") {
-            
-            navigate("/", { replace : true})
-        }
-    
-    }, [isAuthenticated.accessToken])
-    
-    useEffect(() => {
-        if (isFailed) {
-            const timer = setTimeout(() => {
-                setErrorMessage("");
-                setIsFailed(false);
-            }, 2000);
-            return () => clearTimeout(timer);
-        }
-    }, [isFailed]);
+  useEffect(() => {
 
-    function handleLoginDataFromServer(data : UserSaved){
-        if(data.is2FactorAuthEnabled){
-            const userAuthData = {
-                is2FactorAuthEnabled : data.is2FactorAuthEnabled,
-                refreshToken : data.refreshToken,
-                isGoogleUser : data.isGoogleUser,
-                factor2AuthToken : data.factor2AuthToken!
-            }
-            return handleSuccessfullLogin(userAuthData)
-        }
-        const userAuthData = {
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
-            isGoogleUser : data.isGoogleUser,
-            is2FactorAuthEnabled : data.is2FactorAuthEnabled 
-        }
-        handleSuccessfullLogin(userAuthData )
+    if (isAuthenticated.accessToken !== "") {
 
+      navigate("/", { replace: true })
     }
 
-    function handleSubmission(values : FormDataLogin){
-        loginUserMutation({ formData : values })
-    }
-    
-    function handleSuccessfullLogin(userAuthData : UserSaved){
-        if(userAuthData.is2FactorAuthEnabled){
-            setItem("f2a", userAuthData)
-            return navigate("/factor-2-auth")
-        }
-        setItem("user", userAuthData );
-        setIsAuthenticated(userAuthData );
-        navigate("/", { replace: true });
-    }
-    return (
+  }, [isAuthenticated.accessToken])
 
-        <Formik clasName="form-wrap"
-            initialValues={initialValues}
-            validationSchema={Yup.object({
-                email : Yup.string().email("Invalid email provided").required("Required"),
-                password : Yup.string().required("Please provide a password")
-                            .min(8, "Password is too Short")
-                            .max(24, "Password is too Long")
-                            .matches(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* )/, 
-                                "Password must contain a CapitaL, Small and Special Character")
-            })}
-            onSubmit={handleSubmission}
-        >
-            <Form>
-                <div className="form-group text-white">
-                    <TextInput
-                        label="Email"
-                        name="email"
-                        type="text"
-                        id="email"
-                        data-testid="email"
-                        className="p-2 h-12 w-[23rem]"
-                    />   
-                </div>
-                <div className="form-group text-white">
-                    <TextInput
-                        label="Password"
-                        name="password"
-                        type={checked ? "text" : "password"}
-                        id="password"
-                        data-testid="password"
-                        className="p-2 h-12 w-[23rem]"
-                    />   
-                </div>
-                <PasswordCheckBox checked={checked} setChecked={setChecked} />
-                <div className="flex justify-between items-center">
-                    <SubmitButton value="Log In" />
-                    <Link to={"/sign-up"} className="text-sm text-[#999999] hover:text-[#c8c8c8]">Sign up</Link>
-                </div>
-                <div className=" relative mt-4 mb-6 border-b-2 border-gray-600 flex justify-center items-center">
-                    <p className="absolute text-gray-500 bg-black">
-                        OR
-                    </p>
-                </div>
-                <div className=" flex flex-col justify-between items-center h-[6rem]">
-                    <button 
-                        className="p-2 h-10 w-[23rem] rounded-lg flex justify-center items-center
+  useEffect(() => {
+    if (isFailed) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+        setIsFailed(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFailed]);
+
+  function handleLoginDataFromServer(data: UserSaved) {
+    if (data.is2FactorAuthEnabled) {
+      const userAuthData = {
+        is2FactorAuthEnabled: data.is2FactorAuthEnabled,
+        refreshToken: data.refreshToken,
+        isGoogleUser: data.isGoogleUser,
+        factor2AuthToken: data.factor2AuthToken!
+      }
+      return handleSuccessfullLogin(userAuthData)
+    }
+    const userAuthData = {
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+      isGoogleUser: data.isGoogleUser,
+      is2FactorAuthEnabled: data.is2FactorAuthEnabled
+    }
+    handleSuccessfullLogin(userAuthData)
+
+  }
+
+  function handleSubmission(values: FormDataLogin) {
+    loginUserMutation({ formData: values })
+  }
+
+  function handleSuccessfullLogin(userAuthData: UserSaved) {
+    if (userAuthData.is2FactorAuthEnabled) {
+      setItem("f2a", userAuthData)
+      return navigate("/factor-2-auth")
+    }
+    setItem("user", userAuthData);
+    setIsAuthenticated(userAuthData);
+    navigate("/", { replace: true });
+  }
+  return (
+
+    <Formik clasName="form-wrap"
+      initialValues={initialValues}
+      validationSchema={Yup.object({
+        email: Yup.string().email("Invalid email provided").required("Required"),
+        password: Yup.string().required("Please provide a password")
+          .min(8, "Password is too Short")
+          .max(24, "Password is too Long")
+          .matches(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* )/,
+            "Password must contain a CapitaL, Small and Special Character")
+      })}
+      onSubmit={handleSubmission}
+    >
+      <Form>
+        <div className="form-group text-white">
+          <TextInput
+            label="Email"
+            name="email"
+            type="text"
+            id="email"
+            data-testid="email"
+            className="p-2 h-12 w-[23rem]"
+          />
+        </div>
+        <div className="form-group text-white">
+          <TextInput
+            label="Password"
+            name="password"
+            type={checked ? "text" : "password"}
+            id="password"
+            data-testid="password"
+            className="p-2 h-12 w-[23rem]"
+          />
+        </div>
+        <PasswordCheckBox checked={checked} setChecked={setChecked} />
+        <div className="flex justify-between items-center">
+          <SubmitButton value="Log In" />
+          <Link to={"/sign-up"} className="text-sm text-[#999999] hover:text-[#c8c8c8]">Sign up</Link>
+        </div>
+        <div className=" relative mt-4 mb-6 border-b-2 border-gray-600 flex justify-center items-center">
+          <p className="absolute text-gray-500 bg-black">
+            OR
+          </p>
+        </div>
+        <div className=" flex flex-col justify-between items-center h-[8rem]">
+          <button
+            className="p-2 h-10 w-[23rem] rounded-lg flex justify-center items-center
                          bg-red-600 hover:bg-red-700 "
-                        type="submit"
-                        onClick={()=>handleSubmission({email : "saad@gmail.com" , password : "Saad.Masood1122"})}    
-                    >
-                        <IoPersonCircleSharp size={25} />  Guest Login
-                    </button>
-                    <button 
-                        className="p-2 h-10 w-[23rem] rounded-lg bg-white text-black" 
-                        type="button"
-                        disabled={(process.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")}
-                        onClick={()=>login()}
-                    >
-                        Sign in with Google 
-                    </button>
-                </div>
-                
-                <ErrorDiv width={width} isFailed={isFailed} errorMessage={errorMessage} />
-                <ErrorDiv width={width} isFailed={(process.env.VITE_REACT_APP_SITE_URL || "").includes(":3000")} 
-                    errorMessage={"OAuth Not Working! Server do not have domain"} />
-            </Form>
-        </Formik>
-    );
+            type="submit"
+            onClick={() => handleSubmission({ email: "saad@gmail.com", password: "Saad.Masood1122" })}
+          >
+            <IoPersonCircleSharp size={25} />  Guest Login
+          </button>
+          <button
+            className="p-2 h-10 w-[23rem] rounded-lg bg-white text-black"
+            type="button"
+            disabled={!doesServerHasDomain}
+            onClick={() => login()}
+          >
+            Sign in with Google
+          </button>
+          {!doesServerHasDomain && (
+            <div
+              className=""
+            >OAuth Not Working! Server doesn't have domain</div>
+          )}
+        </div>
+
+        <ErrorDiv width={width} isFailed={isFailed} errorMessage={errorMessage} />
+      </Form>
+    </Formik>
+  );
 }
