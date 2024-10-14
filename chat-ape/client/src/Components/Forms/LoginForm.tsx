@@ -178,11 +178,11 @@ export default function LoginForm() {
         {!doesServerHasDomain && (
           <>
             <a
-              href={backendURL}
+              href={`${backendURL}ping`}
               target="_blank"
               className=" w-full h-auto flex justify-center items-center bg-yellow-500 p-2 
               rounded-lg mt-2 text-black"
-            >Kindly allow unsafe access for guest login</a>
+            >Click and allow unsafe guest login</a>
             <div
               className=" mt-2"
             >OAuth Not Working! Server doesn't have domain</div>
