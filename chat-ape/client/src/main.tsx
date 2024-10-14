@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { Route, RouterProvider, createHashRouter, createRoutesFromElements } from 'react-router-dom'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import PrivateRoute from './Components/PrivateRoute.jsx'
 import NewGroupForm from './Components/Forms/NewGroupForm.jsx'
 import ErrorPage from './Components/ErrorComponents/ErrorPage.js'
@@ -15,7 +15,7 @@ const Signup = lazy(() => import("./Components/AuthComponents/Signup.js"))
 const Factor2Auth = lazy(() => import("./Components/Forms/Factor2Auth.js"))
 const queryClient = new QueryClient()
 
-const router = createHashRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path='/' element={<PrivateRoute />} >
