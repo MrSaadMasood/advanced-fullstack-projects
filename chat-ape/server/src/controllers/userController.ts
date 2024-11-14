@@ -138,9 +138,14 @@ export const addFriend = async (req: CustomRequest, res: Response) => {
   const { id } = req.user!
   const { friendId } = req.body
   const client = clientMaker(process.env.TEST_URI || MONGO_URL)
-  const friendData = await addFriendTransaction(client, id, friendId)
-  const isFriendsListCached = await redisClient.exists(`user:friendList:${id}`)
-  if (isFriendsListCached) await redisClient.call("json.arrappend", `user:friendList:${id}`, "$", JSON.stringify(friendData))
+  const { userData, friendData } = await addFriendTransaction(client, id, friendId)
+  const isUserFriendsListCached = await redisClient.exists(`user:friendList:${id}`)
+  if (isUserFriendsListCached)
+    await redisClient.call("json.arrappend", `user:friendList:${id}`, "$", JSON.stringify(friendData))
+  const isFriendsFriendListCached =
+    await redisClient.exists(`user:friendList:${friendId}`)
+  if (isFriendsFriendListCached)
+    await redisClient.call("json.arrappend", `user:friendList:${friendId}`, "$", JSON.stringify(userData))
   res.json({ message: "friend successfully added" })
 }
 
@@ -153,6 +158,7 @@ export const removeFriend = async (req: CustomRequest, res: Response) => {
   const client = clientMaker(process.env.TEST_URI || MONGO_URL)
   await removeFriendTransaction(client, id, friendId, collectionId as string)
   await redisClient.del(`user:friendList:${id}`)
+  await redisClient.del(`user:friendList:${friendId}`)
   res.json({ message: "successfully removed friend" })
 }
 
